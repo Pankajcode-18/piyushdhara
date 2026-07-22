@@ -34,17 +34,32 @@ mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 })
     }
   });
 
-// Basic Route
-app.get('/', (req, res) => {
-    res.send('PiyushDhara Educational Platform API is running');
-});
-
-// Routes
+// API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
+
+// Serve Static Frontend Assets (if built for production)
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+const fs = require('fs');
+
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Basic Health Check Route for API-only deployments
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'online',
+      message: 'PiyushDhara Educational Platform API is running',
+      version: '1.0.0'
+    });
+  });
+}
 
 // Port configuration
 const PORT = process.env.PORT || 5000;
