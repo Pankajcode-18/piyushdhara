@@ -11,10 +11,14 @@ dotenv.config();
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piyushdhara';
 
-mongoose.connect(mongoUri)
-  .then(() => console.log('MongoDB connected for advanced seeding'))
+mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
+  .then(async () => {
+    console.log('MongoDB connected to cloud Atlas cluster!');
+    await importData();
+  })
   .catch((err) => {
-      console.error('MongoDB connection error:', err);
+      console.error('MongoDB Atlas connection error:', err.message);
+      console.error('Tip: Make sure 0.0.0.0/0 (Allow Access from Anywhere) is whitelisted in your MongoDB Atlas Network Access tab!');
       process.exit(1);
   });
 
@@ -140,5 +144,3 @@ const importData = async () => {
         process.exit(1);
     }
 };
-
-importData();

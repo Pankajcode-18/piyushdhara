@@ -18,10 +18,21 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
-const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piyushdhara';
-mongoose.connect(mongoUri)
-.then(() => console.log('MongoDB connected successfully'))
-.catch((err) => console.error('MongoDB connection error:', err));
+const primaryUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piyushdhara';
+const fallbackUri = 'mongodb://127.0.0.1:27017/piyushdhara';
+
+mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 })
+  .then(() => console.log('MongoDB connected successfully to Cloud Atlas cluster'))
+  .catch((err) => {
+    console.warn('MongoDB Atlas Cloud connection warning:', err.message);
+    console.warn('Note: Ensure 0.0.0.0/0 (Allow Access from Anywhere) is whitelisted in MongoDB Atlas Network Access.');
+    if (primaryUri !== fallbackUri) {
+      console.log('Falling back to local MongoDB instance...');
+      mongoose.connect(fallbackUri)
+        .then(() => console.log('Connected to local MongoDB instance successfully'))
+        .catch(localErr => console.error('Local MongoDB connection error:', localErr.message));
+    }
+  });
 
 // Basic Route
 app.get('/', (req, res) => {
