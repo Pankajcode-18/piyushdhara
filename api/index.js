@@ -4,6 +4,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
+const authRoutes = require('../backend/routes/authRoutes');
+const courseRoutes = require('../backend/routes/courseRoutes');
+const adminRoutes = require('../backend/routes/adminRoutes');
+const publicRoutes = require('../backend/routes/publicRoutes');
+const studentRoutes = require('../backend/routes/studentRoutes');
+
 const app = express();
 
 app.use(express.json());
@@ -34,12 +40,21 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Import backend routes
-app.use('/api/auth', require('../backend/routes/authRoutes'));
-app.use('/api/courses', require('../backend/routes/courseRoutes'));
-app.use('/api/admin', require('../backend/routes/adminRoutes'));
-app.use('/api/public', require('../backend/routes/publicRoutes'));
-app.use('/api/student', require('../backend/routes/studentRoutes'));
+// Support both /api/path and /path routing in Vercel Serverless Function
+app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
+app.use('/api/courses', courseRoutes);
+app.use('/courses', courseRoutes);
+
+app.use('/api/admin', adminRoutes);
+app.use('/admin', adminRoutes);
+
+app.use('/api/public', publicRoutes);
+app.use('/public', publicRoutes);
+
+app.use('/api/student', studentRoutes);
+app.use('/student', studentRoutes);
 
 app.get('/api', (req, res) => {
   res.json({
@@ -47,6 +62,17 @@ app.get('/api', (req, res) => {
     message: 'PiyushDhara Vercel Serverless API is active',
     database: isConnected ? 'Connected to MongoDB Atlas' : 'Connecting...'
   });
+});
+
+// JSON Fallback 404 handler to prevent "Unexpected end of JSON input"
+app.use((req, res) => {
+  res.status(404).json({ message: `API Route not found: ${req.method} ${req.url}` });
+});
+
+// Global JSON Error Handler
+app.use((err, req, res, next) => {
+  console.error('Serverless Error:', err);
+  res.status(500).json({ message: err.message || 'Internal Server Error' });
 });
 
 module.exports = app;

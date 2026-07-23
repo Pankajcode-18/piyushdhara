@@ -8,6 +8,19 @@ const getApiBase = () => {
 
 const API_BASE = getApiBase();
 
+// Safe JSON parser helper to prevent "Unexpected end of JSON input" errors
+const safeParseJson = async (res) => {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (e) {
+    if (!res.ok) {
+      throw new Error(`Server Response (${res.status}): ${text.slice(0, 120) || 'Invalid server response'}`);
+    }
+    return {};
+  }
+};
+
 // Auto-handle expired token: clear localStorage and redirect to login
 const handleAuthError = (res) => {
   if (res.status === 401) {
@@ -20,14 +33,16 @@ const handleAuthError = (res) => {
 // Public endpoints
 export const fetchCourses = async () => {
   const res = await fetch(`${API_BASE}/public/courses`);
-  if (!res.ok) throw new Error('Failed to fetch courses');
-  return res.json();
+  const data = await safeParseJson(res);
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch courses');
+  return data;
 };
 
 export const fetchCourseDetails = async (id) => {
   const res = await fetch(`${API_BASE}/public/courses/${id}`);
-  if (!res.ok) throw new Error('Failed to fetch course details');
-  return res.json();
+  const data = await safeParseJson(res);
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch course details');
+  return data;
 };
 
 export const fetchChapterContent = async (chapterId) => {
@@ -74,7 +89,7 @@ export const loginUserApi = async (email, password) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   });
-  const data = await res.json();
+  const data = await safeParseJson(res);
   if (!res.ok) throw new Error(data.message || 'Login failed');
   return data;
 };
@@ -85,7 +100,7 @@ export const registerUserApi = async (name, email, password) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password }),
   });
-  const data = await res.json();
+  const data = await safeParseJson(res);
   if (!res.ok) throw new Error(data.message || 'Registration failed');
   return data;
 };
