@@ -14,10 +14,13 @@ const safeParseJson = async (res) => {
   try {
     return text ? JSON.parse(text) : {};
   } catch (e) {
+    if (text.includes('<html') || text.includes('<!DOCTYPE')) {
+      throw new Error(`API Endpoint returned an HTML page instead of JSON. This usually means Vercel's Serverless Function (api/index.js) is not running, or the Route is returning a 404 page. Response: ${text.slice(0, 100)}`);
+    }
     if (!res.ok) {
       throw new Error(`Server Response (${res.status}): ${text.slice(0, 120) || 'Invalid server response'}`);
     }
-    return {};
+    throw new Error(`Failed to parse JSON response: ${e.message}`);
   }
 };
 
