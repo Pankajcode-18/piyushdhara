@@ -7,10 +7,15 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please provide a name'],
         trim: true,
     },
+    phone: {
+        type: String,
+        trim: true,
+        sparse: true,
+    },
     email: {
         type: String,
-        required: [true, 'Please provide an email'],
-        unique: true,
+        trim: true,
+        sparse: true,
         match: [
             /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
             'Please add a valid email',
@@ -33,7 +38,13 @@ const userSchema = new mongoose.Schema({
     bookmarks: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Video', // Or 'Note'
+            ref: 'Video',
+        }
+    ],
+    enrolledCourses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course',
         }
     ],
 }, { timestamps: true });

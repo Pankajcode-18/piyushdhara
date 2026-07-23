@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { loginUserApi } from '../utils/api';
-import { ShieldCheck, Mail, Lock, Eye, EyeOff, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, User, Lock, Eye, EyeOff, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
+
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -16,25 +19,27 @@ const Login = () => {
     try {
       setError('');
       setLoading(true);
-      const data = await loginUserApi(email, password);
+      const data = await loginUserApi(identifier, password);
       
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({ name: data.name, email: data.email, role: data.role }));
+      localStorage.setItem('user', JSON.stringify({ name: data.name, phone: data.phone, email: data.email, role: data.role }));
       
-      if (data.role === 'admin') {
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      } else if (data.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/courses');
       }
     } catch (err) {
-      setError(err.message || 'Invalid credentials. Check email and password.');
+      setError(err.message || 'Invalid credentials. Check phone number/name and password.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleFillDemo = () => {
-    setEmail('admin@piyushdhara.com');
+    setIdentifier('admin@piyushdhara.com');
     setPassword('password123');
     setError('');
   };
@@ -80,11 +85,11 @@ const Login = () => {
 
           {/* Platform Title */}
           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 0.35rem 0' }}>
-            Piyush<span style={{ color: '#2563EB' }}>Dhara</span> Teacher Portal
+            Account <span style={{ color: '#2563EB' }}>Login</span>
           </h2>
 
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.25rem 0.75rem', background: '#F1F5F9', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 700, color: '#475569', marginTop: '0.25rem' }}>
-            <Sparkles size={13} color="#2563EB" /> Verified Instructor Access
+            <Sparkles size={13} color="#2563EB" /> Access Courses & Lectures
           </div>
         </div>
 
@@ -96,17 +101,17 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>
           
-          {/* Email Input */}
+          {/* Identifier Input */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.45rem', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
-              Instructor Email Address
+              Mobile Number, Full Name, or Email
             </label>
             <div style={{ position: 'relative' }}>
-              <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
+              <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 style={{ 
                   width: '100%', 
@@ -121,7 +126,7 @@ const Login = () => {
                   outline: 'none',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
                 }}
-                placeholder="admin@piyushdhara.com"
+                placeholder="e.g. 9800000000 or Piyush Dhara"
               />
             </div>
           </div>
@@ -178,15 +183,19 @@ const Login = () => {
             }}
           >
             {loading ? (
-              'Verifying Teacher Credentials...'
+              'Authenticating...'
             ) : (
-              <>Login as Teacher <ArrowRight size={18} /></>
+              <>Sign In <ArrowRight size={18} /></>
             )}
           </button>
         </form>
 
+        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: '#64748B' }}>
+          Don't have an account yet? <Link to={`/register${searchParams.get('redirect') ? `?redirect=${encodeURIComponent(searchParams.get('redirect'))}` : ''}`} style={{ color: '#2563EB', fontWeight: 700 }}>Register Now</Link>
+        </p>
+
         {/* Demo Fill Helper Pill */}
-        <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
           <button
             type="button"
             onClick={handleFillDemo}
@@ -205,7 +214,7 @@ const Login = () => {
               transition: 'all 0.2s ease'
             }}
           >
-            <CheckCircle2 size={14} /> Auto-fill Demo Credentials
+            <CheckCircle2 size={14} /> Auto-fill Demo Admin Credentials
           </button>
         </div>
 

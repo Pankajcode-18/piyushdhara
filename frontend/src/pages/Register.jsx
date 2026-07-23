@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { registerUserApi } from '../utils/api';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') || '/courses';
+
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,12 +19,12 @@ const Register = () => {
     try {
       setError('');
       setLoading(true);
-      const data = await registerUserApi(name, email, password);
+      const data = await registerUserApi(name, phone, email, password);
       
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({ name: data.name, email: data.email, role: data.role }));
+      localStorage.setItem('user', JSON.stringify({ name: data.name, phone: data.phone, email: data.email, role: data.role }));
       
-      navigate('/courses');
+      navigate(redirectUrl);
     } catch (err) {
       setError(err.message || 'Registration failed');
     } finally {
@@ -30,7 +34,7 @@ const Register = () => {
 
   return (
     <div className="flex-center" style={{ minHeight: '80vh', padding: '1rem' }}>
-      <div className="card glass animate-fade-in" style={{ width: '100%', maxWidth: '400px', padding: '2.5rem' }}>
+      <div className="card glass animate-fade-in" style={{ width: '100%', maxWidth: '420px', padding: '2.5rem' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem', textAlign: 'center' }}>Create Account</h2>
         <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginBottom: '2rem' }}>Join the top educational resource hub in Nepal</p>
         
@@ -50,17 +54,29 @@ const Register = () => {
               required
               className="search-input"
               style={{ width: '100%', borderRadius: '0.5rem', paddingLeft: '1rem' }}
-              placeholder="Piyush Dhara"
+              placeholder="e.g. Piyush Dhara"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Email Address</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Mobile / Phone Number *</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              className="search-input"
+              style={{ width: '100%', borderRadius: '0.5rem', paddingLeft: '1rem' }}
+              placeholder="e.g. 9800000000"
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Email Address (Optional)</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               className="search-input"
               style={{ width: '100%', borderRadius: '0.5rem', paddingLeft: '1rem' }}
               placeholder="you@example.com"
@@ -86,7 +102,7 @@ const Register = () => {
         </form>
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: 600 }}>Log in</Link>
+          Already have an account? <Link to={`/login${searchParams.get('redirect') ? `?redirect=${encodeURIComponent(searchParams.get('redirect'))}` : ''}`} style={{ color: 'var(--primary-color)', fontWeight: 600 }}>Log in</Link>
         </p>
       </div>
     </div>

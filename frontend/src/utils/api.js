@@ -68,25 +68,40 @@ export const enrollStudentApi = async (enrollData) => {
 };
 
 // Auth endpoints
-export const loginUserApi = async (email, password) => {
+export const loginUserApi = async (identifier, password) => {
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ identifier, password }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Login failed');
   return data;
 };
 
-export const registerUserApi = async (name, email, password) => {
+export const registerUserApi = async (name, phone, email, password) => {
   const res = await fetch(`${API_BASE}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, phone, email, password }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Registration failed');
+  return data;
+};
+
+export const enrollUserCourseApi = async (token, courseId) => {
+  const res = await fetch(`${API_BASE}/student/enroll`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ courseId }),
+  });
+  handleAuthError(res);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Course enrollment failed');
   return data;
 };
 

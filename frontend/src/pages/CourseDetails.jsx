@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchCourseDetails, fetchChapterContent, enrollStudentApi } from '../utils/api';
+import { fetchCourseDetails, fetchChapterContent, enrollUserCourseApi } from '../utils/api';
 import { PlayCircle, FileText, ChevronDown, ChevronRight, Lock, BookOpen, Rocket, Clock, Bell, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const CourseDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSubject, setActiveSubject] = useState(null);
@@ -51,40 +52,49 @@ const CourseDetails = () => {
     return <div style={{ textAlign: 'center', padding: '5rem' }}>Course not found.</div>;
   }
 
-  const selectedSubject = course.subjects.find((s) => s._id === activeSubject);
+  const selectedSubject = course.subjects?.find((s) => s._id === activeSubject);
 
-  const savedStudentStr = localStorage.getItem('studentUser');
-  const studentObj = savedStudentStr ? JSON.parse(savedStudentStr) : null;
-  const isAlreadyEnrolled = studentObj?.enrolledCourses?.includes(course?._id);
+  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem('user');
+  const userObj = userStr ? JSON.parse(userStr) : null;
+  const isAlreadyEnrolled = userObj?.enrolledCourses?.includes(course?._id);
 
   const handleEnrollClick = async () => {
-    if (studentObj) {
-      if (isAlreadyEnrolled) {
-        alert('You are already enrolled in this batch! Click any chapter below to start studying.');
-        return;
-      }
-      try {
-        await enrollStudentApi({
-          name: studentObj.name || 'Student',
-          school: studentObj.school || 'N/A',
-          phone: studentObj.phone || 'N/A',
-          email: studentObj.email || 'N/A',
-          courseId: course._id
-        });
-        const currentEnrolled = studentObj.enrolledCourses || [];
-        studentObj.enrolledCourses = Array.from(new Set([...currentEnrolled, course._id]));
-        localStorage.setItem('studentUser', JSON.stringify(studentObj));
-        alert(`Congratulations! You have successfully enrolled in ${course.title}.`);
-      } catch (err) {
-        const currentEnrolled = studentObj.enrolledCourses || [];
-        studentObj.enrolledCourses = Array.from(new Set([...currentEnrolled, course._id]));
-        localStorage.setItem('studentUser', JSON.stringify(studentObj));
-        alert(`Successfully enrolled in ${course.title}!`);
-      }
-    } else {
-      const event = new CustomEvent('trigger-student-enroll', { detail: { courseId: course._id } });
-      window.dispatchEvent(event);
+    if (!token || !userObj) {
+      navigate(`/login?redirect=${encodeURIComponent(`/courses/${course._id}`)}`);
+      return;
     }
+
+    try {
+      await enrollUserCourseApi(token, course._id);
+      
+      const currentEnrolled = userObj.enrolledCourses || [];
+      userObj.enrolledCourses = Array.from(new Set([...currentEnrolled, course._id]));
+      localStorage.setItem('user', JSON.stringify(userObj));
+    } catch (err) {
+      console.warn('Enrollment API note:', err.message);
+    }
+
+    // Auto-play / navigate to first available lecture video
+    if (course.subjects && course.subjects.length > 0) {
+      for (const subj of course.subjects) {
+        if (subj.chapters && subj.chapters.length > 0) {
+          for (const chap of subj.chapters) {
+            try {
+              const content = await fetchChapterContent(chap._id);
+              if (content.videos && content.videos.length > 0) {
+                navigate(`/lecture/${content.videos[0]._id}`);
+                return;
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        }
+      }
+    }
+
+    alert(`Successfully enrolled in ${course.title}!`);
   };
 
   return (

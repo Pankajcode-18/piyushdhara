@@ -19,20 +19,25 @@ const generateRefreshToken = (id) => {
 // @access  Public
 const registerStudent = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, phone, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: 'Please add all fields' });
+        if (!name || (!phone && !email) || !password) {
+            return res.status(400).json({ message: 'Please provide a name, phone/email, and password' });
         }
 
-        const userExists = await User.findOne({ email });
+        const query = [];
+        if (phone) query.push({ phone });
+        if (email) query.push({ email });
+
+        const userExists = await User.findOne({ $or: query });
         if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'User with this phone or email already exists' });
         }
 
         const user = await User.create({
             name,
-            email,
+            phone: phone || undefined,
+            email: email || undefined,
             password,
             role: 'student'
         });
@@ -47,8 +52,10 @@ const registerStudent = async (req, res) => {
             res.status(201).json({
                 _id: user.id,
                 name: user.name,
+                phone: user.phone,
                 email: user.email,
                 role: user.role,
+                enrolledCourses: user.enrolledCourses || [],
                 token,
                 refreshToken
             });
@@ -60,14 +67,26 @@ const registerStudent = async (req, res) => {
     }
 };
 
-// @desc    Authenticate a user (Admin or Student)
+// @desc    Authenticate a user (Admin or Student) by Name, Phone, or Email
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, email, phone, password } = req.body;
+        const searchKey = identifier || email || phone;
 
-        const user = await User.findOne({ email }).select('+password');
+        if (!searchKey || !password) {
+            return res.status(400).json({ message: 'Please provide login credentials and password' });
+        }
+
+        // Search user by name, phone, or email (case insensitive regex for name)
+        const user = await User.findOne({
+            $or: [
+                { phone: searchKey },
+                { email: searchKey },
+                { name: { $regex: new RegExp(`^${searchKey.trim()}$`, 'i') } }
+            ]
+        }).select('+password');
 
         if (user && (await user.matchPassword(password))) {
             const token = generateToken(user._id);
@@ -79,8 +98,10 @@ const loginUser = async (req, res) => {
             res.json({
                 _id: user.id,
                 name: user.name,
+                phone: user.phone,
                 email: user.email,
                 role: user.role,
+                enrolledCourses: user.enrolledCourses || [],
                 token,
                 refreshToken
             });
