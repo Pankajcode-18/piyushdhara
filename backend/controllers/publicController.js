@@ -10,7 +10,7 @@ const Enrollment = require('../models/Enrollment');
 // @access  Public
 const getPublishedCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ isPublished: true }).sort({ order: 1 });
+        const courses = await Course.find({}).sort({ order: 1 });
         const coursesWithCount = await Promise.all(courses.map(async (course) => {
             const enrollCount = await Enrollment.countDocuments({ course: course._id });
             return { ...course._doc, enrollCount };
@@ -26,7 +26,7 @@ const getPublishedCourses = async (req, res) => {
 // @access  Public
 const getCourseDetails = async (req, res) => {
     try {
-        const course = await Course.findOne({ _id: req.params.id, isPublished: true });
+        const course = await Course.findById(req.params.id);
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
