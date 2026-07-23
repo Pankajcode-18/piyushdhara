@@ -132,7 +132,7 @@ const LectureRoom = () => {
           <div className="lecture-breadcrumb" style={{ margin: 0 }}>
             <Link to="/courses">Batches</Link>
             <span className="sep">›</span>
-            <Link to={`/courses/${video.chapter || ''}`}>Course</Link>
+            <Link to={`/courses/${video.chapter?.subject?.course?._id || video.chapter?.subject?.course || video.chapter?._id || video.chapter || ''}`}>Course</Link>
             <span className="sep">›</span>
             <span style={{ color: 'var(--text-primary)', fontWeight: 600, maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {video.title}
