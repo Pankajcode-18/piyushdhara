@@ -9,7 +9,7 @@ const User = require('./models/User');
 
 dotenv.config();
 
-const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piyushdhara';
+const mongoUri = process.env.MONGO_URI || 'mongodb+srv://23it040_db_user:QrbJXgXeItdIJbjE@cluster0.f74agq9.mongodb.net/piyushdhara?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
   .then(async () => {
@@ -80,15 +80,15 @@ const importData = async () => {
         const insertedCourses = await Course.insertMany(coursesData);
         console.log('Courses seeded!');
 
-        // --- Class 10 Subjects ---
-        const c10 = insertedCourses[0];
-        const s10_science = await Subject.create({ title: 'Science & Technology', course: c10._id, order: 1 });
-        const s10_math = await Subject.create({ title: 'Compulsory Mathematics', course: c10._id, order: 2 });
+        // --- Course 0: Mahabharath Mathematics Series ---
+        const c_math = insertedCourses[0];
+        const s_math_comp = await Subject.create({ title: 'Compulsory Mathematics', course: c_math._id, order: 1 });
+        const s_math_sci = await Subject.create({ title: 'Science & Technology', course: c_math._id, order: 2 });
 
-        // Chapters for Class 10 Science
-        const ch10_force = await Chapter.create({ title: 'Force and Gravitation', subject: s10_science._id, order: 1 });
-        const ch10_pressure = await Chapter.create({ title: 'Pressure', subject: s10_science._id, order: 2 });
-        
+        const ch_trig = await Chapter.create({ title: 'Trigonometric Identities & Proofs', subject: s_math_comp._id, order: 1 });
+        const ch_force = await Chapter.create({ title: 'Force and Gravitation', subject: s_math_sci._id, order: 1 });
+        const ch_pressure = await Chapter.create({ title: 'Pressure & Hydraulics', subject: s_math_sci._id, order: 2 });
+
         await Video.create({
             title: 'Newton\'s Law of Gravitation & Numerical Problems',
             description: 'In-depth explanation of Universal Law of Gravitation, gravity, and numerical values for Nepal SEE.',
@@ -96,7 +96,17 @@ const importData = async () => {
             duration: 1800,
             isFree: true,
             isPublished: true,
-            chapter: ch10_force._id,
+            chapter: ch_force._id,
+            order: 1
+        });
+        await Video.create({
+            title: 'Pascal\'s Law & Hydraulic Press Problems',
+            description: 'Step-by-step breakdown of Pascal\'s principle, liquid pressure, and atmospheric pressure.',
+            videoUrl: 'https://www.youtube.com/watch?v=x1PTN8w3vC8',
+            duration: 1500,
+            isFree: true,
+            isPublished: true,
+            chapter: ch_pressure._id,
             order: 1
         });
         await Note.create({
@@ -104,17 +114,44 @@ const importData = async () => {
             description: 'Handwritten formulas and definitions matching SEE marking scheme.',
             fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
             isPublished: true,
-            chapter: ch10_force._id,
+            chapter: ch_force._id,
             order: 1
         });
 
-        // --- IOE Entrance Subjects ---
-        const ioe = insertedCourses[3];
-        const sioe_math = await Subject.create({ title: 'Entrance Mathematics', course: ioe._id, order: 1 });
-        const sioe_phys = await Subject.create({ title: 'Entrance Physics', course: ioe._id, order: 2 });
+        // --- Course 1: Web Development (Full-Stack MERN) ---
+        const c_web = insertedCourses[1];
+        const s_web_front = await Subject.create({ title: 'Frontend Development (React.js)', course: c_web._id, order: 1 });
+        const s_web_back = await Subject.create({ title: 'Backend Development (Node & Express)', course: c_web._id, order: 2 });
 
-        const ch_ioe_limits = await Chapter.create({ title: 'Limits & Continuity Shortcuts', subject: sioe_math._id, order: 1 });
-        const ch_ioe_vectors = await Chapter.create({ title: 'Vector Analysis', subject: sioe_phys._id, order: 1 });
+        const ch_react = await Chapter.create({ title: 'React 19 & State Management', subject: s_web_front._id, order: 1 });
+        const ch_node = await Chapter.create({ title: 'REST API Development & Express.js', subject: s_web_back._id, order: 1 });
+
+        await Video.create({
+            title: 'Building Interactive Web Applications with React',
+            description: 'Learn JSX, React Hooks, State Management, and Component Architecture.',
+            videoUrl: 'https://www.youtube.com/watch?v=x1PTN8w3vC8',
+            duration: 2400,
+            isFree: true,
+            isPublished: true,
+            chapter: ch_react._id,
+            order: 1
+        });
+        await Note.create({
+            title: 'React Hooks & Props Cheat Sheet',
+            description: 'Complete guide to useState, useEffect, and component composition in React.',
+            fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+            isPublished: true,
+            chapter: ch_react._id,
+            order: 1
+        });
+
+        // --- Course 2: IOE Entrance Preparation Course ---
+        const c_ioe = insertedCourses[2];
+        const s_ioe_math = await Subject.create({ title: 'Entrance Mathematics', course: c_ioe._id, order: 1 });
+        const s_ioe_phys = await Subject.create({ title: 'Entrance Physics', course: c_ioe._id, order: 2 });
+
+        const ch_ioe_limits = await Chapter.create({ title: 'Limits & Continuity Shortcuts', subject: s_ioe_math._id, order: 1 });
+        const ch_ioe_vectors = await Chapter.create({ title: 'Vector Analysis', subject: s_ioe_phys._id, order: 1 });
 
         await Video.create({
             title: 'L\'Hospital Rule & Limit Indeterminate Forms (Shortcuts)',
@@ -127,14 +164,49 @@ const importData = async () => {
             order: 1
         });
         await Video.create({
-            title: 'Continuity & Differentiability past questions',
+            title: 'Continuity & Differentiability Past Questions',
             description: 'Solving past IOE questions on continuity.',
             videoUrl: 'https://www.youtube.com/watch?v=x1PTN8w3vC8',
             duration: 1200,
-            isFree: false, // Paid content
+            isFree: false,
             isPublished: true,
             chapter: ch_ioe_limits._id,
             order: 2
+        });
+        await Note.create({
+            title: 'IOE Mathematics Formula Cheat Sheet',
+            description: 'Essential speed calculation techniques for IOE entrance examination.',
+            fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+            isPublished: true,
+            chapter: ch_ioe_limits._id,
+            order: 1
+        });
+
+        // --- Course 3: Loksewa Tayari (GK & IQ Preparation) ---
+        const c_lok = insertedCourses[3];
+        const s_lok_gk = await Subject.create({ title: 'General Knowledge (GK)', course: c_lok._id, order: 1 });
+        const s_lok_iq = await Subject.create({ title: 'Logical Reasoning & IQ', course: c_lok._id, order: 2 });
+
+        const ch_lok_geo = await Chapter.create({ title: 'Geography & History of Nepal', subject: s_lok_gk._id, order: 1 });
+        const ch_lok_iq = await Chapter.create({ title: 'Numerical Reasoning & Series', subject: s_lok_iq._id, order: 1 });
+
+        await Video.create({
+            title: 'Nepal Geography, Rivers & Mountain Ranges',
+            description: 'Important facts and memory tricks for Loksewa GK examination.',
+            videoUrl: 'https://www.youtube.com/watch?v=x1PTN8w3vC8',
+            duration: 1600,
+            isFree: true,
+            isPublished: true,
+            chapter: ch_lok_geo._id,
+            order: 1
+        });
+        await Note.create({
+            title: 'Loksewa GK & IQ Handout PDF',
+            description: 'Comprehensive summary notes for Loksewa Aayog preparation.',
+            fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+            isPublished: true,
+            chapter: ch_lok_geo._id,
+            order: 1
         });
 
         console.log('All detailed Nepalese syllabus content seeded successfully!');
