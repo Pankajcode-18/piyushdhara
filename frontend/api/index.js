@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 
-const authRoutes = require('../../backend/routes/authRoutes');
-const courseRoutes = require('../../backend/routes/courseRoutes');
-const adminRoutes = require('../../backend/routes/adminRoutes');
-const publicRoutes = require('../../backend/routes/publicRoutes');
-const studentRoutes = require('../../backend/routes/studentRoutes');
+const authRoutes = require('../backend/routes/authRoutes');
+const courseRoutes = require('../backend/routes/courseRoutes');
+const adminRoutes = require('../backend/routes/adminRoutes');
+const publicRoutes = require('../backend/routes/publicRoutes');
+const studentRoutes = require('../backend/routes/studentRoutes');
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Serve static uploads if requested via API
-app.use('/uploads', express.static(path.join(__dirname, '../../backend/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../backend/uploads')));
 
 const mongoUri = process.env.MONGO_URI || 'mongodb+srv://23it040_db_user:QrbJXgXeItdIJbjE@cluster0.f74agq9.mongodb.net/piyushdhara?retryWrites=true&w=majority&appName=Cluster0';
 

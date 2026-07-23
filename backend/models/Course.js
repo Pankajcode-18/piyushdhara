@@ -32,7 +32,7 @@ const courseSchema = new mongoose.Schema({
     },
     isPublished: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     isFeatured: {
         type: Boolean,

@@ -44,29 +44,14 @@ const CourseDetails = () => {
   };
 
   if (loading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '6rem 1rem', color: 'var(--text-muted)' }}>
-        <div style={{ fontSize: '1.25rem', fontWeight: 600 }}>Loading course content...</div>
-      </div>
-    );
+    return <div style={{ textAlign: 'center', padding: '5rem' }}>Loading course content...</div>;
   }
 
   if (!course) {
-    return (
-      <div style={{ textAlign: 'center', padding: '6rem 1rem', maxWidth: '500px', margin: '0 auto' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎓</div>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text-primary)' }}>Course Not Found</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-          The requested course batch might have been updated or is currently unavailable.
-        </p>
-        <Link to="/courses" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', borderRadius: '0.75rem' }}>
-          Browse All Preparation Courses
-        </Link>
-      </div>
-    );
+    return <div style={{ textAlign: 'center', padding: '5rem' }}>Course not found.</div>;
   }
 
-  const selectedSubject = course.subjects?.find((s) => s._id === activeSubject) || course.subjects?.[0];
+  const selectedSubject = course.subjects.find((s) => s._id === activeSubject);
 
   const savedStudentStr = localStorage.getItem('studentUser');
   const studentObj = savedStudentStr ? JSON.parse(savedStudentStr) : null;

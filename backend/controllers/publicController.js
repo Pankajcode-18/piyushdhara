@@ -10,7 +10,7 @@ const Enrollment = require('../models/Enrollment');
 // @access  Public
 const getPublishedCourses = async (req, res) => {
     try {
-        const courses = await Course.find({}).sort({ order: 1 });
+        const courses = await Course.find({ isPublished: true }).sort({ order: 1 });
         const coursesWithCount = await Promise.all(courses.map(async (course) => {
             const enrollCount = await Enrollment.countDocuments({ course: course._id });
             return { ...course._doc, enrollCount };
@@ -26,36 +26,15 @@ const getPublishedCourses = async (req, res) => {
 // @access  Public
 const getCourseDetails = async (req, res) => {
     try {
-        let courseId = req.params.id;
-
-        // 1. Try finding Course directly
-        let course = await Course.findById(courseId);
-
-        // 2. If not a Course ID, check if it's a Chapter ID or Subject ID
-        if (!course) {
-            try {
-                const chapter = await Chapter.findById(courseId).populate({ path: 'subject' });
-                if (chapter && chapter.subject && chapter.subject.course) {
-                    courseId = chapter.subject.course;
-                    course = await Course.findById(courseId);
-                } else {
-                    const subject = await Subject.findById(courseId);
-                    if (subject && subject.course) {
-                        courseId = subject.course;
-                        course = await Course.findById(courseId);
-                    }
-                }
-            } catch (resolveErr) {
-                console.warn('ID resolution check ignored:', resolveErr.message);
-            }
-        }
-
+        const course = await Course.findOne({ _id: req.params.id, isPublished: true });
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
 
         const subjects = await Subject.find({ course: course._id }).sort({ order: 1 });
         
+        // This is a simplified approach. In a real scenario, you might want to aggregate this
+        // to avoid multiple roundtrips, or lazy load chapters on the frontend.
         const courseData = {
             ...course._doc,
             subjects: await Promise.all(subjects.map(async (subject) => {
@@ -79,6 +58,7 @@ const getCourseDetails = async (req, res) => {
 const getChapterContent = async (req, res) => {
     try {
         const chapterId = req.params.id;
+        // Ideally check if user has access to this course (if it's paid)
         
         const videos = await Video.find({ chapter: chapterId, isPublished: true }).sort({ order: 1 });
         const notes = await Note.find({ chapter: chapterId, isPublished: true }).sort({ order: 1 });
@@ -103,6 +83,7 @@ const searchCourses = async (req, res) => {
         }
 
         const courses = await Course.find({
+            isPublished: true,
             title: { $regex: query, $options: 'i' }
         });
 
@@ -117,15 +98,7 @@ const searchCourses = async (req, res) => {
 // @access  Public
 const getVideoById = async (req, res) => {
     try {
-        const video = await Video.findById(req.params.id).populate({
-            path: 'chapter',
-            populate: {
-                path: 'subject',
-                populate: {
-                    path: 'course'
-                }
-            }
-        });
+        const video = await Video.findById(req.params.id);
         if (video) {
             res.json(video);
         } else {
