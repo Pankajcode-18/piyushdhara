@@ -259,6 +259,93 @@ const recordStudyStreak = async (req, res) => {
     }
 };
 
+// Default Seed Teachers List if DB is empty
+const DEFAULT_TEACHERS = [
+  {
+    _id: '6a6111111111111111111111',
+    name: 'Gaurav Sir & Team',
+    designation: 'Senior Lead Educator & Entrance Specialist',
+    qualification: 'M.Sc. Mathematics & Physics Specialist',
+    experience: '10+ Years',
+    bio: 'Legendary mathematics & physics educator leading PiyushDhara with over 10+ years of experience simplifying SEE, NEB, and IOE entrance concepts for 15,000+ students across Nepal.',
+    specializations: ['Mahabharath Math', 'NEB Physics', 'IOE Entrance'],
+    photo: '/teacher.png',
+    rating: 4.9,
+    studentsMentored: '15,000+',
+    verified: true,
+  },
+  {
+    _id: '6a6222222222222222222222',
+    name: 'Er. Pankaj Baduwal',
+    designation: 'Senior Engineering & Computer Science Lecturer',
+    qualification: 'B.E. Computer Engineering, IOE Rank Holder',
+    experience: '7+ Years',
+    bio: 'Tech lead & senior lecturer specializing in Web Development, Computer Engineering routines, and IOE entrance numerical shortcuts.',
+    specializations: ['Full-Stack Web Dev', 'IOE Computer Science', 'Physics'],
+    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+    rating: 4.9,
+    studentsMentored: '8,500+',
+    verified: true,
+  },
+  {
+    _id: '6a6333333333333333333333',
+    name: 'Dr. A. Sharma',
+    designation: 'Senior Chemistry & Entrance Consultant',
+    qualification: 'Ph.D. Organic Chemistry',
+    experience: '12+ Years',
+    bio: 'Dedicated chemistry specialist renowned for simplifying organic reaction mechanisms, physical chemistry formulas, and NEB board preparation.',
+    specializations: ['Organic Chemistry', 'Physical Chemistry', 'NEB Board Exams'],
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+    rating: 4.8,
+    studentsMentored: '6,200+',
+    verified: true,
+  }
+];
+
+// @desc Get list of public teacher profiles
+// @route GET /api/public/teachers
+// @access Public
+const getPublicTeachers = async (req, res) => {
+  try {
+    const Teacher = require('../models/Teacher');
+    const teachers = await Teacher.find({}).sort({ createdAt: -1 });
+    if (!teachers || teachers.length === 0) {
+      return res.json(DEFAULT_TEACHERS);
+    }
+    res.json(teachers);
+  } catch (error) {
+    res.json(DEFAULT_TEACHERS);
+  }
+};
+
+// @desc Create or Update Teacher Profile (Admin)
+// @route POST /api/public/teachers
+// @access Public / Admin
+const createTeacherProfile = async (req, res) => {
+  try {
+    const Teacher = require('../models/Teacher');
+    const { name, designation, qualification, experience, bio, specializations, photo } = req.body;
+    if (!name) return res.status(400).json({ message: 'Teacher name is required' });
+
+    const newTeacher = await Teacher.create({
+      name,
+      designation: designation || 'Educator',
+      qualification: qualification || 'Master Degree',
+      experience: experience || '5+ Years',
+      bio: bio || 'Dedicated educator at PiyushDhara.',
+      specializations: Array.isArray(specializations) ? specializations : (specializations ? specializations.split(',') : []),
+      photo: photo || '/teacher.png',
+      firebaseUID: `manual-${Date.now()}`,
+      email: `${name.toLowerCase().replace(/[^a-z0-9]/g, '')}@piyushdhara.edu.np`,
+      verified: true
+    });
+
+    res.status(201).json(newTeacher);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
     getPublishedCourses,
     getCourseDetails,
@@ -269,5 +356,7 @@ module.exports = {
     getAllPublishedNotes,
     recordVisitorCount,
     getVisitorStats,
-    recordStudyStreak
+    recordStudyStreak,
+    getPublicTeachers,
+    createTeacherProfile
 };

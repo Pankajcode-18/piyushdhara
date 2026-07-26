@@ -33,8 +33,10 @@ import Footer from '../common/Footer';
 import { enrollStudentApi } from '../../utils/api';
 import teacherImg from '../../assets/gaurov.jpeg';
 import { useLanguage } from '../../context/LanguageContext';
+import AiChatbotWidget from '../common/AiChatbotWidget';
 import { useTheme } from '../../context/ThemeContext';
 import { useSidebar } from '../../context/SidebarContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const MainLayout = () => {
   const navigate = useNavigate();
@@ -78,8 +80,12 @@ const MainLayout = () => {
   const [emailAddress, setEmailAddress] = useState('');
 
   useEffect(() => {
-    const savedStudent = localStorage.getItem('studentUser');
-    if (savedStudent) setStudent(JSON.parse(savedStudent));
+    const savedUserStr = localStorage.getItem('user') || localStorage.getItem('studentUser');
+    if (savedUserStr) {
+      try {
+        setStudent(JSON.parse(savedUserStr));
+      } catch (e) {}
+    }
 
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -105,8 +111,16 @@ const MainLayout = () => {
     return () => document.removeEventListener('click', handler);
   }, [showDropdown]);
 
-  const handleStudentLogout = () => {
+  const { userProfile, logout: authLogout } = useAuth();
+  const activeUser = userProfile || student || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
+  const handleStudentLogout = async () => {
+    try {
+      if (authLogout) await authLogout();
+    } catch (e) {}
+    localStorage.removeItem('user');
     localStorage.removeItem('studentUser');
+    localStorage.removeItem('token');
     setStudent(null);
     setShowDropdown(false);
     navigate('/');
@@ -263,21 +277,8 @@ const MainLayout = () => {
               <span className="desktop-only">{lang === 'en' ? 'NP' : 'EN'}</span>
             </button>
 
-            {/* Teacher Portal */}
-            <Link
-              to="/login"
-              className="btn btn-outline desktop-only"
-              style={{
-                padding: '0.45rem 0.9rem', fontSize: '0.8rem', fontWeight: 700,
-                borderRadius: 'var(--radius-lg)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-              }}
-            >
-              <ShieldCheck size={14} />
-              <span>{t('teacherPortal')}</span>
-            </Link>
-
-            {/* Student Profile or Enroll */}
-            {student ? (
+            {/* Student Profile or Login / Register */}
+            {activeUser ? (
               <div className="user-dropdown-wrapper" style={{ position: 'relative' }}>
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
@@ -292,49 +293,54 @@ const MainLayout = () => {
                   }}
                 >
                   <div style={{
-                    width: '30px', height: '30px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                    width: '32px', height: '32px', borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#FFF', fontWeight: 800, fontSize: '0.8rem',
+                    color: '#FFF', fontWeight: 800, fontSize: '0.85rem',
                   }}>
-                    {student.name.charAt(0).toUpperCase()}
+                    {activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'S'}
                   </div>
                   <div className="desktop-only" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1, textAlign: 'left' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>{student.name.split(' ')[0]}</span>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--primary)', fontWeight: 600 }}>Student</span>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      {activeUser.name ? activeUser.name.split(' ')[0] : 'Student'}
+                    </span>
+                    <span style={{ fontSize: '0.65rem', color: '#2563EB', fontWeight: 700 }}>Student</span>
                   </div>
                   <ChevronDown size={14} color="var(--text-muted)" className="desktop-only" />
                 </button>
 
                 {showDropdown && (
-                  <div className="dropdown-menu animate-fade-in">
-                    <div style={{ padding: '0.5rem 0.85rem 0.5rem', color: 'var(--text-primary)' }}>
-                      <p style={{ fontWeight: 700, fontSize: '0.88rem', margin: 0 }}>{student.name}</p>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>{student.school}</p>
+                  <div className="dropdown-menu animate-fade-in" style={{ width: '220px', right: 0 }}>
+                    <div style={{ padding: '0.75rem 1rem 0.5rem', color: 'var(--text-primary)' }}>
+                      <p style={{ fontWeight: 800, fontSize: '0.92rem', margin: '0 0 0.2rem 0', color: '#0F172A' }}>{activeUser.name}</p>
+                      <p style={{ fontSize: '0.75rem', color: '#64748B', margin: 0, wordBreak: 'break-all' }}>{activeUser.email}</p>
                     </div>
                     <div className="dropdown-divider" />
-                    <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/courses?filter=enrolled'); }}>
-                      <ShoppingBag size={15} /> My Purchases
+                    <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/profile'); }}>
+                      <User size={16} color="#2563EB" /> My Profile Dashboard
+                    </button>
+                    <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/my-courses'); }}>
+                      <GraduationCap size={16} color="#10B981" /> My Enrolled Batches
                     </button>
                     <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/courses?filter=enrolled'); }}>
-                      <Monitor size={15} /> My Batches
+                      <BookOpen size={16} color="#10B981" /> Enrolled Syllabus
                     </button>
                     <div className="dropdown-divider" />
                     <button className="dropdown-item danger" onClick={handleStudentLogout}>
-                      <LogOut size={15} /> Logout
+                      <LogOut size={16} color="#EF4444" /> Logout
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <button
-                onClick={() => setShowEnrollModal(true)}
+              <Link
+                to="/login"
                 className="btn btn-primary"
-                style={{ padding: '0.5rem 1.1rem', fontSize: '0.85rem', borderRadius: 'var(--radius-lg)', gap: '0.4rem' }}
+                style={{ padding: '0.5rem 1.1rem', fontSize: '0.85rem', borderRadius: 'var(--radius-lg)', gap: '0.4rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
               >
                 <User size={14} />
                 <span>{t('enrollLogin')}</span>
-              </button>
+              </Link>
             )}
           </div>
         </div>
@@ -787,6 +793,9 @@ const MainLayout = () => {
           </div>
         </div>
       )}
+
+      {/* Global AI Assistant Chatbot Floating Widget */}
+      <AiChatbotWidget />
 
     </div>
   );

@@ -16,6 +16,30 @@ export const getFileUrl = (path) => {
   return `${BACKEND_URL}${cleanPath}`;
 };
 
+export const getCourseThumbnail = (course) => {
+  if (!course) return 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80';
+  
+  if (course.thumbnailUrl && course.thumbnailUrl !== 'no-photo.jpg' && !course.thumbnailUrl.includes('no-photo')) {
+    return getFileUrl(course.thumbnailUrl);
+  }
+  
+  const title = (course.title || '').toUpperCase();
+  if (title.includes('MATH')) {
+    return 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80';
+  }
+  if (title.includes('WEB') || title.includes('CODE') || title.includes('TECH')) {
+    return 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80';
+  }
+  if (title.includes('PHYSICS') || title.includes('IOE') || title.includes('ENTRANCE')) {
+    return 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
+  }
+  if (title.includes('LOKSEWA') || title.includes('GK')) {
+    return 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80';
+  }
+
+  return 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80';
+};
+
 // Auto-handle expired token: clear localStorage and redirect to login
 const handleAuthError = (res) => {
   if (res.status === 401) {
@@ -98,10 +122,233 @@ export const registerUserApi = async (name, phone, email, password) => {
   return data;
 };
 
+// Firebase & Student / Teacher Auth Endpoints
+export const registerStudentApi = async (firebaseToken, studentData) => {
+  const res = await fetch(`${API_BASE}/auth/student/register`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${firebaseToken}`
+    },
+    body: JSON.stringify(studentData),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Student registration failed');
+  }
+  return res.json();
+};
+
+export const loginStudentApi = async (firebaseToken) => {
+  const res = await fetch(`${API_BASE}/auth/student/login`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${firebaseToken}`
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Student login failed');
+  }
+  return res.json();
+};
+
+export const googleStudentLoginApi = async (firebaseToken) => {
+  const res = await fetch(`${API_BASE}/auth/student/google`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${firebaseToken}`
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Google login failed');
+  }
+  return res.json();
+};
+
+export const registerTeacherApi = async (firebaseToken, teacherData) => {
+  const res = await fetch(`${API_BASE}/auth/teacher/register`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${firebaseToken}`
+    },
+    body: JSON.stringify(teacherData),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Teacher registration failed');
+  }
+  return res.json();
+};
+
+export const loginTeacherApi = async (firebaseToken) => {
+  const res = await fetch(`${API_BASE}/auth/teacher/login`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${firebaseToken}`
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Teacher login failed');
+  }
+  return res.json();
+};
+
+export const loginTeacherWithFirebaseApi = async (idToken) => {
+  const res = await fetch(`${API_BASE}/teacher/firebase-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ idToken }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Teacher Firebase authentication failed');
+  }
+  return res.json();
+};
+
+export const getStudentProfileApi = async () => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/auth/student/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  return res.json();
+};
+
+export const updateStudentProfileApi = async (profileData) => {
+  const token = localStorage.getItem('token');
+  const isFormData = profileData instanceof FormData;
+  
+  const headers = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (!isFormData) headers['Content-Type'] = 'application/json';
+
+  const res = await fetch(`${API_BASE}/auth/student/profile`, {
+    method: 'PUT',
+    headers,
+    body: isFormData ? profileData : JSON.stringify(profileData),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update student profile');
+  }
+
+  return res.json();
+};
+
+export const getTeacherProfileApi = async () => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE}/auth/teacher/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  return res.json();
+};
+
+export const logoutAuthApi = async () => {
+  await fetch(`${API_BASE}/auth/student/logout`, { method: 'POST' }).catch(() => {});
+  await fetch(`${API_BASE}/auth/teacher/logout`, { method: 'POST' }).catch(() => {});
+};
+
+// Teacher OTP Auth Endpoints
+export const sendTeacherOtpApi = async (email) => {
+  const res = await fetch(`${API_BASE}/teacher/send-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Server error or endpoint not found. Please ensure backend server is running.');
+  }
+  if (!res.ok) throw new Error(data.message || 'Failed to send OTP');
+  return data;
+};
+
+export const verifyTeacherOtpApi = async (email, otp) => {
+  const res = await fetch(`${API_BASE}/teacher/verify-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, otp }),
+  });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Server error or invalid response during verification.');
+  }
+  if (!res.ok) throw new Error(data.message || 'OTP verification failed');
+  return data;
+};
+
+export const checkTeacherPhoneApi = async (phone) => {
+  const res = await fetch(`${API_BASE}/teacher/check-phone`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone }),
+  });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Server error or endpoint not found.');
+  }
+  if (!res.ok) throw new Error(data.message || 'Teacher phone number not found');
+  return data;
+};
+
+// Twilio SMS OTP API Endpoints
+export const sendSmsOtpApi = async (phone) => {
+  const res = await fetch(`${API_BASE}/teacher/send-sms-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone }),
+  });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Server error during SMS OTP sending.');
+  }
+  if (!res.ok) throw new Error(data.message || 'Failed to send SMS OTP');
+  return data;
+};
+
+export const verifySmsOtpApi = async (phone, otp) => {
+  const res = await fetch(`${API_BASE}/teacher/verify-sms-otp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone, otp }),
+  });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    throw new Error('Server error during SMS OTP verification.');
+  }
+  if (!res.ok) throw new Error(data.message || 'SMS OTP verification failed');
+  return data;
+};
+
 export const enrollUserCourseApi = async (token, courseId) => {
   const res = await fetch(`${API_BASE}/student/enroll`, {
     method: 'POST',
-    headers: { 
+    headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     },
@@ -384,4 +631,94 @@ export const recordStreakApi = async (userId = null, currentStreak = 0) => {
   } catch (e) {
     return null;
   }
+};
+
+// AI Chatbot Endpoints
+export const sendAiChatApi = async (prompt, chatHistory = [], documentContext = '') => {
+  const res = await fetch(`${API_BASE}/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, chatHistory, documentContext }),
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || 'AI service unavailable');
+  }
+  return res.json();
+};
+
+export const analyzeAiFileApi = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/ai/upload-analyze`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || 'File analysis failed');
+  }
+  return res.json();
+};
+
+// Teacher Profiles API
+export const fetchTeachersApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE}/public/teachers`);
+    if (!res.ok) throw new Error('Failed to fetch teachers');
+    return await res.json();
+  } catch (e) {
+    return [
+      {
+        _id: '6a6111111111111111111111',
+        name: 'Gaurav Sir & Team',
+        designation: 'Senior Lead Educator & Entrance Specialist',
+        qualification: 'M.Sc. Mathematics & Physics Specialist',
+        experience: '10+ Years',
+        bio: 'Legendary mathematics & physics educator leading PiyushDhara with over 10+ years of experience simplifying SEE, NEB, and IOE entrance concepts for 15,000+ students across Nepal.',
+        specializations: ['Mahabharath Math', 'NEB Physics', 'IOE Entrance'],
+        photo: '/teacher.png',
+        rating: 4.9,
+        studentsMentored: '15,000+',
+        verified: true,
+      },
+      {
+        _id: '6a6222222222222222222222',
+        name: 'Er. Pankaj Baduwal',
+        designation: 'Senior Engineering & Computer Science Lecturer',
+        qualification: 'B.E. Computer Engineering, IOE Rank Holder',
+        experience: '7+ Years',
+        bio: 'Tech lead & senior lecturer specializing in Web Development, Computer Engineering routines, and IOE entrance numerical shortcuts.',
+        specializations: ['Full-Stack Web Dev', 'IOE Computer Science', 'Physics'],
+        photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+        rating: 4.9,
+        studentsMentored: '8,500+',
+        verified: true,
+      },
+      {
+        _id: '6a6333333333333333333333',
+        name: 'Dr. A. Sharma',
+        designation: 'Senior Chemistry & Entrance Consultant',
+        qualification: 'Ph.D. Organic Chemistry',
+        experience: '12+ Years',
+        bio: 'Dedicated chemistry specialist renowned for simplifying organic reaction mechanisms, physical chemistry formulas, and NEB board preparation.',
+        specializations: ['Organic Chemistry', 'Physical Chemistry', 'NEB Board Exams'],
+        photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+        rating: 4.8,
+        studentsMentored: '6,200+',
+        verified: true,
+      }
+    ];
+  }
+};
+
+export const createTeacherProfileApi = async (teacherData) => {
+  const res = await fetch(`${API_BASE}/public/teachers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(teacherData),
+  });
+  if (!res.ok) throw new Error('Failed to create teacher profile');
+  return res.json();
 };

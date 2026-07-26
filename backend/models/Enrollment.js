@@ -1,31 +1,37 @@
 const mongoose = require('mongoose');
 
 const enrollmentSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Please provide student name'],
-        trim: true,
-    },
-    school: {
-        type: String,
-        required: [true, 'Please provide school name'],
-        trim: true,
-    },
-    phone: {
-        type: String,
-        required: [true, 'Please provide phone number'],
-        trim: true,
-    },
-    email: {
-        type: String,
-        required: [true, 'Please provide email'],
-        trim: true,
-    },
-    course: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
-        required: false,
-    }
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student',
+    required: false,
+  },
+  course: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: [true, 'Please provide a course ID'],
+  },
+  name: {
+    type: String,
+    trim: true,
+  },
+  email: {
+    type: String,
+    trim: true,
+  },
+  phone: {
+    type: String,
+    trim: true,
+  },
+  school: {
+    type: String,
+    trim: true,
+    default: 'N/A',
+  },
+  enrolledAt: {
+    type: Date,
+    default: Date.now,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Enrollment', enrollmentSchema);

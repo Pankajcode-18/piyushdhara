@@ -7,12 +7,18 @@ const morgan = require('morgan');
 
 const path = require('path');
 
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -35,13 +41,17 @@ mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 })
   });
 
 // API Routes
+app.use('/api/auth/student', require('./routes/studentAuthRoutes'));
+app.use('/api/auth/teacher', require('./routes/teacherRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/teacher', require('./routes/teacherRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
 app.use('/api', require('./routes/commentRoutes'));
 app.use('/api', require('./routes/feedbackRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 // Serve Static Frontend Assets (if built for production)
 const frontendDistPath = path.join(__dirname, '../frontend/dist');
@@ -49,7 +59,10 @@ const fs = require('fs');
 
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
-  app.use((req, res) => {
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return res.status(404).json({ message: `API route not found: ${req.method} ${req.path}` });
+    }
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 } else {

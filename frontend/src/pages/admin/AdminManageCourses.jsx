@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchCourses, createCourseApi, updateCourseApi, deleteCourseApi } from '../../utils/api';
+import { fetchCourses, createCourseApi, updateCourseApi, deleteCourseApi, fetchTeachersApi } from '../../utils/api';
 import { Plus, Trash, Eye, EyeOff, FolderPlus, UploadCloud, Image, User, BookOpen, CheckCircle2, X, Layers, Edit3, Users, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -34,9 +34,21 @@ const AdminManageCourses = () => {
 
   const token = localStorage.getItem('token');
 
+  const [teachers, setTeachers] = useState([]);
+
   useEffect(() => {
     loadCourses();
+    loadTeachers();
   }, []);
+
+  const loadTeachers = async () => {
+    try {
+      const data = await fetchTeachersApi();
+      setTeachers(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const loadCourses = async () => {
     try {
@@ -375,17 +387,44 @@ const AdminManageCourses = () => {
                   Instructor / Teacher Name
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                  <input
-                    type="text"
-                    required
+                  <User size={18} color="#94A3B8" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', zIndex: 1 }} />
+                  
+                  {/* Select from existing Teacher Profiles */}
+                  <select
                     value={instructorName}
-                    onChange={(e) => setInstructorName(e.target.value)}
+                    onChange={(e) => {
+                      const selectedName = e.target.value;
+                      setInstructorName(selectedName);
+                      const matched = teachers.find(t => t.name === selectedName);
+                      if (matched && matched.photo) {
+                        setTeacherImageUrl(matched.photo);
+                      }
+                    }}
                     style={{
                       width: '100%', height: '48px', borderRadius: '0.85rem', paddingLeft: '2.85rem', paddingRight: '1rem',
-                      fontSize: '0.92rem', border: '1.5px solid #CBD5E1', background: '#FFFFFF', color: '#0F172A', outline: 'none'
+                      fontSize: '0.92rem', border: '1.5px solid #CBD5E1', background: '#FFFFFF', color: '#0F172A', outline: 'none',
+                      marginBottom: '0.5rem'
                     }}
+                  >
+                    <option value="Gaurav Sir & Team">Gaurav Sir & Team (Senior Mathematics & Physics Lead)</option>
+                    {teachers.map((t) => (
+                      <option key={t._id || t.name} value={t.name}>
+                        {t.name} ({t.designation || 'Educator'})
+                      </option>
+                    ))}
+                    <option value="CUSTOM">➕ Type Custom Instructor Name below...</option>
+                  </select>
+
+                  {/* Fallback Text Input if custom name */}
+                  <input
+                    type="text"
+                    value={instructorName}
+                    onChange={(e) => setInstructorName(e.target.value)}
                     placeholder="e.g. Gaurav Sir & Team"
+                    style={{
+                      width: '100%', height: '42px', borderRadius: '0.75rem', paddingLeft: '1rem', paddingRight: '1rem',
+                      fontSize: '0.85rem', border: '1px solid #CBD5E1', background: '#F8FAFC', color: '#0F172A', outline: 'none'
+                    }}
                   />
                 </div>
               </div>

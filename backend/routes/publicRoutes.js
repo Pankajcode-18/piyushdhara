@@ -10,7 +10,9 @@ const {
     getAllPublishedNotes,
     recordVisitorCount,
     getVisitorStats,
-    recordStudyStreak
+    recordStudyStreak,
+    getPublicTeachers,
+    createTeacherProfile
 } = require('../controllers/publicController');
 
 router.get('/courses', getPublishedCourses);
@@ -20,6 +22,10 @@ router.get('/chapters/:id/content', getChapterContent);
 router.get('/videos/:id', getVideoById);
 router.post('/enroll', enrollStudent);
 router.get('/notes', getAllPublishedNotes);
+
+// Teacher Profiles routes
+router.get('/teachers', getPublicTeachers);
+router.post('/teachers', createTeacherProfile);
 
 // Visitor Analytics & Streak routes
 router.post('/visitor', recordVisitorCount);

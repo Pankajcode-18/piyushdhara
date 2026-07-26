@@ -29,6 +29,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import TeacherProfileModal from '../components/common/TeacherProfileModal';
 import teacherImg from '../assets/gaurov.jpeg';
 import { useLanguage } from '../context/LanguageContext';
 import { API_BASE } from '../utils/api';
@@ -38,6 +39,7 @@ const Home = () => {
   const [featuredCourses, setFeaturedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
   const testimonials = [
     {
@@ -301,7 +303,12 @@ const Home = () => {
                   initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.7, delay: 0.2 }}
-                  style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}
+                  style={{ display: 'flex', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}
+                  onClick={() => setSelectedTeacher({
+                    name: 'Gaurav Sir & Team',
+                    photo: teacherImg
+                  })}
+                  title="Click to view Gaurav Sir & Team Teacher Profile"
                 >
                   <div style={{
                     position: 'relative',
@@ -935,6 +942,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Teacher Profile Modal Popup */}
+      <TeacherProfileModal 
+        teacher={selectedTeacher} 
+        onClose={() => setSelectedTeacher(null)} 
+      />
     </div>
   );
 };

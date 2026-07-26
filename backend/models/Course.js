@@ -26,6 +26,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         default: '/teacher.png',
     },
+    teacherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+    },
     price: {
         type: Number,
         default: 0,

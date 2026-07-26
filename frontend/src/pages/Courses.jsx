@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchCourses, searchCourses } from '../utils/api';
-import { Link, useSearchParams } from 'react-router-dom';
+import { fetchCourses, fetchEnrolledCoursesApi, getCourseThumbnail } from '../utils/api';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   Search, 
   GraduationCap, 
   ArrowRight, 
   BookOpen, 
   Sparkles, 
-  Users, 
   Layers, 
   Video, 
   FileText, 
   Star, 
-  Filter, 
-  ShieldCheck,
   CheckCircle2
 } from 'lucide-react';
+import TeacherProfileModal from '../components/common/TeacherProfileModal';
 import teacherImg from '../assets/gaurov.jpeg';
 
 const FALLBACK_BATCHES = [
@@ -59,6 +57,7 @@ const FALLBACK_BATCHES = [
 ];
 
 const Courses = () => {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,6 +67,13 @@ const Courses = () => {
   const [searchQuery, setSearchQuery] = useState(queryParam);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [loading, setLoading] = useState(true);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+
+  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem('user') || localStorage.getItem('studentUser');
+  const userObj = userStr ? JSON.parse(userStr) : null;
+  const rawEnrolled = userObj?.enrolledCourses || [];
+  const enrolledCourseIds = rawEnrolled.map(item => (typeof item === 'object' ? item._id : item)?.toString());
 
   const categories = [
     { id: 'ALL', label: 'All Batches', icon: Layers },
@@ -107,11 +113,24 @@ const Courses = () => {
       const courseList = (data && data.length > 0) ? data : FALLBACK_BATCHES;
       
       if (isEnrolledFilter) {
-        const savedStudent = JSON.parse(localStorage.getItem('studentUser') || '{}');
-        const enrolledIds = savedStudent.enrolledCourses || [];
-        const filtered = courseList.filter(course => enrolledIds.includes(course._id));
-        setCourses(filtered);
-        setFilteredCourses(filtered);
+        let enrolledFromApi = [];
+        if (token) {
+          try {
+            enrolledFromApi = await fetchEnrolledCoursesApi(token);
+          } catch (e) {
+            console.warn('API enrolled fetch note:', e.message);
+          }
+        }
+
+        if (enrolledFromApi && enrolledFromApi.length > 0) {
+          setCourses(enrolledFromApi);
+          setFilteredCourses(enrolledFromApi);
+        } else {
+          // Fallback to local storage enrolled ids
+          const localEnrolled = courseList.filter(c => enrolledCourseIds.includes(c._id));
+          setCourses(localEnrolled);
+          setFilteredCourses(localEnrolled);
+        }
       } else {
         setCourses(courseList);
         setFilteredCourses(courseList);
@@ -119,11 +138,9 @@ const Courses = () => {
     } catch (err) {
       console.error('API load error, using fallback batches:', err);
       if (isEnrolledFilter) {
-        const savedStudent = JSON.parse(localStorage.getItem('studentUser') || '{}');
-        const enrolledIds = savedStudent.enrolledCourses || [];
-        const filtered = FALLBACK_BATCHES.filter(course => enrolledIds.includes(course._id));
-        setCourses(filtered);
-        setFilteredCourses(filtered);
+        const localEnrolled = FALLBACK_BATCHES.filter(c => enrolledCourseIds.includes(c._id));
+        setCourses(localEnrolled);
+        setFilteredCourses(localEnrolled);
       } else {
         setCourses(FALLBACK_BATCHES);
         setFilteredCourses(FALLBACK_BATCHES);
@@ -162,10 +179,18 @@ const Courses = () => {
     setFilteredCourses(result);
   };
 
+  const handleCourseCardClick = (e, courseId) => {
+    if (!token) {
+      e.preventDefault();
+      navigate(`/login?redirect=/courses/${courseId}`);
+    }
+  };
+
   return (
     <div className="courses-page bg-mesh animate-fade-in" style={{ minHeight: '92vh', padding: '2.5rem 0 5rem 0' }}>
       <div className="container" style={{ maxWidth: '1200px' }}>
-               {/* 1. Hero Header Banner */}
+        
+        {/* 1. Hero Header Banner */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -183,100 +208,105 @@ const Courses = () => {
             border: '1px solid #DBEAFE'
           }}
         >
-          {/* Ambient Glowing Orbs */}
-          <div style={{ position: 'absolute', top: '-25%', right: '-5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }}></div>
-          <div style={{ position: 'absolute', bottom: '-20%', left: '10%', width: '250px', height: '250px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)', filter: 'blur(35px)' }}></div>
-
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2.5rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 300px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
-                <BookOpen size={14} /> {isEnrolledFilter ? 'MY ENROLLED PREPARATIONS' : 'ACADEMIC BATCH CATALOGUE'}
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 500px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
+                <Sparkles size={14} /> {isEnrolledFilter ? 'VERIFIED ENROLLED BATCHES' : 'NEPAL PREPARATION PORTAL'}
               </div>
 
-              <h1 className="page-title-responsive" style={{ fontSize: '2.85rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '0.85rem', lineHeight: '1.2' }}>
-                {isEnrolledFilter ? 'My Enrolled Batches' : 'Explore Preparation Batches'}
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
+                {isEnrolledFilter ? (
+                  <>My Enrolled <span style={{ color: '#2563EB' }}>Batches</span></>
+                ) : (
+                  <>Explore Preparation <span style={{ color: '#2563EB' }}>Batches</span></>
+                )}
               </h1>
 
-              <p style={{ color: '#475569', fontSize: '1.05rem', maxWidth: '620px', lineHeight: '1.7', margin: 0 }}>
+              <p style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
                 {isEnrolledFilter 
-                  ? 'Your active SEE, NEB, and entrance exam preparation courses. Learn daily with Gaurav Sir & Team.'
-                  : 'Empowering Nepal’s students with top-tier video lectures, handwritten PDF handouts, and past question breakdowns for SEE, NEB Science & Commerce, and Entrance Exams.'}
+                  ? 'Here are all your active enrolled batches. Click any batch to stream HD lectures, practice numericals, and view handwritten PDFs.'
+                  : 'Master SEE, NEB Class 11-12, and Entrance Exams with chapter-wise video series led by Gaurav Sir & Team.'
+                }
               </p>
             </div>
 
-            {/* Search Input Box */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: '380px' }}>
-              <Search className="search-icon" size={20} style={{ left: '1.25rem', color: '#64748B' }} />
-              <input
-                type="text"
-                placeholder="Search by title, subject, keyword..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                style={{ 
-                  paddingLeft: '3rem', 
-                  paddingRight: '1.5rem', 
-                  height: '52px', 
-                  fontSize: '0.95rem',
-                  borderRadius: '1rem',
-                  background: '#FFFFFF',
-                  border: '1.5px solid #CBD5E1',
-                  color: '#0F172A',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  width: '100%',
-                  outline: 'none'
-                }}
-              />
+            {/* Quick Stat Counter */}
+            <div style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #DBEAFE', boxShadow: '0 10px 25px rgba(37,99,235,0.06)', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#2563EB' }}>{filteredCourses.length}</div>
+              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {isEnrolledFilter ? 'Enrolled Courses' : 'Active Batches'}
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* 2. Category Filter Pills */}
-        {!isEnrolledFilter && (
-          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.4rem', marginRight: '0.5rem' }}>
-              <Filter size={16} /> Filter Batches:
-            </span>
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '0.6rem 1.1rem',
-                    borderRadius: '9999px',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    border: isSelected ? '1.5px solid var(--primary)' : '1px solid var(--border)',
-                    background: isSelected ? 'linear-gradient(135deg, var(--primary), var(--primary-hover))' : 'var(--bg-card)',
-                    color: isSelected ? '#FFFFFF' : 'var(--text-secondary)',
-                    boxShadow: isSelected ? 'var(--shadow-primary)' : 'var(--shadow-xs)'
-                  }}
-                >
-                  <Icon size={15} color={isSelected ? '#FFFFFF' : 'var(--text-muted)'} />
-                  {cat.label}
-                </button>
-              );
-            })}
+        {/* 2. Controls & Filter Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          
+          {/* Search Box */}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <Search size={18} style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
+            <input 
+              type="text" 
+              placeholder="Search batches by name, subject, or teacher..." 
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              style={{
+                width: '100%',
+                height: '52px',
+                paddingLeft: '3.25rem',
+                paddingRight: '1rem',
+                borderRadius: '1rem',
+                border: '1.5px solid #CBD5E1',
+                fontSize: '0.95rem',
+                outline: 'none',
+                background: '#FFFFFF',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+              }}
+            />
           </div>
-        )}
 
-        {/* 3. Batch Grid Listing */}
+          {/* Category Tabs */}
+          {!isEnrolledFilter && (
+            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+              {categories.map((cat) => {
+                const Icon = cat.icon;
+                const isSelected = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '0.75rem',
+                      border: isSelected ? '2px solid #2563EB' : '1.5px solid #E2E8F0',
+                      background: isSelected ? '#EFF6FF' : '#FFFFFF',
+                      color: isSelected ? '#2563EB' : '#475569',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      whiteSpace: 'nowrap',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <Icon size={16} />
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+        </div>
+
+        {/* 3. Course Cards Grid */}
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
-            {[1, 2, 3, 4, 5, 6].map(n => (
-              <div key={n} className="card" style={{ height: '360px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className="skeleton" style={{ height: '180px', borderRadius: '0.85rem' }}></div>
-                <div className="skeleton" style={{ height: '20px', width: '70%', borderRadius: '0.3rem' }}></div>
-                <div className="skeleton" style={{ height: '15px', width: '90%', borderRadius: '0.3rem' }}></div>
-              </div>
-            ))}
+          <div style={{ textAlign: 'center', padding: '5rem 1rem' }}>
+            <GraduationCap size={44} color="#2563EB" className="animate-spin" style={{ marginBottom: '1rem' }} />
+            <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Loading preparation batches...</h3>
           </div>
         ) : filteredCourses.length === 0 ? (
           <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', marginTop: '1rem' }}>
@@ -303,6 +333,7 @@ const Courses = () => {
             <AnimatePresence>
               {filteredCourses.map((course, idx) => {
                 const isFree = course.price === 0;
+                const isEnrolled = Boolean(token) && course?._id && enrolledCourseIds.includes(course._id.toString());
                 const hasCustomThumb = course.thumbnailUrl && course.thumbnailUrl !== 'no-photo.jpg';
 
                 return (
@@ -326,7 +357,7 @@ const Courses = () => {
                       height: '195px', 
                       position: 'relative', 
                       backgroundColor: '#0F172A',
-                      backgroundImage: `url(${hasCustomThumb ? course.thumbnailUrl : 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80'})`,
+                      backgroundImage: `url(${getCourseThumbnail(course)})`,
                       backgroundSize: 'cover', 
                       backgroundPosition: 'center'
                     }}>
@@ -341,27 +372,40 @@ const Courses = () => {
                           textTransform: 'uppercase',
                           padding: '0.25rem 0.65rem', 
                           borderRadius: '0.4rem', 
-                          background: isFree ? '#10B981' : '#2563EB', 
+                          background: isEnrolled ? '#10B981' : (isFree ? '#10B981' : '#2563EB'), 
                           color: '#FFFFFF',
-                          boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
                         }}>
-                          {isFree ? 'FREE ACCESS' : 'PREMIUM BATCH'}
+                          {isEnrolled ? <><CheckCircle2 size={12} /> ENROLLED</> : (isFree ? 'FREE ACCESS' : 'PREMIUM BATCH')}
                         </span>
 
                         <span style={{ fontSize: '0.72rem', fontWeight: 700, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', color: '#F1F5F9', padding: '0.25rem 0.6rem', borderRadius: '0.4rem', border: '1px solid rgba(255,255,255,0.15)' }}>
-                          NEPA BOARD
+                          NEPAL BOARD
                         </span>
                       </div>
 
-                      {/* Instructor Avatar Badge */}
-                      <div style={{ position: 'absolute', bottom: '0.85rem', left: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      {/* Instructor Avatar Badge - Click to view profile */}
+                      <div 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTeacher({
+                            name: course.instructorName || 'Gaurav Sir & Team',
+                            photo: course.teacherImageUrl || teacherImg
+                          });
+                        }}
+                        style={{ position: 'absolute', bottom: '0.85rem', left: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}
+                        title="Click to view Teacher Profile"
+                      >
                         <img 
                           src={course.teacherImageUrl || teacherImg} 
                           onError={(e) => { e.target.src = teacherImg; }}
                           alt={course.instructorName || 'Gaurav Sir'} 
                           style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #38BDF8', boxShadow: '0 4px 8px rgba(0,0,0,0.3)' }}
                         />
-                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.8)', textDecoration: 'underline' }}>
                           {course.instructorName || 'Gaurav Sir & Team'}
                         </span>
                       </div>
@@ -408,6 +452,7 @@ const Courses = () => {
 
                         <Link 
                           to={`/courses/${course._id}`} 
+                          onClick={(e) => handleCourseCardClick(e, course._id)}
                           className="btn btn-primary" 
                           style={{ 
                             padding: '0.65rem 1.25rem', 
@@ -416,7 +461,7 @@ const Courses = () => {
                             gap: '0.4rem',
                           }}
                         >
-                          View Batch <ArrowRight size={14} />
+                          {isEnrolled ? 'Open Batch ✓' : 'View Batch →'}
                         </Link>
                       </div>
 
@@ -425,24 +470,16 @@ const Courses = () => {
                 );
               })}
             </AnimatePresence>
-
-            {filteredCourses.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '5rem 1rem', color: 'var(--text-muted)' }}>
-                <GraduationCap size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.4rem' }}>
-                  {isEnrolledFilter ? 'No Enrolled Batches Found' : 'No Preparation Batches Found'}
-                </h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748B', maxWidth: '450px', margin: '0 auto' }}>
-                  {isEnrolledFilter 
-                    ? 'You are not enrolled in any preparation batches yet. Click "Explore Batches" in the menu to browse our course catalogue!'
-                    : 'Try clearing your search query or selecting a different category filter above.'}
-                </p>
-              </div>
-            )}
           </div>
         )}
 
       </div>
+
+      {/* Teacher Profile Modal Popup */}
+      <TeacherProfileModal 
+        teacher={selectedTeacher} 
+        onClose={() => setSelectedTeacher(null)} 
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, PlayCircle, BookOpen, Clock, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { fetchEnrolledCoursesApi, getFileUrl } from '../utils/api';
+import { fetchEnrolledCoursesApi, getFileUrl, getCourseThumbnail } from '../utils/api';
 
 const MyCourses = () => {
   const navigate = useNavigate();
@@ -126,8 +126,7 @@ const MyCourses = () => {
                 >
                   <div style={{ position: 'relative', height: '180px', overflow: 'hidden', background: '#F1F5F9' }}>
                     <img 
-                      src={getFileUrl(course.thumbnailUrl)} 
-                      onError={(e) => { e.target.src = '/logo.jpeg'; }}
+                      src={getCourseThumbnail(course)} 
                       alt={course.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />

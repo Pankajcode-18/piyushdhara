@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchPublishedNotesApi, getFileUrl } from '../utils/api';
 import { 
@@ -10,12 +10,14 @@ import {
   BookOpen, 
   Sparkles, 
   GraduationCap,
-  Filter,
   Layers,
-  FileCheck
+  FileCheck,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
 
 const Notes = () => {
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,8 @@ const Notes = () => {
   const queryParam = searchParams.get('q') || '';
   const [searchQuery, setSearchQuery] = useState(queryParam);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
+
+  const token = localStorage.getItem('token');
 
   const categories = [
     { id: 'ALL', label: 'All Resources', icon: Layers },
@@ -117,8 +121,11 @@ const Notes = () => {
     setFilteredNotes(result);
   };
 
-  const getFullFileUrl = (url) => {
-    return getFileUrl(url);
+  const handlePdfAction = (e) => {
+    if (!token) {
+      e.preventDefault();
+      navigate('/login?redirect=/notes');
+    }
   };
 
   return (
@@ -143,105 +150,121 @@ const Notes = () => {
             border: '1px solid #FEE2E2'
           }}
         >
-          {/* Ambient Glowing Orbs */}
-          <div style={{ position: 'absolute', top: '-25%', right: '-5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(239,68,68,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }}></div>
-          <div style={{ position: 'absolute', bottom: '-20%', left: '10%', width: '250px', height: '250px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%)', filter: 'blur(35px)' }}></div>
-
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2.5rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 300px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: '#FEE2E2', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#DC2626', marginBottom: '1.25rem' }}>
-                <Sparkles size={14} /> FREE HANDWRITTEN RESOURCES
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 500px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#FEE2E2', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#DC2626', marginBottom: '1.25rem' }}>
+                <Sparkles size={14} /> CDC CURRICULUM HANDOUTS
               </div>
 
-              <h1 className="page-title-responsive" style={{ fontSize: '2.85rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '0.85rem', lineHeight: '1.2' }}>
-                Free Notes &amp; PDF Handouts
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
+                Handwritten <span style={{ color: '#DC2626' }}>PDF Notes</span>
               </h1>
 
-              <p style={{ color: '#475569', fontSize: '1.05rem', maxWidth: '620px', lineHeight: '1.7', margin: 0 }}>
-                Download chapter-wise handwritten notes, formula cheat-sheets, and past board exam solutions prepared by Gaurav Sir &amp; Team for SEE, Class 11, and Class 12 Science/Commerce.
+              <p style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
+                Download high-yield handwritten chapter handouts, formula cheat-sheets, and numerical problem step-by-step solutions compiled by Gaurav Sir & Team.
               </p>
             </div>
 
-            {/* Search Input Box */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: '380px' }}>
-              <Search className="search-icon" size={20} style={{ left: '1.25rem', color: '#64748B' }} />
-              <input
-                type="text"
-                placeholder="Search notes, chapters, subjects..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                style={{ 
-                  paddingLeft: '3rem', 
-                  paddingRight: '1.5rem', 
-                  height: '52px', 
-                  fontSize: '0.95rem',
-                  borderRadius: '1rem',
-                  background: '#FFFFFF',
-                  border: '1.5px solid #CBD5E1',
-                  color: '#0F172A',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  width: '100%',
-                  outline: 'none'
-                }}
-              />
+            {/* Quick Stat Counter */}
+            <div style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #FEE2E2', boxShadow: '0 10px 25px rgba(239,68,68,0.06)', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#DC2626' }}>{filteredNotes.length}</div>
+              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                PDF Resources
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* 2. Category Filter Pills */}
-        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginRight: '0.5rem' }}>
-            <Filter size={16} /> Subject Filter:
-          </span>
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.6rem 1.1rem',
-                  borderRadius: '9999px',
-                  fontSize: '0.85rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  border: isSelected ? '1.5px solid var(--danger)' : '1px solid var(--border)',
-                  background: isSelected ? 'linear-gradient(135deg, var(--danger), #DC2626)' : 'var(--bg-card)',
-                  color: isSelected ? '#FFFFFF' : 'var(--text-secondary)',
-                  boxShadow: isSelected ? '0 4px 12px rgba(239,68,68,0.3)' : 'var(--shadow-xs)'
-                }}
-              >
-                <Icon size={15} color={isSelected ? '#FFFFFF' : 'var(--text-muted)'} />
-                {cat.label}
-              </button>
-            );
-          })}
+        {/* Non-Logged In Warning Banner */}
+        {!token && (
+          <div style={{ background: '#FEF2F2', border: '1.5px solid #FEE2E2', padding: '1.25rem 1.75rem', borderRadius: '1.25rem', marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              <ShieldAlert size={24} color="#DC2626" />
+              <div>
+                <h4 style={{ margin: '0 0 0.2rem 0', color: '#991B1B', fontSize: '1rem', fontWeight: 800 }}>Login Required to Access PDF Handouts</h4>
+                <p style={{ margin: 0, color: '#B91C1C', fontSize: '0.88rem' }}>Please log in or register to view handwritten notes online and download PDFs.</p>
+              </div>
+            </div>
+            <Link to="/login?redirect=/notes" className="btn btn-primary" style={{ padding: '0.6rem 1.25rem', fontSize: '0.88rem', background: '#DC2626' }}>
+              Login / Register Now →
+            </Link>
+          </div>
+        )}
+
+        {/* 2. Controls & Filter Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          
+          {/* Search Box */}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <Search size={18} style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
+            <input 
+              type="text" 
+              placeholder="Search PDF notes by topic, subject, or chapter name..." 
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              style={{
+                width: '100%',
+                height: '52px',
+                paddingLeft: '3.25rem',
+                paddingRight: '1rem',
+                borderRadius: '1rem',
+                border: '1.5px solid #CBD5E1',
+                fontSize: '0.95rem',
+                outline: 'none',
+                background: '#FFFFFF',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+              }}
+            />
+          </div>
+
+          {/* Category Tabs */}
+          <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              const isSelected = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  style={{
+                    padding: '0.65rem 1.25rem',
+                    borderRadius: '0.75rem',
+                    border: isSelected ? '2px solid #DC2626' : '1.5px solid #E2E8F0',
+                    background: isSelected ? '#FEF2F2' : '#FFFFFF',
+                    color: isSelected ? '#DC2626' : '#475569',
+                    fontWeight: 700,
+                    fontSize: '0.88rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <Icon size={16} />
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+
         </div>
 
-        {/* 3. Notes Card Grid Listing */}
+        {/* 3. Notes Grid */}
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '2rem' }}>
-            {[1, 2, 3, 4, 5, 6].map(n => (
-              <div key={n} className="card glass" style={{ height: '260px', borderRadius: '1.25rem', padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1rem', background: '#FFFFFF' }}>
-                <div style={{ height: '40px', width: '60%', background: '#F1F5F9', borderRadius: '0.5rem' }}></div>
-                <div style={{ height: '24px', width: '85%', background: '#F1F5F9', borderRadius: '0.3rem' }}></div>
-                <div style={{ height: '18px', width: '95%', background: '#F1F5F9', borderRadius: '0.3rem' }}></div>
-              </div>
-            ))}
+          <div style={{ textAlign: 'center', padding: '5rem 1rem' }}>
+            <FileText size={44} color="#DC2626" className="animate-spin" style={{ marginBottom: '1rem' }} />
+            <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Loading PDF handouts...</h3>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '2rem' }}>
             <AnimatePresence>
               {filteredNotes.map((note, idx) => {
-                const fileUrl = getFullFileUrl(note.fileUrl);
-                const courseTitle = note.chapter?.subject?.course?.title || 'Nepal Board Prep';
-                const subjectTitle = note.chapter?.subject?.title || 'General';
+                const fileUrl = getFileUrl(note.fileUrl);
                 const chapterTitle = note.chapter?.title;
+                const subjectTitle = note.chapter?.subject?.title;
+                const courseTitle = note.chapter?.subject?.course?.title;
 
                 return (
                   <motion.div
@@ -252,31 +275,27 @@ const Notes = () => {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3, delay: idx * 0.05 }}
                     className="card"
-                    style={{
+                    style={{ 
+                      padding: '1.75rem',
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      padding: '2rem',
+                      justify: 'space-between',
+                      borderRadius: '1.25rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E2E8F0',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.03)'
                     }}
                   >
                     <div>
-                      {/* Top Header Badge */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                        <span style={{ 
-                          fontSize: '0.75rem', 
-                          fontWeight: 700, 
-                          color: 'var(--primary)', 
-                          background: 'var(--primary-light)', 
-                          padding: '0.25rem 0.65rem', 
-                          borderRadius: '0.4rem',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.3rem'
-                        }}>
-                          <GraduationCap size={13} /> {courseTitle}
-                        </span>
+                      {/* Course / Subject Tag */}
+                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                        {courseTitle && (
+                          <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '0.35rem', background: '#EFF6FF', color: '#2563EB' }}>
+                            {courseTitle}
+                          </span>
+                        )}
                         {subjectTitle && (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.6rem', borderRadius: '0.35rem', background: '#F1F5F9', color: '#475569' }}>
                             • {subjectTitle}
                           </span>
                         )}
@@ -289,7 +308,7 @@ const Notes = () => {
                           height: '50px', 
                           borderRadius: '0.85rem', 
                           background: 'linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(220,38,38,0.06) 100%)', 
-                          color: 'var(--danger)', 
+                          color: '#DC2626', 
                           display: 'flex', 
                           alignItems: 'center', 
                           justifyContent: 'center',
@@ -300,11 +319,11 @@ const Notes = () => {
                           <FileText size={26} />
                         </div>
                         <div>
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.3rem', lineHeight: '1.35' }}>
+                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.3rem', lineHeight: '1.35' }}>
                             {note.title}
                           </h3>
                           {chapterTitle && (
-                            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: 0, fontWeight: 600 }}>
+                            <p style={{ fontSize: '0.82rem', color: '#64748B', margin: 0, fontWeight: 600 }}>
                               Chapter: {chapterTitle}
                             </p>
                           )}
@@ -331,8 +350,9 @@ const Notes = () => {
                     {/* Actions Footer */}
                     <div style={{ display: 'flex', gap: '0.75rem', marginTop: 'auto', borderTop: '1px solid #F1F5F9', paddingTop: '1.25rem' }}>
                       <a
-                        href={fileUrl}
-                        target="_blank"
+                        href={token ? fileUrl : '#'}
+                        onClick={handlePdfAction}
+                        target={token ? '_blank' : '_self'}
                         rel="noopener noreferrer"
                         className="btn btn-primary"
                         style={{ 
@@ -342,17 +362,19 @@ const Notes = () => {
                           gap: '0.4rem', 
                           justifyContent: 'center',
                           borderRadius: '0.65rem',
+                          background: token ? '#2563EB' : '#DC2626',
                           boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}
                       >
-                        <Eye size={15} /> View PDF
+                        {token ? <><Eye size={15} /> View PDF</> : <><Lock size={15} /> Login to View</>}
                       </a>
                       
                       <a
-                        href={fileUrl}
-                        target="_blank"
+                        href={token ? fileUrl : '#'}
+                        onClick={handlePdfAction}
+                        target={token ? '_blank' : '_self'}
                         rel="noopener noreferrer"
-                        download
+                        download={token ? true : undefined}
                         className="btn btn-outline"
                         style={{ 
                           padding: '0.65rem 1rem', 
@@ -373,7 +395,7 @@ const Notes = () => {
             </AnimatePresence>
 
             {filteredNotes.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '5rem 1rem', color: 'var(--text-muted)' }}>
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '5rem 1rem', color: '#64748B' }}>
                 <BookOpen size={48} style={{ opacity: 0.3, marginBottom: '1rem' }} />
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.4rem' }}>
                   No PDF Notes Found
