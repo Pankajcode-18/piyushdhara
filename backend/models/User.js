@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema({
             ref: 'Course',
         }
     ],
+    streakCount: {
+        type: Number,
+        default: 0,
+    },
+    lastStudyDate: {
+        type: String, // 'YYYY-MM-DD'
+    },
 }, { timestamps: true });
 
 // Encrypt password using bcrypt

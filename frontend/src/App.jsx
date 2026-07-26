@@ -16,6 +16,7 @@ import ExamAlerts from './pages/ExamAlerts';
 import AcademicSupport from './pages/AcademicSupport';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import MyCourses from './pages/MyCourses';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -46,12 +47,15 @@ function App() {
               <Route path="courses" element={<Courses />} />
               <Route path="courses/:id" element={<CourseDetails />} />
               <Route path="watch/:id" element={<LectureRoom />} />
+              <Route path="lecture/:id" element={<LectureRoom />} />
               <Route path="about" element={<About />} />
               <Route path="notes" element={<Notes />} />
               <Route path="exam-alerts" element={<ExamAlerts />} />
               <Route path="support" element={<AcademicSupport />} />
               <Route path="contact" element={<AcademicSupport />} />
               <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="my-courses" element={<MyCourses />} />
             </Route>
 
             {/* Admin Routes with Auth Guard */}

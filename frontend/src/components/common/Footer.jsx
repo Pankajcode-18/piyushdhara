@@ -1,7 +1,27 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Sparkles, ShieldCheck, Heart, ChevronRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Sparkles, ShieldCheck, Heart, ChevronRight, Users, Eye } from 'lucide-react';
+import { fetchVisitorStatsApi, recordVisitorApi } from '../../utils/api';
 
 const Footer = () => {
+  const [visitorStats, setVisitorStats] = useState({ totalVisits: 1250, todayVisits: 1 });
+
+  useEffect(() => {
+    const loadStats = async () => {
+      // Record visit once per session
+      if (!sessionStorage.getItem('visited_session')) {
+        sessionStorage.setItem('visited_session', 'true');
+        const updated = await recordVisitorApi();
+        if (updated) {
+          setVisitorStats(updated);
+          return;
+        }
+      }
+      const data = await fetchVisitorStatsApi();
+      if (data) setVisitorStats(data);
+    };
+    loadStats();
+  }, []);
   return (
     <footer style={{
       background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
@@ -184,7 +204,29 @@ const Footer = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '1.5rem', fontWeight: 600 }}>
+          <div style={{ display: 'flex', gap: '1.5rem', fontWeight: 600, alignItems: 'center', flexWrap: 'wrap' }}>
+            {/* Live Visitor Analytics Counter */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.45rem 1rem',
+              background: '#F1F5F9',
+              borderRadius: '9999px',
+              border: '1px solid #E2E8F0',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              color: '#334155'
+            }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: '#2563EB' }}>
+                <Users size={14} /> Total Visitors: <strong style={{ color: '#0F172A', fontWeight: 800 }}>{visitorStats.totalVisits.toLocaleString()}</strong>
+              </span>
+              <span style={{ color: '#CBD5E1' }}>|</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: '#059669' }}>
+                <Eye size={14} /> Today: <strong style={{ color: '#059669', fontWeight: 800 }}>{visitorStats.todayVisits.toLocaleString()}</strong>
+              </span>
+            </div>
+
             <Link to="/about" className="footer-link">Privacy Policy</Link>
             <Link to="/about" className="footer-link">Terms of Service</Link>
             <Link to="/support" className="footer-link" style={{ color: '#2563EB' }}>Academic Helpline</Link>

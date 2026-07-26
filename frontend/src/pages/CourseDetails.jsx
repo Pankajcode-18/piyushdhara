@@ -60,22 +60,19 @@ const CourseDetails = () => {
   const isAlreadyEnrolled = userObj?.enrolledCourses?.includes(course?._id);
 
   const handleEnrollClick = async () => {
-    if (!token || !userObj) {
-      navigate(`/login?redirect=${encodeURIComponent(`/courses/${course._id}`)}`);
-      return;
+    // If logged in, seamlessly store in database under user account
+    if (token && userObj) {
+      try {
+        await enrollUserCourseApi(token, course._id);
+        const currentEnrolled = userObj.enrolledCourses || [];
+        userObj.enrolledCourses = Array.from(new Set([...currentEnrolled, course._id]));
+        localStorage.setItem('user', JSON.stringify(userObj));
+      } catch (err) {
+        console.warn('Enrollment API note:', err.message);
+      }
     }
 
-    try {
-      await enrollUserCourseApi(token, course._id);
-      
-      const currentEnrolled = userObj.enrolledCourses || [];
-      userObj.enrolledCourses = Array.from(new Set([...currentEnrolled, course._id]));
-      localStorage.setItem('user', JSON.stringify(userObj));
-    } catch (err) {
-      console.warn('Enrollment API note:', err.message);
-    }
-
-    // Auto-play / navigate to first available lecture video
+    // Navigate to first available video for studying
     if (course.subjects && course.subjects.length > 0) {
       for (const subj of course.subjects) {
         if (subj.chapters && subj.chapters.length > 0) {
@@ -94,7 +91,7 @@ const CourseDetails = () => {
       }
     }
 
-    alert(`Successfully enrolled in ${course.title}!`);
+    alert(`Opening ${course.title}...`);
   };
 
   return (
@@ -307,15 +304,9 @@ const CourseDetails = () => {
                                               {vid.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{vid.description}</p>}
                                             </div>
                                           </div>
-                                          {vid.isFree || course.price === 0 ? (
-                                            <Link to={`/watch/${vid._id}`} className="btn btn-primary" style={{ padding: '0.45rem 1.1rem', fontSize: '0.85rem' }}>
-                                              Watch
-                                            </Link>
-                                          ) : (
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                                              <Lock size={14} /> Locked
-                                            </span>
-                                          )}
+                                          <Link to={`/watch/${vid._id}`} className="btn btn-primary" style={{ padding: '0.45rem 1.1rem', fontSize: '0.85rem' }}>
+                                            Watch Lecture ▶
+                                          </Link>
                                         </div>
                                       ))}
                                     </div>

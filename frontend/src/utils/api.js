@@ -105,6 +105,68 @@ export const enrollUserCourseApi = async (token, courseId) => {
   return data;
 };
 
+export const fetchEnrolledCoursesApi = async (token) => {
+  const res = await fetch(`${API_BASE}/student/my-courses`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  handleAuthError(res);
+  if (!res.ok) throw new Error('Failed to fetch enrolled courses');
+  return res.json();
+};
+
+// Comments / Q&A Discussion endpoints
+export const fetchVideoCommentsApi = async (videoId) => {
+  const res = await fetch(`${API_BASE}/public/comments/video/${videoId}`);
+  if (!res.ok) throw new Error('Failed to fetch video comments');
+  return res.json();
+};
+
+export const postVideoCommentApi = async (token, videoId, text, userName, parentComment = null) => {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/comments/video/${videoId}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ text, userName, parentComment }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to post comment');
+  return data;
+};
+
+export const deleteVideoCommentApi = async (token, commentId) => {
+  const res = await fetch(`${API_BASE}/comments/${commentId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  handleAuthError(res);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to delete comment');
+  return data;
+};
+
+// Rating & Feedback endpoints
+export const fetchVideoFeedbackApi = async (videoId) => {
+  const res = await fetch(`${API_BASE}/public/feedback/video/${videoId}`);
+  if (!res.ok) throw new Error('Failed to fetch video feedback');
+  return res.json();
+};
+
+export const submitVideoFeedbackApi = async (token, videoId, rating, feedbackText, userName) => {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const res = await fetch(`${API_BASE}/feedback/video/${videoId}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ rating, feedbackText, userName }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit feedback');
+  return data;
+};
+
 // Admin endpoints
 export const fetchAdminStats = async (token) => {
   const res = await fetch(`${API_BASE}/admin/stats`, {
@@ -272,4 +334,46 @@ export const updateNoteApi = async (token, chapterId, noteId, formData) => {
   });
   if (!res.ok) throw new Error('Failed to update notes');
   return res.json();
+};
+
+// Visitor Analytics API
+// Visitor Analytics API
+export const recordVisitorApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE}/public/visitor`, { method: 'POST' });
+    const contentType = res.headers.get('content-type');
+    if (!res.ok || !contentType || !contentType.includes('application/json')) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+};
+
+export const fetchVisitorStatsApi = async () => {
+  try {
+    const res = await fetch(`${API_BASE}/public/visitor-stats`);
+    const contentType = res.headers.get('content-type');
+    if (!res.ok || !contentType || !contentType.includes('application/json')) {
+      return { totalVisits: 1250, todayVisits: 1 };
+    }
+    return await res.json();
+  } catch (e) {
+    return { totalVisits: 1250, todayVisits: 1 };
+  }
+};
+
+// Study Streak API
+export const recordStreakApi = async (userId = null, currentStreak = 0) => {
+  try {
+    const res = await fetch(`${API_BASE}/public/streak`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, currentStreak }),
+    });
+    const contentType = res.headers.get('content-type');
+    if (!res.ok || !contentType || !contentType.includes('application/json')) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
 };

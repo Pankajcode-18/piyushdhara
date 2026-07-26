@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addBookmark, removeBookmark, enrollCourse } = require('../controllers/studentController');
+const { addBookmark, removeBookmark, enrollCourse, getEnrolledCourses } = require('../controllers/studentController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.route('/bookmarks')
@@ -11,5 +11,8 @@ router.route('/bookmarks/:id')
 
 router.route('/enroll')
     .post(protect, enrollCourse);
+
+router.route('/my-courses')
+    .get(protect, getEnrolledCourses);
 
 module.exports = router;

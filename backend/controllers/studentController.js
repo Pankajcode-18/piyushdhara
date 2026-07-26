@@ -64,8 +64,33 @@ const enrollCourse = async (req, res) => {
     }
 };
 
+// @desc    Get user enrolled courses
+// @route   GET /api/student/my-courses
+// @access  Private
+const getEnrolledCourses = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate({
+            path: 'enrolledCourses',
+            populate: {
+                path: 'subjects',
+                populate: {
+                    path: 'chapters',
+                    populate: {
+                        path: 'videos'
+                    }
+                }
+            }
+        });
+
+        res.json(user.enrolledCourses || []);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     addBookmark,
     removeBookmark,
-    enrollCourse
+    enrollCourse,
+    getEnrolledCourses,
 };

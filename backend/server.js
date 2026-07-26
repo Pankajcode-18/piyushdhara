@@ -40,6 +40,8 @@ app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
+app.use('/api', require('./routes/commentRoutes'));
+app.use('/api', require('./routes/feedbackRoutes'));
 
 // Serve Static Frontend Assets (if built for production)
 const frontendDistPath = path.join(__dirname, '../frontend/dist');

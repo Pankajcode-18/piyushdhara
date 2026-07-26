@@ -1314,3 +1314,51 @@ a:focus-visible {
   background: #EFF6FF;
   transform: translateX(5px);
 }
+
+/* Daily Study Streak Hover Pill & Popup Tooltip */
+.streak-hover-pill {
+  transition: all 0.25s ease;
+}
+
+.streak-hover-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3) !important;
+}
+
+.streak-tooltip-popup {
+  position: absolute;
+  top: 125%;
+  left: 0;
+  width: 290px;
+  padding: 0.85rem 1rem;
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: 0.85rem;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.96);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.streak-hover-pill:hover .streak-tooltip-popup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.streak-tooltip-popup::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 24px;
+  width: 12px;
+  height: 12px;
+  background: #0F172A;
+  border-left: 1px solid #334155;
+  border-top: 1px solid #334155;
+  transform: rotate(45deg);
+}

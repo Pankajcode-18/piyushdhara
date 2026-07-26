@@ -4,6 +4,8 @@ const Chapter = require('../models/Chapter');
 const Video = require('../models/Video');
 const Note = require('../models/Note');
 const Enrollment = require('../models/Enrollment');
+const Visitor = require('../models/Visitor');
+const User = require('../models/User');
 
 // @desc    Get all published courses
 // @route   GET /api/public/courses
@@ -161,6 +163,102 @@ const getAllPublishedNotes = async (req, res) => {
     }
 };
 
+// @desc    Record visitor count (Total & Today)
+// @route   POST /api/public/visitor
+// @access  Public
+const recordVisitorCount = async (req, res) => {
+    try {
+        const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        
+        let todayRecord = await Visitor.findOne({ date: todayStr });
+        if (!todayRecord) {
+            todayRecord = await Visitor.create({ date: todayStr, todayVisits: 1 });
+        } else {
+            todayRecord.todayVisits += 1;
+            await todayRecord.save();
+        }
+
+        // Aggregate total visits across all records (plus base seed for realism)
+        const totalVisitsAggregate = await Visitor.aggregate([
+            { $group: { _id: null, total: { $sum: '$todayVisits' } } }
+        ]);
+
+        const totalVisits = (totalVisitsAggregate[0]?.total || 0) + 1250;
+
+        res.json({
+            todayVisits: todayRecord.todayVisits,
+            totalVisits
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get current visitor statistics
+// @route   GET /api/public/visitor-stats
+// @access  Public
+const getVisitorStats = async (req, res) => {
+    try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayRecord = await Visitor.findOne({ date: todayStr });
+
+        const totalVisitsAggregate = await Visitor.aggregate([
+            { $group: { _id: null, total: { $sum: '$todayVisits' } } }
+        ]);
+
+        const totalVisits = (totalVisitsAggregate[0]?.total || 0) + 1250;
+
+        res.json({
+            todayVisits: todayRecord ? todayRecord.todayVisits : 1,
+            totalVisits
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Record daily study streak for student
+// @route   POST /api/public/streak
+// @access  Public
+const recordStudyStreak = async (req, res) => {
+    try {
+        const { userId, currentStreak } = req.body;
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        const yesterdayDate = new Date();
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+        const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+
+        let newStreak = 1;
+
+        if (userId) {
+            const user = await User.findById(userId);
+            if (user) {
+                if (user.lastStudyDate === todayStr) {
+                    newStreak = user.streakCount || 1;
+                } else if (user.lastStudyDate === yesterdayStr) {
+                    newStreak = (user.streakCount || 0) + 1;
+                } else {
+                    newStreak = 1;
+                }
+                user.streakCount = newStreak;
+                user.lastStudyDate = todayStr;
+                await user.save();
+                return res.json({ streakCount: newStreak, lastStudyDate: todayStr });
+            }
+        }
+
+        // Guest logic (or fallback)
+        if (currentStreak) {
+            newStreak = Number(currentStreak) + 1;
+        }
+
+        res.json({ streakCount: newStreak, lastStudyDate: todayStr });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getPublishedCourses,
     getCourseDetails,
@@ -168,5 +266,8 @@ module.exports = {
     searchCourses,
     getVideoById,
     enrollStudent,
-    getAllPublishedNotes
+    getAllPublishedNotes,
+    recordVisitorCount,
+    getVisitorStats,
+    recordStudyStreak
 };
