@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchPublishedNotesApi } from '../utils/api';
+import { fetchPublishedNotesApi, getFileUrl } from '../utils/api';
 import { 
   FileText, 
   Search, 
@@ -118,10 +118,7 @@ const Notes = () => {
   };
 
   const getFullFileUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('/')) return `http://localhost:5000${url}`;
-    return `http://localhost:5000/${url}`;
+    return getFileUrl(url);
   };
 
   return (

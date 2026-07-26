@@ -8,7 +8,7 @@ import {
 import { 
   fetchVideoDetails, fetchChapterContent,
   fetchVideoCommentsApi, postVideoCommentApi, deleteVideoCommentApi,
-  fetchVideoFeedbackApi, submitVideoFeedbackApi, recordStreakApi
+  fetchVideoFeedbackApi, submitVideoFeedbackApi, recordStreakApi, getFileUrl
 } from '../utils/api';
 import teacherImg from '../assets/gaurov.jpeg';
 import { useTheme } from '../context/ThemeContext';
@@ -332,7 +332,7 @@ const LectureRoom = () => {
                 />
               ) : (
                 <video
-                  src={video?.videoUrl ? (video.videoUrl.startsWith('http') ? video.videoUrl : `http://localhost:5000/${video.videoUrl}`) : 'https://www.w3schools.com/html/mov_bbb.mp4'}
+                  src={video?.videoUrl ? getFileUrl(video.videoUrl) : 'https://www.w3schools.com/html/mov_bbb.mp4'}
                   controls autoPlay
                   style={{ width: '100%', height: '100%' }}
                 />
@@ -970,7 +970,7 @@ const LectureRoom = () => {
                       </div>
                     ) : (
                       chapterNotes.map((note) => {
-                        const notePdfUrl = note.fileUrl?.startsWith('http') ? note.fileUrl : `http://localhost:5000/${note.fileUrl}`;
+                        const notePdfUrl = getFileUrl(note.fileUrl);
                         return (
                           <div key={note._id || note.title} className="card" style={{ padding: '1.25rem', border: '1px solid var(--border)', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>

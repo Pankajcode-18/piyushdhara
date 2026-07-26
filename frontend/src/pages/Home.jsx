@@ -31,6 +31,7 @@ import {
 import { useState, useEffect } from 'react';
 import teacherImg from '../assets/gaurov.jpeg';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE } from '../utils/api';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -103,9 +104,9 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchCoursesData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/public/courses');
+        const res = await fetch(`${API_BASE}/public/courses`);
         const data = await res.json();
         setFeaturedCourses(data.length > 0 ? data.slice(0, 3) : []);
         setLoading(false);
@@ -114,7 +115,7 @@ const Home = () => {
         setLoading(false);
       }
     };
-    fetchCourses();
+    fetchCoursesData();
   }, []);
 
   useEffect(() => {

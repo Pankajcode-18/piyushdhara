@@ -6,7 +6,15 @@ const getApiBase = () => {
   return 'http://localhost:5000/api';
 };
 
-const API_BASE = getApiBase();
+export const API_BASE = getApiBase();
+export const BACKEND_URL = API_BASE.replace(/\/api\/?$/, '');
+
+export const getFileUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${BACKEND_URL}${cleanPath}`;
+};
 
 // Auto-handle expired token: clear localStorage and redirect to login
 const handleAuthError = (res) => {

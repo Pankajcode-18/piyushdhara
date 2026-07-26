@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { fetchCourseDetails, fetchChapterContent, enrollUserCourseApi } from '../utils/api';
+import { fetchCourseDetails, fetchChapterContent, enrollUserCourseApi, getFileUrl } from '../utils/api';
 import { PlayCircle, FileText, ChevronDown, ChevronRight, Lock, BookOpen, Rocket, Clock, Bell, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const CourseDetails = () => {
@@ -321,7 +321,7 @@ const CourseDetails = () => {
                                   ) : (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                       {chapterContent.notes.map((note) => {
-                                        const noteLink = note.fileUrl.startsWith('http') ? note.fileUrl : `http://localhost:5000/${note.fileUrl}`;
+                                        const noteLink = getFileUrl(note.fileUrl);
                                         return (
                                           <a
                                             key={note._id}

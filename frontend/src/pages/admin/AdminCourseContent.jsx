@@ -13,7 +13,8 @@ import {
   updateVideoApi,
   updateNoteApi,
   fetchCourseEnrollmentsApi,
-  updateCourseApi
+  updateCourseApi,
+  getFileUrl
 } from '../../utils/api';
 import { ArrowLeft, Plus, Play, FileText, Upload, Trash2, Edit2, X, Check, Users, Settings, BookOpen, User, UploadCloud, Image, FolderPlus, CheckCircle2 } from 'lucide-react';
 
@@ -824,7 +825,7 @@ const AdminCourseContent = () => {
                                     <div style={{ flex: 1, overflow: 'hidden' }}>
                                       <p style={{ fontWeight: 600, fontSize: '0.95rem', margin: '0 0 0.25rem 0' }}>{note.title}</p>
                                       {note.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0 0 0.25rem 0' }}>{note.description}</p>}
-                                      <a href={note.fileUrl.startsWith('http') ? note.fileUrl : `http://localhost:5000/${note.fileUrl}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-color)' }}>Open Handout PDF</a>
+                                      <a href={getFileUrl(note.fileUrl)} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--accent-color)' }}>Open Handout PDF</a>
                                     </div>
                                     <div style={{ display: 'flex', gap: '0.25rem' }}>
                                       <button onClick={() => startEditNote(note)} className="btn btn-outline" style={{ padding: '0.3rem', border: 'none' }} title="Edit Details/Replace PDF">
