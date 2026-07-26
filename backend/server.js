@@ -42,6 +42,7 @@ mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 5000 })
 
 // API Routes
 app.use('/api/auth/student', require('./routes/studentAuthRoutes'));
+app.use('/auth/student', require('./routes/studentAuthRoutes'));
 app.use('/api/auth/teacher', require('./routes/teacherRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/teacher', require('./routes/teacherRoutes'));

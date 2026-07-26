@@ -37,13 +37,14 @@ const verifyFirebaseToken = async (req, res, next) => {
         const payloadBase64 = token.split('.')[1];
         if (payloadBase64) {
           const decodedJson = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
-          if (decodedJson && decodedJson.user_id) {
+          const uid = decodedJson.user_id || decodedJson.sub || decodedJson.uid;
+          if (decodedJson && (uid || decodedJson.email)) {
             req.firebaseUser = {
-              uid: decodedJson.user_id || decodedJson.sub,
-              email: decodedJson.email,
-              name: decodedJson.name || decodedJson.email?.split('@')[0],
+              uid: uid || `google-${Date.now()}`,
+              email: decodedJson.email || '',
+              name: decodedJson.name || (decodedJson.email ? decodedJson.email.split('@')[0] : 'Student'),
               picture: decodedJson.picture || '',
-              email_verified: decodedJson.email_verified || false,
+              email_verified: decodedJson.email_verified || true,
             };
             return next();
           }

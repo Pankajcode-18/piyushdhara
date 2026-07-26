@@ -24,24 +24,24 @@ const AuthContext = createContext(null);
 
 // Friendly Error Formatter
 const formatAuthError = (err) => {
-  const code = err.code || err.message || '';
-  if (code.includes('auth/api-key-not-valid') || code.includes('api-key')) {
-    return 'Invalid Firebase API Key. Please paste your valid VITE_FIREBASE_API_KEY from Firebase Console into frontend/.env';
+  console.error('Firebase Auth Error Raw:', err);
+  if (!err) return 'An error occurred during authentication.';
+  
+  const code = err.code || '';
+  const message = err.message || '';
+
+  if (code === 'auth/unauthorized-domain') {
+    return 'Domain Not Authorized: Please add your domain (localhost or Vercel URL) in Firebase Console -> Authentication -> Settings -> Authorized domains.';
   }
-  if (code.includes('auth/email-already-in-use')) {
-    return 'An account with this email address already exists. Please log in instead.';
+
+  if (code === 'auth/api-key-not-valid' || code === 'auth/invalid-api-key') {
+    return `Firebase API Key Error (${code}): The key "${firebaseConfigKey()}" was rejected by Firebase. Please ensure Google Identity Toolkit API is enabled in Google Cloud Console.`;
   }
-  if (code.includes('auth/invalid-credential') || code.includes('auth/wrong-password') || code.includes('auth/user-not-found')) {
-    return 'Invalid email or password. Please check your credentials.';
-  }
-  if (code.includes('auth/too-many-requests')) {
-    return 'Access temporarily disabled due to too many failed login attempts. Please try again later.';
-  }
-  if (code.includes('auth/popup-closed-by-user')) {
-    return 'Google login popup was closed before completing authentication.';
-  }
-  return err.message || 'Authentication error. Please try again.';
+
+  return message ? `[${code || 'auth-error'}]: ${message}` : 'Authentication error. Please try again.';
 };
+
+const firebaseConfigKey = () => import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyDN3rq6Wdy9qT-_v3CbgrRqkLP5ALBl6AE';
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);

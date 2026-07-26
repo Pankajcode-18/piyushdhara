@@ -1,9 +1,17 @@
 const getApiBase = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return '/api';
+  let base = import.meta.env.VITE_API_URL;
+  if (!base || base.trim() === '') {
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      base = '/api';
+    } else {
+      base = 'http://localhost:5000/api';
+    }
   }
-  return 'http://localhost:5000/api';
+  let cleanBase = base.trim().replace(/\/+$/, '');
+  if (!cleanBase.endsWith('/api') && !cleanBase.startsWith('http://localhost:5173')) {
+    cleanBase += '/api';
+  }
+  return cleanBase;
 };
 
 export const API_BASE = getApiBase();
@@ -162,11 +170,17 @@ export const googleStudentLoginApi = async (firebaseToken) => {
       Authorization: `Bearer ${firebaseToken}`
     },
   });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || 'Google login failed');
+  const text = await res.text();
+  let data = {};
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    data = { message: text || `HTTP ${res.status}` };
   }
-  return res.json();
+  if (!res.ok) {
+    throw new Error(data.message || `Backend Server Error (HTTP ${res.status})`);
+  }
+  return data;
 };
 
 export const registerTeacherApi = async (firebaseToken, teacherData) => {
