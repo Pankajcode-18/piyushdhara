@@ -218,7 +218,7 @@ const Notes = () => {
           </div>
 
           {/* Category Tabs */}
-          <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            <div className="tab-strip-scroll" style={{ gap: '0.75rem', paddingBottom: '0.5rem' }}>
             {categories.map((cat) => {
               const Icon = cat.icon;
               const isSelected = selectedCategory === cat.id;
@@ -258,7 +258,7 @@ const Notes = () => {
             <h3 style={{ color: '#475569', fontSize: '1.1rem' }}>Loading PDF handouts...</h3>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '2rem' }}>
+          <div className="notes-grid">
             <AnimatePresence>
               {filteredNotes.map((note, idx) => {
                 const fileUrl = getFileUrl(note.fileUrl);

@@ -34,7 +34,7 @@ const Footer = () => {
       <div className="container" style={{ maxWidth: '1200px' }}>
         
         {/* Footer Top Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '3rem', marginBottom: '3.5rem' }}>
+        <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
           
           {/* Column 1: Brand & Platform Summary */}
           <div>
@@ -172,7 +172,7 @@ const Footer = () => {
         </div>
 
         {/* Footer Bottom Attribution & Copyright */}
-        <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.25rem', fontSize: '0.88rem' }}>
+        <div className="footer-bottom-bar" style={{ borderTop: '1px solid #E2E8F0', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.25rem', fontSize: '0.88rem' }}>
           
           <div>
             <p style={{ margin: 0, color: '#64748B', fontWeight: 500 }}>

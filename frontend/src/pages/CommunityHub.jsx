@@ -595,10 +595,30 @@ const CommunityHub = () => {
 
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────── */}
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'1.5rem 1.5rem' }}>
+
+        {/* Mobile Tab Bar (visible ≤768px only) */}
+        <div className="community-mobile-tabs">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.key;
+            return (
+              <button
+                key={item.key}
+                className={`community-mobile-tab-btn${isActive ? ' active' : ''}`}
+                onClick={() => handleTabChange(item.key)}
+              >
+                <Icon size={14} />
+                {item.label}
+                {item.badge && <span style={{ background: item.badge === 'HOT' ? '#EF4444' : '#0D2B5C', color: '#FFF', fontSize: '0.52rem', fontWeight: 900, padding: '1px 5px', borderRadius: 99 }}>{item.badge}</span>}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="community-grid">
 
           {/* ═══ LEFT SIDEBAR ═════════════════════════════════════════════ */}
-          <div className="left-sidebar" style={{ position:'sticky', top:80, display:'flex', flexDirection:'column', gap:'1rem', alignSelf:'start', maxHeight:'calc(100vh - 100px)', overflowY:'auto' }}>
+          <div className="left-sidebar community-left-sidebar" style={{ position:'sticky', top:80, display:'flex', flexDirection:'column', gap:'1rem', alignSelf:'start', maxHeight:'calc(100vh - 100px)', overflowY:'auto' }}>
 
             {/* Profile Mini Card */}
             {userProfile && (
@@ -756,7 +776,7 @@ const CommunityHub = () => {
           </div>
 
           {/* ═══ RIGHT SIDEBAR ════════════════════════════════════════════ */}
-          <div className="right-sidebar">
+          <div className="right-sidebar community-right-sidebar">
 
             {/* 🏆 Top Contributors */}
             <div style={{ background:C.card, borderRadius:16, border:`1px solid ${C.border}`, padding:'1.25rem', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>

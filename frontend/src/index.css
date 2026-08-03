@@ -21,7 +21,6 @@
 
   /* Legacy aliases (backward compat) */
   --primary-color: #2563EB;
-  --primary-hover: #1D4ED8;
   --secondary-color: #0EA5E9;
   --accent-color: #06B6D4;
   --success-color: #10B981;
@@ -74,10 +73,19 @@
 
   /* Navbar */
   --navbar-height: 72px;
+  --navbar-height-mobile: 60px;
 
-  /* Typography */
+  /* Typography — Fluid Scale */
   --font-main: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --text-4xl: clamp(1.75rem, 4vw, 2.5rem);
+  --text-3xl: clamp(1.4rem, 3vw, 2rem);
+  --text-2xl: clamp(1.2rem, 2.5vw, 1.6rem);
+  --text-xl:  clamp(1.05rem, 2vw, 1.25rem);
+  --text-lg:  clamp(0.95rem, 1.5vw, 1.1rem);
+  --text-base: clamp(0.875rem, 1.2vw, 1rem);
+  --text-sm:  clamp(0.8rem, 1vw, 0.875rem);
+  --text-xs:  clamp(0.7rem, 0.9vw, 0.78rem);
 
   /* Radius */
   --radius-sm: 0.5rem;
@@ -86,6 +94,10 @@
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
+
+  /* Spacing — Fluid */
+  --space-section: clamp(3rem, 6vw, 5rem);
+  --space-card: clamp(1rem, 2vw, 1.75rem);
 
   /* Transitions */
   --transition-fast: 0.15s ease;
@@ -147,6 +159,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -157,6 +170,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: var(--transition-theme);
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 a {
@@ -287,6 +302,28 @@ a:focus-visible {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -1214,6 +1251,12 @@ a:focus-visible {
     padding: 0.65rem 1.2rem;
     font-size: 0.85rem;
   }
+
+  /* Only make btn full-width when explicitly requested */
+  .btn-block {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ── Mobile & Tablet Responsiveness ────────────────────────── */
@@ -1305,24 +1348,67 @@ a:focus-visible {
     max-width: 100% !important;
   }
 
-  table {
+  /* Tables — Only in containers, not globally forcing display:block */
+  .table-responsive {
     display: block;
+    width: 100%;
     overflow-x: auto;
-    white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-  }
-
-  /* Admin & Layout Mains */
-  main {
-    padding: 1rem !important;
   }
 
   /* Modals & Dialogs */
   .modal-content,
   [role="dialog"] {
-    width: 92% !important;
-    max-width: 92% !important;
+    width: 96% !important;
+    max-width: 96% !important;
     padding: 1.25rem !important;
+    margin: 0.5rem auto !important;
+  }
+
+  /* Stack flex rows on mobile */
+  .flex-col-mobile {
+    flex-direction: column !important;
+  }
+
+  /* Center align on mobile */
+  .text-center-mobile {
+    text-align: center !important;
+  }
+
+  /* Full width on mobile */
+  .w-full-mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Hide on mobile */
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  /* Show only on mobile */
+  .show-on-mobile {
+    display: flex !important;
+  }
+
+  /* Reduce gap on mobile */
+  .gap-mobile-sm {
+    gap: 0.75rem !important;
+  }
+
+  /* Bottom sheet modal on very small screens */
+  .modal-bottom-sheet {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    margin: 0 !important;
   }
 }
 
@@ -1907,6 +1993,19 @@ button, .btn, input, select, textarea {
   gap: 1.25rem;
 }
 
+/* Auto-fill adaptive grid */
+.grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.grid-auto-fill-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 1.25rem;
+}
+
 /* Responsive Table stacked card view */
 .responsive-table-container {
   width: 100%;
@@ -1973,10 +2072,20 @@ button, .btn, input, select, textarea {
 
 /* ── MEDIA QUERIES FOR RESPONSIVE BREAKPOINTS ───────────── */
 
-/* Laptop & Desktop Adjustments (max-width: 1280px) */
+/* Laptop (max-width: 1280px) */
 @media (max-width: 1280px) {
   .grid-responsive-4 {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablet (768px – 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .grid-responsive-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-responsive-3 {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -2102,5 +2211,403 @@ button, .btn, input, select, textarea {
     font-weight: 800;
     color: #475569;
     font-size: 0.8rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE ENHANCEMENT SYSTEM v3.0
+   Premium Mobile-First Utilities for PiyushDhara
+   ============================================================ */
+
+/* ── Navbar Mobile Reduction ─────────────────────────────── */
+@media (max-width: 767px) {
+  .navbar {
+    height: var(--navbar-height-mobile, 60px) !important;
+  }
+
+  .navbar-brand img {
+    height: 40px !important;
+    width: 40px !important;
+  }
+
+  .navbar-brand-text-sub {
+    display: none !important;
+  }
+
+  .navbar > div {
+    padding: 0 0.85rem !important;
+    gap: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand-name {
+    font-size: 1.05rem !important;
+  }
+}
+
+/* ── Page Content Padding ────────────────────────────────── */
+.page-content {
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+@media (max-width: 767px) {
+  .page-content {
+    padding: 1rem;
+  }
+  .page-section {
+    padding: 1.5rem 0 !important;
+  }
+}
+
+/* ── Card Mobile Optimization ────────────────────────────── */
+@media (max-width: 767px) {
+  .card {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+  .card-flat {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* ── Form Responsive ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .form-row-2col {
+    grid-template-columns: 1fr !important;
+  }
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 1rem; /* Prevents iOS zoom on focus */
+    min-height: 48px;
+  }
+  label {
+    font-size: 0.875rem;
+  }
+}
+
+/* ── Button Mobile Minimum Touch Target ──────────────────── */
+.btn {
+  min-height: 44px;
+}
+@media (max-width: 767px) {
+  .btn {
+    min-height: 48px;
+  }
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ── Community Hub Mobile Tab Bar ────────────────────────── */
+.community-mobile-tabs {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .community-left-sidebar {
+    display: none !important;
+  }
+  .community-right-sidebar {
+    display: none !important;
+  }
+  .community-mobile-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: sticky;
+    top: var(--navbar-height-mobile, 60px);
+    z-index: 50;
+  }
+  .community-mobile-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .community-mobile-tab-btn {
+    flex-shrink: 0;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 36px;
+  }
+  .community-mobile-tab-btn.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--primary);
+  }
+  .community-feed-area {
+    width: 100% !important;
+  }
+}
+
+/* ── Admin Dashboard Responsive ──────────────────────────── */
+@media (max-width: 1023px) {
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 640px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-content-padding {
+    padding: 1rem !important;
+  }
+}
+
+/* ── Certification/Quiz Mobile ───────────────────────────── */
+@media (max-width: 768px) {
+  .cert-learn-grid {
+    flex-direction: column !important;
+  }
+  .cert-lesson-sidebar {
+    width: 100% !important;
+    max-height: 280px;
+    overflow-y: auto;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .quiz-panel {
+    padding: 1rem !important;
+  }
+  .quiz-option-btn {
+    min-height: 52px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* ── Video Player Aspect Ratio ───────────────────────────── */
+.video-aspect-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: var(--radius-xl);
+}
+.video-aspect-wrapper iframe,
+.video-aspect-wrapper video,
+.video-aspect-wrapper > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--radius-xl);
+}
+
+/* ── AI Chatbot Mobile ───────────────────────────────────── */
+@media (max-width: 767px) {
+  .ai-chatbot-window {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+  }
+  .ai-chatbot-fab {
+    bottom: 1.25rem !important;
+    right: 1.25rem !important;
+  }
+}
+
+/* ── Footer Responsive ───────────────────────────────────── */
+@media (max-width: 1023px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem !important;
+  }
+}
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  .footer {
+    padding: 3rem 0 1.5rem 0 !important;
+  }
+  .footer-bottom-bar {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    text-align: center !important;
+  }
+}
+
+/* ── StudentProfile Responsive ───────────────────────────── */
+@media (max-width: 768px) {
+  .profile-hero-grid {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .profile-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 480px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Report Card Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .report-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .report-stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .report-chart-container {
+    height: 220px !important;
+  }
+}
+@media (max-width: 480px) {
+  .report-stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Horizontal Scroll Wrapper for Tables ────────────────── */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.table-scroll-wrapper table {
+  min-width: 600px;
+  width: 100%;
+}
+
+/* ── Notes Grid Responsive ───────────────────────────────── */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Course Card Grid Responsive ─────────────────────────── */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Filter Chips Row ────────────────────────────────────── */
+.filter-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-chip {
+  flex-shrink: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.filter-chip.active,
+.filter-chip:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+/* ── Scrollable horizontal tab strip ────────────────────── */
+.tab-strip-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.25rem;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-strip-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Stack utility ───────────────────────────────────────── */
+.stack-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap-mobile {
+  flex-wrap: wrap;
+}
+
+/* ── Responsive section padding ─────────────────────────── */
+.section-pad {
+  padding: var(--space-section) 0;
+}
+
+/* ── Safe area insets for mobile notch devices ───────────── */
+@supports (padding: max(0px)) {
+  .navbar {
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
+  .mobile-drawer-left {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ── Print Styles ────────────────────────────────────────── */
+@media print {
+  .navbar,
+  .sidebar,
+  .mobile-drawer,
+  .ai-chatbot-fab,
+  .ai-chatbot-window,
+  footer {
+    display: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+  }
+  .main-content-area {
+    padding: 0 !important;
   }
 }

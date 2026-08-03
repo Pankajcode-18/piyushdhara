@@ -280,7 +280,7 @@ const AiChatbotWidget = () => {
       {/* ── 1. FLOATING LAUNCHER BUTTON & POPUP BANNER ─────────── */}
       {!isOpen && (
         <div 
-          className="ai-floating-launcher"
+          className="ai-floating-launcher ai-chatbot-fab"
           style={{ 
             position: 'fixed', 
             bottom: 'calc(var(--mobile-bottom-bar-height, 0px) + 1.5rem)', 
@@ -400,15 +400,15 @@ const AiChatbotWidget = () => {
       {/* ── 2. CHATBOT WINDOW ────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="animate-fade-in"
+          className="animate-fade-in ai-chatbot-window"
           style={{
             position: 'fixed',
             bottom: isMinimized ? '2rem' : '1.5rem',
             right: isMinimized ? '2rem' : '1.5rem',
             zIndex: 9999,
-            width: isMaximized ? '92vw' : '420px',
+            width: isMaximized ? '92vw' : 'min(420px, calc(100vw - 2rem))',
             maxWidth: '1000px',
-            height: isMinimized ? '60px' : (isMaximized ? '85vh' : '580px'),
+            height: isMinimized ? '60px' : (isMaximized ? '85vh' : 'min(580px, calc(100vh - 4rem))'),
             maxHeight: '90vh',
             background: '#FFFFFF',
             borderRadius: isMinimized ? '1rem' : '1.5rem',

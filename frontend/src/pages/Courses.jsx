@@ -214,7 +214,7 @@ const Courses = () => {
                 <Sparkles size={14} /> {isEnrolledFilter ? 'VERIFIED ENROLLED BATCHES' : 'NEPAL PREPARATION PORTAL'}
               </div>
 
-              <h1 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
+              <h1 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
                 {isEnrolledFilter ? (
                   <>My Enrolled <span style={{ color: '#2563EB' }}>Batches</span></>
                 ) : (
@@ -268,7 +268,7 @@ const Courses = () => {
 
           {/* Category Tabs */}
           {!isEnrolledFilter && (
-            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            <div className="tab-strip-scroll" style={{ gap: '0.75rem', paddingBottom: '0.5rem' }}>
               {categories.map((cat) => {
                 const Icon = cat.icon;
                 const isSelected = selectedCategory === cat.id;
@@ -329,7 +329,7 @@ const Courses = () => {
             )}
           </div>
         ) : (
-          <div className="grid-responsive-3" style={{ gap: '1.75rem' }}>
+          <div className="courses-grid">
             <AnimatePresence>
               {filteredCourses.map((course, idx) => {
                 const isFree = course.price === 0;

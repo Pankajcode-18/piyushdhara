@@ -220,7 +220,7 @@ const MainLayout = () => {
               className="mobile-only btn-icon"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               <Menu size={22} />
             </button>
@@ -229,14 +229,14 @@ const MainLayout = () => {
                 src="/Logo1.png"
                 onError={(e) => { e.target.src = '/logo.jpeg'; }}
                 alt="PiyushDhara Logo"
-                style={{ height: '58px', width: '58px', borderRadius: '50%', objectFit: 'cover' }}
+                style={{ height: '48px', width: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
               />
-              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }} className="navbar-brand-name">
+                <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
                   <span style={{ color: 'var(--text-primary)' }}>Piyush</span>
                   <span style={{ color: 'var(--primary)' }}>Dhara</span>
                 </span>
-                <span style={{
+                <span className="navbar-brand-text-sub" style={{
                   fontSize: '0.62rem', fontWeight: 800,
                   color: 'var(--primary)',
                   background: 'var(--primary-light)',
@@ -497,29 +497,47 @@ const MainLayout = () => {
 
       {/* ── Mobile Drawer ─────────────────────────────────────── */}
       {mobileMenuOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'flex' }}>
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'flex' }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          {/* Backdrop */}
           <div
             onClick={() => setMobileMenuOpen(false)}
-            style={{ flex: 1, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+            style={{ flex: 1, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', cursor: 'pointer' }}
           />
+          {/* Drawer — slides in from LEFT */}
           <div
-            className="animate-slide-up"
+            className="mobile-drawer-left"
             style={{
-              width: '280px', background: 'var(--bg-sidebar)',
-              height: '100%', display: 'flex', flexDirection: 'column',
-              boxShadow: 'var(--shadow-2xl)', borderLeft: '1px solid var(--border)',
+              width: 'min(280px, 85vw)',
+              background: 'var(--bg-sidebar)',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: 'var(--shadow-2xl)',
+              borderRight: '1px solid var(--border)',
               overflowY: 'auto',
-              position: 'fixed', right: 0, top: 0,
+              position: 'fixed',
+              left: 0,
+              top: 0,
+              animation: 'slideInFromLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             }}
           >
             <div style={{
               padding: '1rem 1.25rem', display: 'flex', alignItems: 'center',
               justifyContent: 'space-between', borderBottom: '1px solid var(--border)',
+              minHeight: '60px',
             }}>
-              <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)' }}>Menu</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <img src="/Logo1.png" onError={(e) => { e.target.src = '/logo.jpeg'; }} alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)' }}>Menu</span>
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', minWidth: '40px', minHeight: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)' }}
                 aria-label="Close menu"
               >
                 <X size={20} />
@@ -542,11 +560,12 @@ const MainLayout = () => {
                   aria-label="Search"
                   value={headerSearch}
                   onChange={(e) => setHeaderSearch(e.target.value)}
+                  style={{ fontSize: '1rem' }}
                 />
               </form>
             </div>
 
-            <nav style={{ flex: 1, padding: '1rem 0' }}>
+            <nav style={{ flex: 1, padding: '1rem 0', overflowY: 'auto' }}>
               {navItems.map((section) => (
                 <div key={section.section} style={{ marginBottom: '1rem' }}>
                   <p style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--text-placeholder)', textTransform: 'uppercase', letterSpacing: '0.07em', padding: '0 1rem 0.4rem' }}>
@@ -554,6 +573,7 @@ const MainLayout = () => {
                   </p>
                   {section.items.map((item) => {
                     const Icon = item.icon;
+                    const active = getLinkActive(item);
                     return (
                       <Link
                         key={item.to}
@@ -561,19 +581,42 @@ const MainLayout = () => {
                         onClick={() => setMobileMenuOpen(false)}
                         style={{
                           display: 'flex', alignItems: 'center', gap: '0.85rem',
-                          padding: '0.7rem 1rem', color: 'var(--text-secondary)',
-                          fontSize: '0.92rem', fontWeight: 500,
+                          padding: '0.75rem 1rem', color: active ? 'var(--primary)' : 'var(--text-secondary)',
+                          fontSize: '0.92rem', fontWeight: active ? 700 : 500,
                           transition: 'all var(--transition-base)',
+                          background: active ? 'var(--primary-light)' : 'transparent',
+                          minHeight: '48px',
                         }}
                       >
                         <Icon size={18} />
-                        <span>{item.label}</span>
+                        <span style={{ flex: 1 }}>{item.label}</span>
+                        {item.badge && (
+                          <span style={{ fontSize: '0.6rem', fontWeight: 800, background: 'var(--danger)', color: '#FFF', padding: '0.1rem 0.35rem', borderRadius: '0.25rem' }}>{item.badge}</span>
+                        )}
                       </Link>
                     );
                   })}
                 </div>
               ))}
             </nav>
+
+            {/* User actions in drawer */}
+            {activeUser && (
+              <div style={{ padding: '1rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate('/profile'); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-lg)', border: 'none', background: 'var(--bg-input)', color: 'var(--text-secondary)', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', minHeight: '44px' }}
+                >
+                  <User size={16} color="#2563EB" /> My Profile
+                </button>
+                <button
+                  onClick={handleStudentLogout}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-lg)', border: '1px solid #FEE2E2', background: '#FEF2F2', color: '#DC2626', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer', minHeight: '44px' }}
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -729,8 +772,8 @@ const MainLayout = () => {
                 </div>
               </div>
 
-              {/* Phone & Email side by side */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              {/* Phone & Email side by side — stack on mobile */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: '#334155' }}>
                     Phone Number

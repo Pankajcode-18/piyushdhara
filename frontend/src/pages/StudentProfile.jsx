@@ -273,7 +273,7 @@ const StudentProfile = () => {
           {/* Ambient Glow decoration */}
           <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
 
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+          <div className="profile-hero-grid" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             
             {/* Profile Avatar with Photo Upload Button */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
@@ -342,7 +342,7 @@ const StudentProfile = () => {
             {/* Main Student Info */}
             <div style={{ flex: '1 1 320px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                <h1 style={{ fontSize: '2.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{u.name || 'Student'}</h1>
+                <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2.2rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{u.name || 'Student'}</h1>
                 
                 {/* Gamification Badge */}
                 <span 
@@ -447,7 +447,7 @@ const StudentProfile = () => {
         </div>
 
         {/* ── 2. QUICK STATISTICS GRID ────────────────────────────── */}
-        <div className="grid-responsive-4" style={{ gap: '1.25rem', marginBottom: '2.5rem' }}>
+        <div className="grid-responsive-4 profile-stats-grid" style={{ gap: '1.25rem', marginBottom: '2.5rem' }}>
           
           <div className="card" style={{ padding: '1.5rem', borderRadius: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '1.1rem' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
