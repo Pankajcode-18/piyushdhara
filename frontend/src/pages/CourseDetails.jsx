@@ -101,11 +101,34 @@ const CourseDetails = () => {
   };
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: '5rem' }}>Loading course content...</div>;
+    return (
+      <div className="container" style={{ textAlign: 'center', padding: '5rem 1rem' }}>
+        <div className="card" style={{ padding: '3rem', maxWidth: '500px', margin: '0 auto', borderRadius: '1.25rem', border: '1px solid var(--border)' }}>
+          <div className="loading-spinner" style={{ margin: '0 auto 1.5rem auto' }} />
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 0.5rem 0' }}>Loading Course Content...</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Fetching chapter notes &amp; video lectures from Nepal Prep Portal.</p>
+        </div>
+      </div>
+    );
   }
 
   if (!course) {
-    return <div style={{ textAlign: 'center', padding: '5rem' }}>Course not found.</div>;
+    return (
+      <div className="container" style={{ textAlign: 'center', padding: '5rem 1rem' }}>
+        <div className="card" style={{ padding: '3.5rem 2rem', maxWidth: '540px', margin: '0 auto', borderRadius: '1.5rem', border: '1px solid var(--border)', background: 'var(--bg-card)' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(37, 99, 235, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
+            <BookOpen size={32} />
+          </div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 0.75rem 0' }}>Batch Not Found</h2>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: '0 0 2rem 0', lineHeight: 1.6 }}>
+            The course or preparation batch you requested does not exist or may have been updated.
+          </p>
+          <Link to="/courses" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontSize: '0.95rem', fontWeight: 800, gap: '0.5rem', display: 'inline-flex' }}>
+            <Rocket size={18} /> Browse All Preparation Batches
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const selectedSubject = course.subjects?.find((s) => s._id === activeSubject);

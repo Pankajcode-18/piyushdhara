@@ -7,19 +7,44 @@ export const ThemeProvider = ({ children }) => {
     return localStorage.getItem('piyushdhara_study_mode') === 'true';
   });
 
+  useEffect(() => {
+    const theme = studyMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    if (studyMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [studyMode]);
+
   const toggleStudyMode = () => {
     setStudyMode((prev) => {
       const next = !prev;
       localStorage.setItem('piyushdhara_study_mode', String(next));
+      const theme = next ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
       return next;
     });
   };
 
   const applyThemeForRoute = (pathname) => {
-    if (pathname.startsWith('/watch')) {
-      document.documentElement.setAttribute('data-theme', studyMode ? 'dark' : 'light');
+    const isLectureRoom = pathname && (pathname.startsWith('/watch') || pathname.startsWith('/lecture'));
+    if (isLectureRoom) {
+      const theme = studyMode ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      if (studyMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     } else {
       document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark');
     }
   };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BookOpen, Search, Menu, LogOut, LayoutDashboard, UserCheck, GraduationCap, LogIn, UserPlus, Flame } from 'lucide-react';
+import { getFileUrl } from '../../utils/api';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -80,8 +81,13 @@ const Navbar = () => {
                 </Link>
               )}
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.75rem', background: '#EFF6FF', borderRadius: '9999px', fontSize: '0.82rem', fontWeight: 700, color: '#1D4ED8', border: '1px solid #BFDBFE' }}>
-                <UserCheck size={14} /> {userObj?.name || 'Student'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.25rem 0.65rem 0.25rem 0.35rem', background: '#EFF6FF', borderRadius: '9999px', fontSize: '0.82rem', fontWeight: 700, color: '#1D4ED8', border: '1px solid #BFDBFE' }}>
+                {(userObj?.photo || userObj?.profilePicture) ? (
+                  <img src={getFileUrl(userObj.photo || userObj.profilePicture)} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                ) : (
+                  <UserCheck size={14} />
+                )}
+                <span>{userObj?.name || 'Student'}</span>
               </div>
 
               <button onClick={handleLogout} className="btn" style={{ padding: '0.4rem 0.85rem', fontSize: '0.85rem', gap: '0.25rem', background: 'rgba(239, 68, 68, 0.08)', color: 'var(--danger-color)', border: 'none', borderRadius: '0.5rem' }} title="Log out of account">
@@ -98,13 +104,6 @@ const Navbar = () => {
               </Link>
             </div>
           )}
-        </div>
-
-        {/* Mobile menu trigger */}
-        <div className="navbar-actions mobile-only">
-          <button className="mobile-menu-btn" style={{ background: 'none', border: 'none' }}>
-            <Menu size={24} />
-          </button>
         </div>
 
       </div>

@@ -47,9 +47,43 @@ app.use('/api/auth/teacher', require('./routes/teacherRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/teacher', require('./routes/teacherRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
+const http = require('http');
+const server = http.createServer(app);
+let io = null;
+
+try {
+  const { Server } = require('socket.io');
+  io = new Server(server, {
+    cors: {
+      origin: true,
+      credentials: true
+    }
+  });
+
+  io.on('connection', (socket) => {
+    socket.on('join_community', () => {
+      socket.join('community_room');
+    });
+    socket.on('join_post', (postId) => {
+      socket.join(`post_${postId}`);
+    });
+  });
+} catch (e) {
+  console.warn('Socket.IO optional module warning:', e.message);
+}
+
+// Middleware to pass io socket instance to requests
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
+app.use('/api/certifications', require('./routes/certificationRoutes'));
+app.use('/api/quizzes', require('./routes/quizRoutes'));
+app.use('/api/community', require('./routes/communityRoutes'));
 app.use('/api', require('./routes/commentRoutes'));
 app.use('/api', require('./routes/feedbackRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
@@ -79,6 +113,6 @@ if (fs.existsSync(frontendDistPath)) {
 
 // Port configuration
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT} with Socket.IO enabled`);
 });

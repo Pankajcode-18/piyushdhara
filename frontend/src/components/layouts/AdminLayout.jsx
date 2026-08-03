@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Navigate, Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, LayoutDashboard, FolderPlus, ShieldCheck, Home } from 'lucide-react';
+import { LogOut, LayoutDashboard, FolderPlus, ShieldCheck, Home, Award, HelpCircle, Menu, X } from 'lucide-react';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -7,6 +8,7 @@ const AdminLayout = () => {
   const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // Strict Auth Protection: Redirect unauthenticated users immediately to /login
   if (!token || !user || user.role !== 'admin') {
@@ -20,24 +22,73 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="main-content-grid" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: '100vh', background: '#F8FAFC' }}>
+    <div style={{ minHeight: '100vh', background: '#F8FAFC', display: 'flex', flexDirection: 'column' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .mobile-sidebar-open {
+            position: fixed !important;
+            top: 52px !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            z-index: 100 !important;
+            width: 260px !important;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.18) !important;
+            display: flex !important;
+          }
+        }
+      `}</style>
       
-      {/* Admin Sidebar — Sticky & viewport height locked so Logout is always visible without scrolling */}
-      <aside 
-        style={{ 
-          background: '#FFFFFF', 
-          borderRight: '1px solid #E2E8F0', 
-          padding: '1.25rem 1rem', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '1rem', 
+      {/* Mobile Top Navbar for Admin Portal */}
+      <div 
+        className="hide-tablet"
+        style={{
+          background: '#0F172A',
+          color: '#FFFFFF',
+          padding: '0.75rem 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           position: 'sticky',
           top: 0,
-          height: '100vh',
-          boxShadow: '2px 0 10px rgba(0,0,0,0.02)',
-          boxSizing: 'border-box'
+          zIndex: 90,
+          borderBottom: '1px solid #1E293B'
         }}
       >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <img src="/Logo1.png" onError={(e) => { e.target.src = '/logo.jpeg'; }} alt="Logo" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+          <span style={{ fontSize: '0.95rem', fontWeight: 800 }}>PiyushDhara <span style={{ color: '#38BDF8', fontSize: '0.72rem' }}>ADMIN</span></span>
+        </div>
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          style={{ background: 'none', border: 'none', color: '#FFFFFF', cursor: 'pointer', padding: '0.25rem' }}
+        >
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        
+        {/* Admin Sidebar */}
+        <aside 
+          className={mobileOpen ? 'mobile-sidebar-open' : 'hide-mobile'}
+          style={{ 
+            width: '260px',
+            minWidth: '260px',
+            maxWidth: '260px',
+            flexShrink: 0,
+            background: '#FFFFFF', 
+            borderRight: '1px solid #E2E8F0', 
+            padding: '1.25rem 1rem', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '1rem', 
+            position: 'sticky',
+            top: 0,
+            height: '100vh',
+            boxShadow: '2px 0 10px rgba(0,0,0,0.02)',
+            boxSizing: 'border-box'
+          }}
+        >
         
         {/* Branding Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', paddingBottom: '0.85rem', borderBottom: '1px solid #F1F5F9', flexShrink: 0 }}>
@@ -81,6 +132,48 @@ const AdminLayout = () => {
           </Link>
 
           <Link 
+            to="/admin/certifications" 
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '0.75rem', 
+              padding: '0.7rem 0.85rem', borderRadius: '0.75rem', 
+              textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700,
+              background: location.pathname.startsWith('/admin/certifications') ? '#EFF6FF' : 'transparent',
+              color: location.pathname.startsWith('/admin/certifications') ? '#1D4ED8' : '#475569',
+              border: location.pathname.startsWith('/admin/certifications') ? '1px solid #BFDBFE' : '1px solid transparent'
+            }}
+          >
+            <Award size={18} color={location.pathname.startsWith('/admin/certifications') ? '#2563EB' : '#64748B'} /> Certifications LMS
+          </Link>
+
+          <Link 
+            to="/admin/quizzes" 
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '0.75rem', 
+              padding: '0.7rem 0.85rem', borderRadius: '0.75rem', 
+              textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700,
+              background: location.pathname.startsWith('/admin/quizzes') ? '#EFF6FF' : 'transparent',
+              color: location.pathname.startsWith('/admin/quizzes') ? '#1D4ED8' : '#475569',
+              border: location.pathname.startsWith('/admin/quizzes') ? '1px solid #BFDBFE' : '1px solid transparent'
+            }}
+          >
+            <HelpCircle size={18} color={location.pathname.startsWith('/admin/quizzes') ? '#2563EB' : '#64748B'} /> Quiz &amp; Exams Studio
+          </Link>
+
+          <Link 
+            to="/admin/security-audit" 
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '0.75rem', 
+              padding: '0.7rem 0.85rem', borderRadius: '0.75rem', 
+              textDecoration: 'none', fontSize: '0.9rem', fontWeight: 700,
+              background: location.pathname.startsWith('/admin/security-audit') ? '#EFF6FF' : 'transparent',
+              color: location.pathname.startsWith('/admin/security-audit') ? '#1D4ED8' : '#475569',
+              border: location.pathname.startsWith('/admin/security-audit') ? '1px solid #BFDBFE' : '1px solid transparent'
+            }}
+          >
+            <ShieldCheck size={18} color={location.pathname.startsWith('/admin/security-audit') ? '#2563EB' : '#64748B'} /> Security &amp; Audit Logs
+          </Link>
+
+          <Link 
             to="/" 
             style={{ 
               display: 'flex', alignItems: 'center', gap: '0.75rem', 
@@ -114,10 +207,11 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Admin Workspace */}
-      <main style={{ padding: '2.5rem', overflowY: 'auto' }}>
+      <main style={{ flex: 1, minWidth: 0, padding: '2rem 2.5rem', overflowY: 'auto', background: '#F8FAFC' }}>
         <Outlet />
       </main>
 
+      </div>
     </div>
   );
 };

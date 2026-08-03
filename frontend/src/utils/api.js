@@ -1,5 +1,5 @@
 const getApiBase = () => {
-  let base = import.meta.env.VITE_API_URL;
+  let base = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
   if (!base || base.trim() === '') {
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
       base = '/api';
@@ -8,7 +8,7 @@ const getApiBase = () => {
     }
   }
   let cleanBase = base.trim().replace(/\/+$/, '');
-  if (!cleanBase.endsWith('/api') && !cleanBase.startsWith('http://localhost:5173')) {
+  if (!cleanBase.endsWith('/api')) {
     cleanBase += '/api';
   }
   return cleanBase;
@@ -65,9 +65,31 @@ export const fetchCourses = async () => {
 };
 
 export const fetchCourseDetails = async (id) => {
-  const res = await fetch(`${API_BASE}/public/courses/${id}`);
-  if (!res.ok) throw new Error('Failed to fetch course details');
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/public/courses/${id}`);
+    if (res.ok) return await res.json();
+  } catch (e) {
+    console.warn('Direct course fetch failed, trying fallback lookup:', e);
+  }
+
+  // Smart fallback lookup by ID, slug, or title match from all active courses
+  try {
+    const allCourses = await fetchCourses();
+    if (Array.isArray(allCourses) && allCourses.length > 0) {
+      const matched = allCourses.find(
+        (c) =>
+          c._id?.toString() === id?.toString() ||
+          c.slug === id ||
+          c.title?.toLowerCase().replace(/\s+/g, '-').includes(id?.toLowerCase())
+      );
+      if (matched) return matched;
+      return allCourses[0]; // Fallback to first available course
+    }
+  } catch (err) {
+    console.error('Course fallback fetch failed:', err);
+  }
+
+  throw new Error('Failed to fetch course details');
 };
 
 export const fetchChapterContent = async (chapterId) => {
@@ -77,9 +99,51 @@ export const fetchChapterContent = async (chapterId) => {
 };
 
 export const fetchVideoDetails = async (id) => {
-  const res = await fetch(`${API_BASE}/public/videos/${id}`);
-  if (!res.ok) throw new Error('Failed to fetch video details');
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/public/videos/${id}`);
+    if (res.ok) return await res.json();
+  } catch (e) {
+    console.warn('Direct video fetch failed:', e);
+  }
+
+  // Smart fallback lookup from available courses
+  try {
+    const allCourses = await fetchCourses();
+    if (Array.isArray(allCourses)) {
+      for (const course of allCourses) {
+        if (course.subjects) {
+          for (const subj of course.subjects) {
+            if (subj.chapters) {
+              for (const chap of subj.chapters) {
+                if (chap._id) {
+                  try {
+                    const content = await fetchChapterContent(chap._id);
+                    if (content.videos && content.videos.length > 0) {
+                      const vMatch = content.videos.find(
+                        (v) =>
+                          v._id?.toString() === id?.toString() ||
+                          v.title?.toLowerCase().replace(/\s+/g, '-').includes(id?.toLowerCase())
+                      );
+                      if (vMatch) return vMatch;
+                    }
+                  } catch (err) {}
+                }
+              }
+            }
+          }
+        }
+      }
+      // If no specific video matched, fallback to first video of first course
+      if (allCourses.length > 0 && allCourses[0].subjects?.[0]?.chapters?.[0]?._id) {
+        const firstContent = await fetchChapterContent(allCourses[0].subjects[0].chapters[0]._id);
+        if (firstContent.videos?.[0]) return firstContent.videos[0];
+      }
+    }
+  } catch (err) {
+    console.error('Video fallback fetch failed:', err);
+  }
+
+  throw new Error('Failed to fetch video details');
 };
 
 export const searchCourses = async (query) => {
@@ -233,6 +297,22 @@ export const getStudentProfileApi = async () => {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return null;
+  return res.json();
+};
+
+export const fetchStudentReportCardApi = async (studentEmail = '') => {
+  const token = localStorage.getItem('token');
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const emailParam = studentEmail || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).email : '');
+  const query = emailParam ? `?studentEmail=${encodeURIComponent(emailParam)}` : '';
+
+  const res = await fetch(`${API_BASE}/student/report-card${query}`, { headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to load report card');
+  }
   return res.json();
 };
 
@@ -686,13 +766,13 @@ export const fetchTeachersApi = async () => {
     return [
       {
         _id: '6a6111111111111111111111',
-        name: 'Gaurav Sir & Team',
-        designation: 'Senior Lead Educator & Entrance Specialist',
-        qualification: 'M.Sc. Mathematics & Physics Specialist',
-        experience: '10+ Years',
-        bio: 'Legendary mathematics & physics educator leading PiyushDhara with over 10+ years of experience simplifying SEE, NEB, and IOE entrance concepts for 15,000+ students across Nepal.',
-        specializations: ['Mahabharath Math', 'NEB Physics', 'IOE Entrance'],
-        photo: '/teacher.png',
+        name: 'Pankaj Baduwal',
+        designation: 'Lead Educator & Engineer',
+        qualification: 'B.E. Computer Engineering',
+        experience: '8+ Years',
+        bio: 'Lead Computer Science educator and engineer leading PiyushDhara with extensive experience simplifying web development, entrance prep, and core subjects for thousands of students.',
+        specializations: ['Web Development', 'Computer Science', 'IOE Entrance'],
+        photo: '/gaurov.jpeg',
         rating: 4.9,
         studentsMentored: '15,000+',
         verified: true,
@@ -736,3 +816,556 @@ export const createTeacherProfileApi = async (teacherData) => {
   if (!res.ok) throw new Error('Failed to create teacher profile');
   return res.json();
 };
+
+// ============================================================================
+// CERTIFICATION LMS API ENDPOINTS
+// ============================================================================
+
+export const fetchCertificationsApi = async (params = {}) => {
+  const query = new URLSearchParams();
+  if (params.category) query.append('category', params.category);
+  if (params.difficulty) query.append('difficulty', params.difficulty);
+  if (params.search) query.append('search', params.search);
+  if (params.studentEmail) query.append('studentEmail', params.studentEmail);
+
+  const res = await fetch(`${API_BASE}/certifications?${query.toString()}`);
+  if (!res.ok) throw new Error('Failed to fetch certifications');
+  return res.json();
+};
+
+export const fetchCertificationDetailsApi = async (identifier, studentEmail = '') => {
+  const query = studentEmail ? `?studentEmail=${encodeURIComponent(studentEmail)}` : '';
+  const res = await fetch(`${API_BASE}/certifications/${identifier}${query}`);
+  if (!res.ok) throw new Error('Failed to fetch certification details');
+  return res.json();
+};
+
+export const enrollCertificationApi = async (id, studentEmail, studentName = '') => {
+  const res = await fetch(`${API_BASE}/certifications/${id}/enroll`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ studentEmail, studentName })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to enroll in certification');
+  return data;
+};
+
+export const fetchCertificationLearnDataApi = async (id, studentEmail, lessonId = '') => {
+  const query = new URLSearchParams({ studentEmail });
+  if (lessonId) query.append('lessonId', lessonId);
+
+  const res = await fetch(`${API_BASE}/certifications/${id}/learn?${query.toString()}`);
+  if (!res.ok) throw new Error('Failed to load learning workspace');
+  return res.json();
+};
+
+export const completeCertificationLessonApi = async (id, lessonId, payload) => {
+  const res = await fetch(`${API_BASE}/certifications/${id}/lessons/${lessonId}/complete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to mark lesson complete');
+  return data;
+};
+
+export const submitCertificationQuizApi = async (id, lessonId, payload) => {
+  const res = await fetch(`${API_BASE}/certifications/${id}/lessons/${lessonId}/quiz/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit quiz');
+  return data;
+};
+
+export const submitCertificationAssignmentApi = async (id, lessonId, payload) => {
+  const res = await fetch(`${API_BASE}/certifications/${id}/lessons/${lessonId}/assignment/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit assignment');
+  return data;
+};
+
+export const submitFinalAssessmentApi = async (id, payload) => {
+  const res = await fetch(`${API_BASE}/certifications/${id}/final-assessment/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit final assessment');
+  return data;
+};
+
+export const fetchStudentQuizAttemptsApi = async (studentEmail) => {
+  const res = await fetch(`${API_BASE}/quizzes/student/my-attempts?studentEmail=${encodeURIComponent(studentEmail)}`);
+  if (!res.ok) throw new Error('Failed to fetch student quiz attempts');
+  return res.json();
+};
+
+export const fetchCertificateByIdApi = async (certificateId) => {
+  const res = await fetch(`${API_BASE}/certifications/certificates/${certificateId}`);
+  if (!res.ok) throw new Error('Certificate verification failed');
+  return res.json();
+};
+
+export const fetchStudentCertificationsApi = async (studentEmail) => {
+  const res = await fetch(`${API_BASE}/certifications/my-certifications?studentEmail=${encodeURIComponent(studentEmail)}`);
+  if (!res.ok) throw new Error('Failed to fetch student certifications');
+  return res.json();
+};
+
+export const adminCreateCertificationApi = async (certData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(certData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to create certification');
+  return data;
+};
+
+export const adminCreateModuleApi = async (certId, moduleData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/${certId}/modules`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(moduleData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to add module');
+  return data;
+};
+
+export const adminCreateLessonApi = async (moduleId, lessonData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/modules/${moduleId}/lessons`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lessonData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to add lesson');
+  return data;
+};
+
+export const adminGradeAssignmentApi = async (submissionId, gradeData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/submissions/${submissionId}/grade`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(gradeData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to grade assignment');
+  return data;
+};
+
+export const fetchCertificationAnalyticsApi = async () => {
+  const res = await fetch(`${API_BASE}/certifications/admin/analytics`);
+  if (!res.ok) throw new Error('Failed to fetch certification analytics');
+  return res.json();
+};
+
+export const adminGetFullCertificationForEditApi = async (id) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/${id}/full`);
+  if (!res.ok) throw new Error('Failed to load certification studio data');
+  return res.json();
+};
+
+export const adminUpdateCertificationApi = async (id, certData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(certData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update certification');
+  return data;
+};
+
+export const adminDeleteCertificationApi = async (id) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/${id}`, {
+    method: 'DELETE'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to delete certification');
+  return data;
+};
+
+export const adminUpdateLessonApi = async (lessonId, lessonData) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/lessons/${lessonId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lessonData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update lesson');
+  return data;
+};
+
+export const adminDeleteModuleApi = async (moduleId) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/modules/${moduleId}`, {
+    method: 'DELETE'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to delete module');
+  return data;
+};
+
+export const adminDeleteLessonApi = async (lessonId) => {
+  const res = await fetch(`${API_BASE}/certifications/admin/lessons/${lessonId}`, {
+    method: 'DELETE'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to delete lesson');
+  return data;
+};
+
+export const adminGetSubmissionsApi = async () => {
+  const res = await fetch(`${API_BASE}/certifications/admin/submissions`);
+  if (!res.ok) throw new Error('Failed to fetch student submissions');
+  return res.json();
+};
+
+// ── QUIZ & ASSESSMENT SYSTEM APIs ──────────────────────────────
+export const fetchQuizzesApi = async (params = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const res = await fetch(`${API_BASE}/quizzes?${query}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch quizzes');
+  return data;
+};
+
+export const fetchQuizByIdApi = async (slugOrId, studentEmail = '') => {
+  const res = await fetch(`${API_BASE}/quizzes/${slugOrId}?studentEmail=${encodeURIComponent(studentEmail)}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch quiz details');
+  return data;
+};
+
+export const startQuizApi = async (quizId, studentEmail, studentName) => {
+  const res = await fetch(`${API_BASE}/quizzes/${quizId}/start`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ studentEmail, studentName })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to start quiz');
+  return data;
+};
+
+export const submitQuizApi = async (quizId, submitData) => {
+  const res = await fetch(`${API_BASE}/quizzes/${quizId}/submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(submitData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit quiz');
+  return data;
+};
+
+export const fetchQuizResultApi = async (quizId, submissionId) => {
+  const res = await fetch(`${API_BASE}/quizzes/${quizId}/results/${submissionId}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch quiz results');
+  return data;
+};
+
+export const fetchQuizLeaderboardApi = async (quizId) => {
+  const res = await fetch(`${API_BASE}/quizzes/${quizId}/leaderboard`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch quiz leaderboard');
+  return data;
+};
+
+export const fetchAdminQuizzesApi = async () => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/all`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch admin quizzes');
+  return data;
+};
+
+export const createAdminQuizApi = async (quizData) => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(quizData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to create quiz');
+  return data;
+};
+
+export const updateAdminQuizApi = async (quizId, quizData) => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/${quizId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(quizData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update quiz');
+  return data;
+};
+
+export const deleteAdminQuizApi = async (quizId) => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/${quizId}`, {
+    method: 'DELETE'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to delete quiz');
+  return data;
+};
+
+export const duplicateAdminQuizApi = async (quizId) => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/${quizId}/duplicate`, {
+    method: 'POST'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to duplicate quiz');
+  return data;
+};
+
+export const fetchAdminQuizSubmissionsApi = async () => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/submissions`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch admin quiz submissions');
+  return data;
+};
+
+export const gradeAdminQuizSubmissionApi = async (gradeData) => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/grade-submission`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(gradeData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to grade submission');
+  return data;
+};
+
+// Security Audit API
+export const recordSecurityLogApi = async (logPayload) => {
+  try {
+    const res = await fetch(`${API_BASE}/quizzes/security-log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(logPayload)
+    });
+    return await res.json();
+  } catch (err) {
+    console.error('recordSecurityLogApi error:', err);
+    return { success: false };
+  }
+};
+
+export const fetchSecurityAuditLogsApi = async () => {
+  const res = await fetch(`${API_BASE}/quizzes/admin/security-audit`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch security audit logs');
+  return data;
+};
+
+// Dynamic Platform Config API
+export const fetchPlatformConfigApi = async () => {
+  const res = await fetch(`${API_BASE}/public/platform-config`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch platform configuration');
+  return data;
+};
+
+export const updatePlatformConfigApi = async (token, configData) => {
+  const res = await fetch(`${API_BASE}/admin/platform-config`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(configData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update platform configuration');
+  return data;
+};
+
+// ==========================================
+// COMMUNITY HUB & DISCUSSIONS FORUM API
+// ==========================================
+
+const getAuthHeaders = (extraHeaders = {}) => {
+  const token = localStorage.getItem('token') || localStorage.getItem('firebaseToken');
+  const userStr = localStorage.getItem('user') || localStorage.getItem('studentUser');
+  let email = '';
+  if (userStr) {
+    try {
+      const u = JSON.parse(userStr);
+      email = u.email || '';
+    } catch(e) {}
+  }
+
+  const headers = { ...extraHeaders };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (email) headers['x-student-email'] = email;
+  return headers;
+};
+
+export const fetchCommunityPostsApi = async (params = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const res = await fetch(`${API_BASE}/community/posts?${query}`, { headers: getAuthHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch community posts');
+  return data;
+};
+
+export const fetchCommunityPostByIdApi = async (id) => {
+  const res = await fetch(`${API_BASE}/community/posts/${id}`, { headers: getAuthHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch post details');
+  return data;
+};
+
+export const createCommunityPostApi = async (postData) => {
+  const isFormData = postData instanceof FormData;
+  const userStr = localStorage.getItem('user') || localStorage.getItem('studentUser');
+  if (userStr) {
+    try {
+      const u = JSON.parse(userStr);
+      if (u.email && isFormData && !postData.has('studentEmail')) {
+        postData.append('studentEmail', u.email);
+      } else if (u.email && !isFormData) {
+        postData.studentEmail = u.email;
+      }
+    } catch(e) {}
+  }
+
+  const extraHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
+  const res = await fetch(`${API_BASE}/community/posts`, {
+    method: 'POST',
+    headers: getAuthHeaders(extraHeaders),
+    body: isFormData ? postData : JSON.stringify(postData)
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to create community post');
+  return data;
+};
+
+export const createCommunityAnswerApi = async (postId, answerData) => {
+  const isFormData = answerData instanceof FormData;
+  const extraHeaders = isFormData ? {} : { 'Content-Type': 'application/json' };
+
+  const res = await fetch(`${API_BASE}/community/posts/${postId}/answers`, {
+    method: 'POST',
+    headers: getAuthHeaders(extraHeaders),
+    body: isFormData ? answerData : JSON.stringify(answerData)
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit answer');
+  return data;
+};
+
+export const fetchCommunityAnswersApi = async (postId) => {
+  const res = await fetch(`${API_BASE}/community/posts/${postId}/answers`, { headers: getAuthHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch answers');
+  return data;
+};
+
+export const voteAnswerApi = async (answerId, voteType) => {
+  const res = await fetch(`${API_BASE}/community/answers/${answerId}/vote`, {
+    method: 'POST',
+    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ voteType })
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit vote');
+  return data;
+};
+
+export const markBestAnswerApi = async (answerId) => {
+  const res = await fetch(`${API_BASE}/community/answers/${answerId}/best`, {
+    method: 'PUT',
+    headers: getAuthHeaders()
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to mark best answer');
+  return data;
+};
+
+export const createCommunityCommentApi = async (commentData) => {
+  const res = await fetch(`${API_BASE}/community/comments`, {
+    method: 'POST',
+    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify(commentData)
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to post comment');
+  return data;
+};
+
+export const fetchCommunityCommentsApi = async (targetType, targetId) => {
+  const res = await fetch(`${API_BASE}/community/comments?targetType=${targetType}&targetId=${targetId}`, { headers: getAuthHeaders() });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch comments');
+  return data;
+};
+
+export const reactToCommunityItemApi = async (targetType, targetId, type) => {
+  const res = await fetch(`${API_BASE}/community/reactions`, {
+    method: 'POST',
+    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ targetType, targetId, type })
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to submit reaction');
+  return data;
+};
+
+export const voteCommunityPollApi = async (postId, optionIds, isAnonymous = false) => {
+  const res = await fetch(`${API_BASE}/community/posts/${postId}/poll/vote`, {
+    method: 'POST',
+    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ optionIds, isAnonymous })
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to vote in poll');
+  return data;
+};
+
+export const toggleSaveCommunityPostApi = async (postId) => {
+  const res = await fetch(`${API_BASE}/community/posts/${postId}/save`, {
+    method: 'POST',
+    headers: getAuthHeaders()
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to bookmark post');
+  return data;
+};
+
+export const fetchUserCommunityProfileApi = async () => {
+  const res = await fetch(`${API_BASE}/community/profile`, {
+    headers: getAuthHeaders()
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to fetch community profile');
+  return data;
+};
+
+
+
+
+

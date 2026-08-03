@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getStudentProfileApi, updateStudentProfileApi, getFileUrl, getCourseThumbnail } from '../utils/api';
+import { 
+  getStudentProfileApi, 
+  updateStudentProfileApi, 
+  getFileUrl, 
+  getCourseThumbnail, 
+  fetchStudentCertificationsApi,
+  fetchStudentQuizAttemptsApi 
+} from '../utils/api';
 import { 
   User, 
   Mail, 
@@ -28,7 +35,10 @@ import {
   Heart,
   Calendar,
   Building,
-  Globe
+  Globe,
+  FileText,
+  HelpCircle,
+  Trophy
 } from 'lucide-react';
 
 const StudentProfile = () => {
@@ -37,7 +47,7 @@ const StudentProfile = () => {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'edit', 'settings'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'certifications', 'quizzes', 'edit', 'settings'
   const [editSection, setEditSection] = useState('personal'); // 'personal', 'academic', 'goals'
   const [msg, setMsg] = useState({ type: '', text: '' });
   const [showChecklistModal, setShowChecklistModal] = useState(false);
@@ -70,6 +80,10 @@ const StudentProfile = () => {
     dreamJob: '',
     bio: ''
   });
+
+  const [myCertRecords, setMyCertRecords] = useState([]);
+  const [myCertificates, setMyCertificates] = useState([]);
+  const [myQuizAttempts, setMyQuizAttempts] = useState([]);
 
   const loadProfile = async () => {
     try {
@@ -105,6 +119,24 @@ const StudentProfile = () => {
           dreamJob: u.dreamJob || '',
           bio: u.bio || ''
         });
+
+        // Load student certifications & quiz attempts
+        if (u.email) {
+          try {
+            const certRes = await fetchStudentCertificationsApi(u.email);
+            setMyCertRecords(certRes.progressRecords || []);
+            setMyCertificates(certRes.certificates || []);
+          } catch (cErr) {
+            console.error('Certifications load error:', cErr);
+          }
+
+          try {
+            const quizRes = await fetchStudentQuizAttemptsApi(u.email);
+            setMyQuizAttempts(quizRes.submissions || []);
+          } catch (qErr) {
+            console.error('Quiz attempts load error:', qErr);
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to load student profile:', err);
@@ -229,16 +261,17 @@ const StudentProfile = () => {
           style={{ 
             borderRadius: '2rem', 
             padding: '2.5rem', 
-            background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)', 
-            color: '#FFFFFF', 
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 50%, #F0F9FF 100%)', 
+            color: '#0F172A', 
             marginBottom: '2.5rem',
-            boxShadow: '0 25px 50px -12px rgba(15,23,42,0.3)',
+            border: '1px solid rgba(37, 99, 235, 0.16)',
+            boxShadow: '0 20px 40px -10px rgba(37, 99, 235, 0.12)',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
           {/* Ambient Glow decoration */}
-          <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
+          <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
 
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             
@@ -369,6 +402,23 @@ const StudentProfile = () => {
 
             {/* Action Buttons */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flexShrink: 0 }}>
+              <Link 
+                to="/student/report-card" 
+                className="btn" 
+                style={{ 
+                  padding: '0.75rem 1.5rem', 
+                  fontSize: '0.9rem', 
+                  gap: '0.5rem',
+                  background: 'linear-gradient(135deg, #C89A2B 0%, #B45309 100%)',
+                  color: '#FFFFFF',
+                  fontWeight: 800,
+                  textDecoration: 'none',
+                  borderRadius: '0.85rem',
+                  boxShadow: '0 6px 18px rgba(200,154,43,0.3)'
+                }}
+              >
+                <Award size={18} /> Official Report Card
+              </Link>
               <button 
                 onClick={() => { setActiveTab('edit'); setEditSection('personal'); }} 
                 className="btn btn-primary" 
@@ -397,7 +447,7 @@ const StudentProfile = () => {
         </div>
 
         {/* ── 2. QUICK STATISTICS GRID ────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+        <div className="grid-responsive-4" style={{ gap: '1.25rem', marginBottom: '2.5rem' }}>
           
           <div className="card" style={{ padding: '1.5rem', borderRadius: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '1.1rem' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -461,6 +511,46 @@ const StudentProfile = () => {
             }}
           >
             🎓 My Enrolled Batches
+          </button>
+
+          <button
+            onClick={() => setActiveTab('certifications')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              borderRadius: '0.85rem',
+              border: 'none',
+              background: activeTab === 'certifications' ? '#2563EB' : 'transparent',
+              color: activeTab === 'certifications' ? '#FFFFFF' : '#64748B',
+              fontWeight: 800,
+              fontSize: '0.92rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            📜 My Certifications ({myCertificates.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('quizzes')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              borderRadius: '0.85rem',
+              border: 'none',
+              background: activeTab === 'quizzes' ? '#2563EB' : 'transparent',
+              color: activeTab === 'quizzes' ? '#FFFFFF' : '#64748B',
+              fontWeight: 800,
+              fontSize: '0.92rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            ⚡ Quiz &amp; Exam Scores ({myQuizAttempts.length})
           </button>
 
           <button
@@ -600,6 +690,193 @@ const StudentProfile = () => {
                             Syllabus
                           </Link>
                         </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 2: MY CERTIFICATIONS & VERIFIED CREDENTIALS ─────── */}
+        {activeTab === 'certifications' && (
+          <div>
+            <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>My Certified Credentials</h2>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>Track in-progress certifications, exam scores, and verified certificate downloads.</p>
+              </div>
+
+              <Link to="/certifications" className="btn btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', fontWeight: 800 }}>
+                Explore More Certifications
+              </Link>
+            </div>
+
+            {myCertRecords.length === 0 ? (
+              <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE' }}>
+                <Award size={56} color="#94A3B8" style={{ marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>No Active Certifications</h3>
+                <p style={{ color: '#64748B', fontSize: '0.95rem', maxWidth: '480px', margin: '0 auto 1.75rem auto' }}>
+                  You haven't enrolled in any professional certification courses yet. Complete courses to earn verified credentials!
+                </p>
+                <Link to="/certifications" className="btn btn-primary" style={{ padding: '0.8rem 1.75rem' }}>
+                  Browse Professional Certifications
+                </Link>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {myCertRecords.map((rec) => {
+                  const cert = rec.certificationId;
+                  if (!cert) return null;
+                  const isDone = rec.status === 'completed';
+                  const pct = rec.overallPercentage || 0;
+
+                  return (
+                    <div 
+                      key={rec._id} 
+                      style={{ 
+                        background: '#FFFFFF', 
+                        borderRadius: '1.25rem', 
+                        border: '1px solid #E2E8F0', 
+                        padding: '1.5rem', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between', 
+                        flexWrap: 'wrap', 
+                        gap: '1.25rem',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '280px' }}>
+                        <img src={cert.thumbnail} alt={cert.title} style={{ width: '90px', height: '65px', borderRadius: '0.75rem', objectFit: 'cover', flexShrink: 0 }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: isDone ? '#059669' : '#2563EB', textTransform: 'uppercase', background: isDone ? '#ECFDF5' : '#EFF6FF', padding: '0.25rem 0.65rem', borderRadius: '9999px', border: isDone ? '1px solid #A7F3D0' : '1px solid #BFDBFE' }}>
+                              {isDone ? '✓ Certification Completed' : 'Enrolled & In Progress'}
+                            </span>
+                          </div>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: '0.15rem 0 0.35rem 0' }}>{cert.title}</h3>
+                          
+                          {/* Visual Progress Bar */}
+                          <div style={{ maxWidth: '360px', marginTop: '0.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 800, color: '#475569', marginBottom: '0.25rem' }}>
+                              <span>Course Completion</span>
+                              <span style={{ color: isDone ? '#059669' : '#2563EB' }}>{pct}% Finished</span>
+                            </div>
+                            <div style={{ height: '7px', width: '100%', background: '#E2E8F0', borderRadius: '9999px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', width: `${pct}%`, background: isDone ? '#059669' : 'linear-gradient(90deg, #2563EB 0%, #3B82F6 100%)', borderRadius: '9999px', transition: 'width 0.4s ease' }} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        {isDone && rec.certificateId ? (
+                          <Link 
+                            to={`/certificates/${rec.certificateId}`} 
+                            className="btn" 
+                            style={{ background: '#059669', color: 'white', fontWeight: 800, padding: '0.65rem 1.25rem', borderRadius: '0.75rem', textDecoration: 'none', fontSize: '0.85rem' }}
+                          >
+                            View &amp; Print Certificate 📜
+                          </Link>
+                        ) : (
+                          <Link 
+                            to={`/certifications/${cert._id}/learn`} 
+                            className="btn btn-primary" 
+                            style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                          >
+                            Continue Learning →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 3: MY QUIZZES & EXAM ATTEMPTS ───────────────────── */}
+        {activeTab === 'quizzes' && (
+          <div>
+            <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>My Examination &amp; Quiz Scores</h2>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>Review your score reports, percentage marks, and detailed answer breakdown.</p>
+              </div>
+
+              <Link to="/quizzes" className="btn btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', fontWeight: 800 }}>
+                Explore More Examinations &amp; Quizzes
+              </Link>
+            </div>
+
+            {myQuizAttempts.length === 0 ? (
+              <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE' }}>
+                <FileText size={56} color="#94A3B8" style={{ marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>No Exam Attempts Recorded</h3>
+                <p style={{ color: '#64748B', fontSize: '0.95rem', maxWidth: '480px', margin: '0 auto 1.75rem auto' }}>
+                  You haven't attempted any live examinations, grand mock tests, or practice quizzes yet.
+                </p>
+                <Link to="/quizzes" className="btn btn-primary" style={{ padding: '0.8rem 1.75rem' }}>
+                  Start Practice Quiz Now
+                </Link>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {myQuizAttempts.map((sub) => {
+                  const isPassed = sub.passed;
+                  const pct = sub.percentage || 0;
+                  const quizId = sub.quizId?._id || sub.quizId;
+
+                  return (
+                    <div 
+                      key={sub._id || sub.submissionId}
+                      style={{
+                        background: '#FFFFFF',
+                        borderRadius: '1.25rem',
+                        border: '1px solid #E2E8F0',
+                        padding: '1.35rem 1.6rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '1.25rem',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flex: 1, minWidth: '280px' }}>
+                        <div style={{ width: '54px', height: '54px', borderRadius: '1rem', background: isPassed ? '#ECFDF5' : '#FEF2F2', color: isPassed ? '#059669' : '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {isPassed ? <CheckCircle2 size={28} /> : <XCircle size={28} />}
+                        </div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: isPassed ? '#059669' : '#DC2626', background: isPassed ? '#ECFDF5' : '#FEF2F2', padding: '0.2rem 0.6rem', borderRadius: '9999px', border: `1px solid ${isPassed ? '#A7F3D0' : '#FEE2E2'}` }}>
+                              {isPassed ? '✓ PASSED' : 'FAILED'} ({pct}%)
+                            </span>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B' }}>
+                              {sub.quizType ? sub.quizType.toUpperCase() : 'EXAM'}
+                            </span>
+                          </div>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.35rem 0' }}>{sub.quizTitle || 'Practice Quiz'}</h3>
+                          <div style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                            <span>Marks: <strong>{sub.scoreObtained} / {sub.totalMarks}</strong></span>
+                            <span>Correct: <strong>{sub.correctCount} / {sub.totalQuestions}</strong></span>
+                            <span>Time Spent: <strong>{Math.ceil((sub.timeTakenSeconds || 0) / 60)} mins</strong></span>
+                            <span>Date: <strong>{new Date(sub.createdAt).toLocaleDateString()}</strong></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <Link 
+                          to={`/quizzes/${quizId}/results/${sub.submissionId}`}
+                          className="btn btn-outline"
+                          style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', fontWeight: 800, color: '#2563EB', borderColor: '#BFDBFE', background: '#EFF6FF' }}
+                        >
+                          View Answer Report 📊
+                        </Link>
                       </div>
                     </div>
                   );

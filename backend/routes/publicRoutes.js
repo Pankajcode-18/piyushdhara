@@ -15,7 +15,10 @@ const {
     createTeacherProfile
 } = require('../controllers/publicController');
 
+const { getPublicPlatformConfig } = require('../controllers/adminPlatformController');
+
 router.get('/courses', getPublishedCourses);
+router.get('/platform-config', getPublicPlatformConfig);
 router.get('/search', searchCourses);
 router.get('/courses/:id', getCourseDetails);
 router.get('/chapters/:id/content', getChapterContent);

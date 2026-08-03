@@ -28,9 +28,13 @@ import {
   ArrowRight,
   Sparkles,
   CheckCircle2,
+  Award,
+  HelpCircle,
+  MessageSquare,
+  Users
 } from 'lucide-react';
 import Footer from '../common/Footer';
-import { enrollStudentApi } from '../../utils/api';
+import { enrollStudentApi, getFileUrl } from '../../utils/api';
 import teacherImg from '../../assets/gaurov.jpeg';
 import { useLanguage } from '../../context/LanguageContext';
 import AiChatbotWidget from '../common/AiChatbotWidget';
@@ -42,7 +46,7 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { lang, toggleLanguage, t } = useLanguage();
-  const { studyMode, applyThemeForRoute } = useTheme();
+  const { studyMode, toggleStudyMode, applyThemeForRoute } = useTheme();
   const { collapsed, toggleSidebar } = useSidebar();
 
   const [searchParams] = useSearchParams();
@@ -84,7 +88,7 @@ const MainLayout = () => {
     if (savedUserStr) {
       try {
         setStudent(JSON.parse(savedUserStr));
-      } catch (e) {}
+      } catch (e) { }
     }
 
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -113,11 +117,22 @@ const MainLayout = () => {
 
   const { userProfile, logout: authLogout } = useAuth();
   const activeUser = userProfile || student || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+  const userPhoto = activeUser?.photo || activeUser?.profilePicture || activeUser?.picture;
+
+  const isExamRoute = location.pathname.includes('/take');
+
+  if (isExamRoute) {
+    return (
+      <main style={{ minHeight: '100vh', width: '100%', background: '#F8FAFC', margin: 0, padding: 0 }}>
+        <Outlet />
+      </main>
+    );
+  }
 
   const handleStudentLogout = async () => {
     try {
       if (authLogout) await authLogout();
-    } catch (e) {}
+    } catch (e) { }
     localStorage.removeItem('user');
     localStorage.removeItem('studentUser');
     localStorage.removeItem('token');
@@ -166,17 +181,24 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { section: t('academics'), items: [
-      { to: '/', icon: HomeIcon, label: t('home'), exact: true },
-      { to: '/courses', icon: Compass, label: t('exploreBatches') },
-      { to: '/courses?filter=enrolled', icon: Monitor, label: t('myEnrolledBatches'), matchSearch: '?filter=enrolled' },
-      { to: '/notes', icon: FileText, label: t('freeNotesPdfs'), badge: 'NEW' },
-    ]},
-    { section: t('studyCorner'), items: [
-      { to: '/about', icon: Info, label: t('aboutPlatform') },
-      { to: '/exam-alerts', icon: Bell, label: t('examAlerts') },
-      { to: '/support', icon: Phone, label: t('academicSupport') },
-    ]},
+    {
+      section: t('academics'), items: [
+        { to: '/', icon: HomeIcon, label: t('home'), exact: true },
+        { to: '/courses', icon: Compass, label: t('exploreBatches') },
+        { to: '/certifications', icon: Award, label: 'Certifications', badge: 'PRO' },
+        { to: '/quizzes', icon: HelpCircle, label: 'Quizzes & Exams', badge: 'LIVE' },
+        { to: '/courses?filter=enrolled', icon: Monitor, label: t('myEnrolledBatches'), matchSearch: '?filter=enrolled' },
+        { to: '/notes', icon: FileText, label: t('freeNotesPdfs'), badge: 'NEW' },
+        { to: '/community', icon: MessageSquare, label: 'Community Hub', badge: 'LIVE' },
+      ]
+    },
+    {
+      section: t('studyCorner'), items: [
+        { to: '/about', icon: Info, label: t('aboutPlatform') },
+        { to: '/exam-alerts', icon: Bell, label: t('examAlerts') },
+        { to: '/support', icon: Phone, label: t('academicSupport') },
+      ]
+    },
   ];
 
   const getLinkActive = (item) => {
@@ -203,11 +225,11 @@ const MainLayout = () => {
               <Menu size={22} />
             </button>
             <Link to="/" className="navbar-brand" style={{ textDecoration: 'none', gap: '0.25rem', display: 'flex', alignItems: 'center' }}>
-              <img 
-                src="/Logo1.png" 
+              <img
+                src="/Logo1.png"
                 onError={(e) => { e.target.src = '/logo.jpeg'; }}
-                alt="PiyushDhara Logo" 
-                style={{ height: '58px', width: '58px', borderRadius: '50%', objectFit: 'cover' }} 
+                alt="PiyushDhara Logo"
+                style={{ height: '58px', width: '58px', borderRadius: '50%', objectFit: 'cover' }}
               />
               <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
                 <span style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -293,12 +315,23 @@ const MainLayout = () => {
                   }}
                 >
                   <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
+                    width: '34px', height: '34px', borderRadius: '50%',
                     background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#FFF', fontWeight: 800, fontSize: '0.85rem',
+                    overflow: 'hidden', flexShrink: 0,
+                    border: userPhoto ? '1.5px solid #2563EB' : 'none'
                   }}>
-                    {activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'S'}
+                    {userPhoto ? (
+                      <img 
+                        src={getFileUrl(userPhoto)} 
+                        alt={activeUser.name || 'Student'} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                    ) : (
+                      activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'S'
+                    )}
                   </div>
                   <div className="desktop-only" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1, textAlign: 'left' }}>
                     <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
@@ -311,13 +344,28 @@ const MainLayout = () => {
 
                 {showDropdown && (
                   <div className="dropdown-menu animate-fade-in" style={{ width: '220px', right: 0 }}>
-                    <div style={{ padding: '0.75rem 1rem 0.5rem', color: 'var(--text-primary)' }}>
-                      <p style={{ fontWeight: 800, fontSize: '0.92rem', margin: '0 0 0.2rem 0', color: '#0F172A' }}>{activeUser.name}</p>
-                      <p style={{ fontSize: '0.75rem', color: '#64748B', margin: 0, wordBreak: 'break-all' }}>{activeUser.email}</p>
+                    <div style={{ padding: '0.75rem 1rem 0.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: '#2563EB', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, overflow: 'hidden', flexShrink: 0 }}>
+                        {userPhoto ? (
+                          <img src={getFileUrl(userPhoto)} alt={activeUser.name || 'User'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                        ) : (
+                          activeUser.name ? activeUser.name.charAt(0).toUpperCase() : 'S'
+                        )}
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                        <p style={{ fontWeight: 800, fontSize: '0.92rem', margin: '0 0 0.1rem 0', color: '#0F172A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeUser.name}</p>
+                        <p style={{ fontSize: '0.72rem', color: '#64748B', margin: 0, wordBreak: 'break-all' }}>{activeUser.email}</p>
+                      </div>
                     </div>
                     <div className="dropdown-divider" />
                     <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/profile'); }}>
                       <User size={16} color="#2563EB" /> My Profile Dashboard
+                    </button>
+                    <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/community'); }}>
+                      <MessageSquare size={16} color="#7C3AED" /> Community Hub &amp; Doubts
+                    </button>
+                    <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/student/report-card'); }}>
+                      <Award size={16} color="#C89A2B" /> Academic Report Card
                     </button>
                     <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/my-courses'); }}>
                       <GraduationCap size={16} color="#10B981" /> My Enrolled Batches
@@ -532,8 +580,8 @@ const MainLayout = () => {
 
       {/* ── Enrollment Modal ─────────────────────────────────── */}
       {showEnrollModal && (
-        <div 
-          className="modal-overlay" 
+        <div
+          className="modal-overlay"
           onClick={(e) => { if (e.target === e.currentTarget) setShowEnrollModal(false); }}
           style={{
             position: 'fixed',
@@ -547,7 +595,7 @@ const MainLayout = () => {
             padding: '1rem'
           }}
         >
-          <div 
+          <div
             className="modal-content animate-slide-up"
             style={{
               width: '100%',
@@ -563,16 +611,16 @@ const MainLayout = () => {
             {/* Close Button */}
             <button
               onClick={() => setShowEnrollModal(false)}
-              style={{ 
-                position: 'absolute', 
-                top: '1.25rem', 
-                right: '1.25rem', 
+              style={{
+                position: 'absolute',
+                top: '1.25rem',
+                right: '1.25rem',
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
                 background: '#F1F5F9',
-                border: 'none', 
-                color: '#64748B', 
+                border: 'none',
+                color: '#64748B',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -587,21 +635,21 @@ const MainLayout = () => {
             {/* Header with Logo */}
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
               <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.85rem' }}>
-                <div style={{ 
-                  width: '68px', 
-                  height: '68px', 
-                  borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', 
-                  padding: '3px', 
-                  boxShadow: '0 10px 25px rgba(37,99,235,0.15)', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center' 
+                <div style={{
+                  width: '68px',
+                  height: '68px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)',
+                  padding: '3px',
+                  boxShadow: '0 10px 25px rgba(37,99,235,0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
-                  <img 
-                    src="/Logo1.png" 
-                    onError={(e) => { e.target.src = '/logo.jpeg'; }} 
-                    alt="PiyushDhara Logo" 
+                  <img
+                    src="/Logo1.png"
+                    onError={(e) => { e.target.src = '/logo.jpeg'; }}
+                    alt="PiyushDhara Logo"
                     style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
                   />
                 </div>
@@ -620,7 +668,7 @@ const MainLayout = () => {
             </div>
 
             <form onSubmit={handleEnrollSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              
+
               {/* Full Name */}
               <div>
                 <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: '#334155' }}>
@@ -628,12 +676,12 @@ const MainLayout = () => {
                 </label>
                 <div style={{ position: 'relative' }}>
                   <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                  <input 
-                    type="text" 
-                    required 
-                    value={fullName} 
-                    onChange={(e) => setFullName(e.target.value)} 
-                    placeholder="e.g. Pankaj Baduwal" 
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="e.g. Pankaj Baduwal"
                     style={{
                       width: '100%',
                       height: '48px',
@@ -658,12 +706,12 @@ const MainLayout = () => {
                 </label>
                 <div style={{ position: 'relative' }}>
                   <GraduationCap size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                  <input 
-                    type="text" 
-                    required 
-                    value={schoolName} 
-                    onChange={(e) => setSchoolName(e.target.value)} 
-                    placeholder="e.g. Adarsha Secondary School" 
+                  <input
+                    type="text"
+                    required
+                    value={schoolName}
+                    onChange={(e) => setSchoolName(e.target.value)}
+                    placeholder="e.g. Adarsha Secondary School"
                     style={{
                       width: '100%',
                       height: '48px',
@@ -689,12 +737,12 @@ const MainLayout = () => {
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Phone size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                    <input 
-                      type="tel" 
-                      required 
-                      value={phoneNumber} 
-                      onChange={(e) => setPhoneNumber(e.target.value)} 
-                      placeholder="98XXXXXXXX" 
+                    <input
+                      type="tel"
+                      required
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="98XXXXXXXX"
                       style={{
                         width: '100%',
                         height: '48px',
@@ -717,12 +765,12 @@ const MainLayout = () => {
                   </label>
                   <div style={{ position: 'relative' }}>
                     <Mail size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                    <input 
-                      type="email" 
-                      required 
-                      value={emailAddress} 
-                      onChange={(e) => setEmailAddress(e.target.value)} 
-                      placeholder="student@gmail.com" 
+                    <input
+                      type="email"
+                      required
+                      value={emailAddress}
+                      onChange={(e) => setEmailAddress(e.target.value)}
+                      placeholder="student@gmail.com"
                       style={{
                         width: '100%',
                         height: '48px',
@@ -741,14 +789,14 @@ const MainLayout = () => {
               </div>
 
               {/* Submit Button */}
-              <button 
-                type="submit" 
-                className="btn btn-primary" 
-                style={{ 
-                  width: '100%', 
-                  height: '50px', 
-                  marginTop: '0.5rem', 
-                  borderRadius: '0.85rem', 
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{
+                  width: '100%',
+                  height: '50px',
+                  marginTop: '0.5rem',
+                  borderRadius: '0.85rem',
                   fontSize: '0.98rem',
                   fontWeight: 700,
                   boxShadow: '0 8px 25px rgba(37,99,235,0.3)',

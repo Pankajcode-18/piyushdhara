@@ -279,7 +279,19 @@ const AiChatbotWidget = () => {
     <>
       {/* ── 1. FLOATING LAUNCHER BUTTON & POPUP BANNER ─────────── */}
       {!isOpen && (
-        <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.6rem' }}>
+        <div 
+          className="ai-floating-launcher"
+          style={{ 
+            position: 'fixed', 
+            bottom: 'calc(var(--mobile-bottom-bar-height, 0px) + 1.5rem)', 
+            right: '1.25rem', 
+            zIndex: 9999, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'flex-end', 
+            gap: '0.6rem' 
+          }}
+        >
           
           {/* Floating "Ask Anything AI" Speech Bubble Banner */}
           {showPopupBanner && (

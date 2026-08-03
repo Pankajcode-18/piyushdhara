@@ -29,7 +29,7 @@ const calculateCompletionStats = (student) => {
 const sendJwtCookie = (user, statusCode, res, message = 'Success') => {
   const token = jwt.sign(
     { id: user._id, role: user.role, firebaseUID: user.firebaseUID },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_prod',
     { expiresIn: '7d' }
   );
 
@@ -211,9 +211,21 @@ const Course = require('../models/Course');
  */
 const getStudentProfile = async (req, res) => {
   try {
-    const student = await Student.findById(req.user._id);
+    let student = await Student.findById(req.user._id);
+    if (!student && req.user.email) {
+      student = await Student.findOne({ email: req.user.email.toLowerCase() });
+    }
+    if (!student && req.user.firebaseUID) {
+      student = await Student.findOne({ firebaseUID: req.user.firebaseUID });
+    }
+
     if (!student) {
-      return res.status(404).json({ message: 'Student profile not found' });
+      student = await Student.create({
+        name: req.user.name || req.user.email?.split('@')[0] || 'Student',
+        email: (req.user.email || '').toLowerCase(),
+        firebaseUID: req.user.firebaseUID || req.user._id.toString(),
+        photo: ''
+      });
     }
 
     // Generate student ID if missing
@@ -266,9 +278,21 @@ const getStudentProfile = async (req, res) => {
  */
 const updateStudentProfile = async (req, res) => {
   try {
-    const student = await Student.findById(req.user._id);
+    let student = await Student.findById(req.user._id);
+    if (!student && req.user.email) {
+      student = await Student.findOne({ email: req.user.email.toLowerCase() });
+    }
+    if (!student && req.user.firebaseUID) {
+      student = await Student.findOne({ firebaseUID: req.user.firebaseUID });
+    }
+
     if (!student) {
-      return res.status(404).json({ message: 'Student profile not found' });
+      student = await Student.create({
+        name: req.user.name || req.user.email?.split('@')[0] || 'Student',
+        email: (req.user.email || '').toLowerCase(),
+        firebaseUID: req.user.firebaseUID || req.user._id.toString(),
+        photo: ''
+      });
     }
 
     const {
@@ -330,6 +354,15 @@ const updateStudentProfile = async (req, res) => {
     }
 
     await student.save();
+
+    // Sync photo and name to User model if user exists in User collection
+    const User = require('../models/User');
+    if (student.email) {
+      await User.updateOne(
+        { email: student.email.toLowerCase() },
+        { $set: { photo: student.photo, profilePicture: student.photo, name: student.name } }
+      ).catch(() => {});
+    }
 
     const populatedStudent = await Student.findById(student._id).populate('enrolledCourses');
 

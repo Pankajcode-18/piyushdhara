@@ -329,7 +329,7 @@ const Courses = () => {
             )}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '2rem' }}>
+          <div className="grid-responsive-3" style={{ gap: '1.75rem' }}>
             <AnimatePresence>
               {filteredCourses.map((course, idx) => {
                 const isFree = course.price === 0;

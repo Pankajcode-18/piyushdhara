@@ -23,7 +23,7 @@ const protectJwt = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_prod');
     
     // Find user in Student, Teacher, or User models
     let user = await Student.findById(decoded.id);

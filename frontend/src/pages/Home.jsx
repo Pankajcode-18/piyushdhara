@@ -1,13 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { 
-  PlayCircle, 
-  BookOpen, 
-  Award, 
-  TrendingUp, 
-  Users, 
-  Video, 
-  FileText, 
+import {
+  PlayCircle,
+  BookOpen,
+  Award,
+  TrendingUp,
+  Users,
+  Video,
+  FileText,
   Zap,
   ChevronRight,
   ArrowRight,
@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import TeacherProfileModal from '../components/common/TeacherProfileModal';
+import HeroAnimatedLogo from '../components/common/HeroAnimatedLogo';
 import teacherImg from '../assets/gaurov.jpeg';
 import { useLanguage } from '../context/LanguageContext';
 import { API_BASE } from '../utils/api';
@@ -63,47 +64,49 @@ const Home = () => {
   ];
 
   const quickCategories = [
-    { 
-      title: 'Mahabharath Math', 
-      desc: 'Gaurav Sir Math Series & CDC Formulas', 
-      icon: Sparkles, 
-      color: '#8B5CF6', 
-      bg: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(124,58,237,0.04) 100%)', 
+    {
+      title: 'Mahabharath Math',
+      desc: 'Gaurav Sir Math Series & CDC Formulas',
+      icon: Sparkles,
+      color: '#8B5CF6',
+      bg: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(124,58,237,0.04) 100%)',
       border: 'rgba(139,92,246,0.25)',
       badge: 'POPULAR',
-      link: '/courses' 
+      link: '/courses'
     },
-    { 
-      title: 'Web Development', 
-      desc: 'Full-Stack MERN & Practical Projects', 
-      icon: BookOpen, 
-      color: '#3B82F6', 
-      bg: 'linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(37,99,235,0.04) 100%)', 
+    {
+      title: 'Web Development',
+      desc: 'Full-Stack MERN & Practical Projects',
+      icon: BookOpen,
+      color: '#3B82F6',
+      bg: 'linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(37,99,235,0.04) 100%)',
       border: 'rgba(59,130,246,0.25)',
       badge: 'TECH',
-      link: '/courses' 
+      link: '/courses'
     },
-    { 
-      title: 'IOE Entrance', 
-      desc: 'Pulchowk & Engineering Past Questions', 
-      icon: Star, 
-      color: '#10B981', 
-      bg: 'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(5,150,105,0.04) 100%)', 
+    {
+      title: 'IOE Entrance',
+      desc: 'Pulchowk & Engineering Past Questions',
+      icon: Star,
+      color: '#10B981',
+      bg: 'linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(5,150,105,0.04) 100%)',
       border: 'rgba(16,185,129,0.25)',
       badge: 'ENTRANCE',
-      link: '/courses' 
+      link: '/courses'
     },
-    { 
-      title: 'Loksewa Tayari', 
-      desc: 'General Knowledge & IQ Shortcuts', 
-      icon: GraduationCap, 
-      color: '#F43F5E', 
-      bg: 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(225,29,72,0.04) 100%)', 
+    {
+      title: 'Loksewa Tayari',
+      desc: 'General Knowledge & IQ Shortcuts',
+      icon: GraduationCap,
+      color: '#F43F5E',
+      bg: 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, rgba(225,29,72,0.04) 100%)',
       border: 'rgba(244,63,94,0.25)',
       badge: 'COMPETITIVE',
-      link: '/courses' 
+      link: '/courses'
     },
   ];
+
+  const [platformConfig, setPlatformConfig] = useState(null);
 
   useEffect(() => {
     const fetchCoursesData = async () => {
@@ -111,6 +114,15 @@ const Home = () => {
         const res = await fetch(`${API_BASE}/public/courses`);
         const data = await res.json();
         setFeaturedCourses(data.length > 0 ? data.slice(0, 3) : []);
+        
+        try {
+          const configRes = await fetch(`${API_BASE}/public/platform-config`);
+          const configData = await configRes.json();
+          if (configData?.config) setPlatformConfig(configData.config);
+        } catch (cErr) {
+          console.log('Platform config fallback to default');
+        }
+
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch courses:', error);
@@ -133,257 +145,233 @@ const Home = () => {
       {/* ── 1. Hero Section ─────────────────────────────────────────── */}
       <section style={{ padding: '2.5rem 0 4rem 0', position: 'relative' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
-          
+
           <div className="hero-responsive-card" style={{
             borderRadius: '2.25rem',
             padding: '3.5rem 3rem',
-            background: 'linear-gradient(135deg, #0F172A 0%, #1E1B4B 45%, #1E3A8A 100%)',
-            color: '#FFFFFF',
-            boxShadow: '0 30px 60px -15px rgba(15, 23, 42, 0.45), 0 0 40px rgba(37, 99, 235, 0.2)',
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 45%, #E0F2FE 100%)',
+            color: '#0F172A',
+            boxShadow: '0 25px 60px -15px rgba(37, 99, 235, 0.14), 0 0 40px rgba(56, 189, 248, 0.15)',
             position: 'relative',
             overflow: 'hidden',
-            border: '1px solid rgba(255, 255, 255, 0.12)'
+            border: '1px solid rgba(37, 99, 235, 0.16)'
           }}>
-            
+
             {/* Ambient Glowing Glass Mesh Backdrops */}
-            <div style={{ position: 'absolute', top: '-25%', right: '-10%', width: '450px', height: '450px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }}></div>
-            <div style={{ position: 'absolute', bottom: '-20%', left: '-5%', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
-            <div style={{ position: 'absolute', top: '40%', left: '45%', width: '250px', height: '250px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)', filter: 'blur(45px)', pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', bottom: '-20%', left: '-5%', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', top: '40%', left: '45%', width: '250px', height: '250px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)', filter: 'blur(45px)', pointerEvents: 'none' }}></div>
 
-            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
-              
-              {/* Top Row: Pill Badge + Epic Gradient Headline */}
-              <motion.div
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
-                  <div style={{ 
-                    display: 'inline-flex', alignItems: 'center', gap: '0.5rem', 
-                    padding: '0.45rem 1.1rem', 
-                    background: 'rgba(255, 255, 255, 0.1)', 
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)', 
-                    borderRadius: '9999px', 
-                    fontSize: '0.82rem', fontWeight: 800, 
-                    color: '#38BDF8',
-                    letterSpacing: '0.02em',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-                  }}>
-                    <Zap size={15} color="#38BDF8" className="animate-pulse" /> {t('heroBadge')}
-                  </div>
+            {/* ── Live Batches Badge — Top Right Corner ── */}
+            <motion.div
+              initial={{ opacity: 0, y: -12, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              style={{
+                position: 'absolute',
+                top: '1.25rem',
+                right: '1.5rem',
+                zIndex: 10,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.45rem 1rem',
+                background: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: '1.5px solid rgba(16, 185, 129, 0.35)',
+                borderRadius: '9999px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#059669',
+                boxShadow: '0 4px 16px rgba(16, 185, 129, 0.18), 0 1px 4px rgba(0,0,0,0.06)',
+                letterSpacing: '0.01em',
+                pointerEvents: 'none'
+              }}
+            >
+              <span style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#10B981',
+                display: 'inline-block',
+                boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.25)',
+                animation: 'livePulse 2s infinite'
+              }} />
+              2081/2082 Live Batches Active
+            </motion.div>
 
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                    padding: '0.4rem 0.9rem',
-                    background: 'rgba(16, 185, 129, 0.15)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                    borderRadius: '9999px',
-                    fontSize: '0.78rem', fontWeight: 700, color: '#6EE7B7'
-                  }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block', boxShadow: '0 0 10px #10B981' }}></span>
-                    2081/2082 Live Batches Active
-                  </div>
-                </div>
+            {/* 2-Column Responsive Layout Grid */}
+            <div style={{
+              position: 'relative',
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '3rem',
+              flexWrap: 'wrap'
+            }}>
 
-                <h1 className="hero-title-responsive" style={{ 
-                  fontSize: '3.4rem', 
-                  fontWeight: 900, 
-                  lineHeight: '1.16', 
-                  letterSpacing: '-0.03em', 
-                  color: '#FFFFFF', 
-                  margin: 0, 
-                  maxWidth: '1100px',
-                  fontFamily: 'var(--font-main)'
-                }}>
-                  Education is the most <span style={{
-                    background: 'linear-gradient(135deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 0 30px rgba(56, 189, 248, 0.3)'
-                  }}>powerful weapon</span> which you can use to <span style={{
-                    background: 'linear-gradient(135deg, #34D399 0%, #38BDF8 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}>change the world.</span>
-                </h1>
-              </motion.div>
+              {/* Left Column: Headlines + CTAs + Stats */}
+              <div style={{ flex: '1 1 540px', maxWidth: '650px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-              {/* Bottom Row: Subtitle + Action Buttons + Stats vs Spotlight Educator Card */}
-              <div className="hero-responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '3rem', alignItems: 'center' }}>
-                
-                {/* Left Column */}
-                <div>
-                  <p style={{ fontSize: '1.12rem', color: '#94A3B8', marginBottom: '2.25rem', maxWidth: '620px', lineHeight: '1.75', fontWeight: 400 }}>
-                    Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: '#F8FAFC', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
-                  </p>
-
-                  {/* CTA Buttons */}
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-                    <Link 
-                      to="/courses" 
-                      className="btn" 
-                      style={{ 
-                        padding: '1rem 2.25rem', 
-                        fontSize: '1rem', 
-                        fontWeight: 800,
-                        borderRadius: '1rem', 
-                        gap: '0.65rem',
-                        background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                        color: '#FFFFFF',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        boxShadow: '0 12px 30px rgba(37,99,235,0.45)',
-                        transition: 'all 0.3s ease',
-                        display: 'inline-flex',
-                        alignItems: 'center'
-                      }}
-                    >
-                      {t('exploreBatchesBtn')} <ArrowRight size={18} />
-                    </Link>
-
-                    <Link 
-                      to="/notes" 
-                      className="btn" 
-                      style={{ 
-                        padding: '1rem 2rem', 
-                        fontSize: '1rem', 
-                        fontWeight: 700,
-                        borderRadius: '1rem', 
-                        color: '#F8FAFC', 
-                        border: '1.5px solid rgba(255,255,255,0.25)', 
-                        gap: '0.65rem', 
-                        background: 'rgba(255, 255, 255, 0.06)',
-                        backdropFilter: 'blur(10px)',
-                        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                        display: 'inline-flex',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <FileText size={18} color="#38BDF8" /> {t('freeNotesBtn')}
-                    </Link>
-                  </div>
-
-                  {/* Trust Stats Bar */}
-                  <div className="hero-stats-responsive" style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(3, 1fr)', 
-                    gap: '1.25rem', 
-                    borderTop: '1px solid rgba(255,255,255,0.12)', 
-                    paddingTop: '1.75rem' 
-                  }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#38BDF8', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                        <Users size={14} /> Students
-                      </div>
-                      <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#FFFFFF', margin: 0, letterSpacing: '-0.02em' }}>15,000+</h4>
-                      <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '0.15rem 0 0 0', fontWeight: 500 }}>Enrolled Learners</p>
-                    </div>
-
-                    <div style={{ borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '1.25rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#34D399', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                        <Award size={14} /> Success Rate
-                      </div>
-                      <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#FFFFFF', margin: 0, letterSpacing: '-0.02em' }}>98.4%</h4>
-                      <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '0.15rem 0 0 0', fontWeight: 500 }}>Board Exam Pass</p>
-                    </div>
-
-                    <div style={{ borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '1.25rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#A78BFA', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                        <Video size={14} /> Video Lessons
-                      </div>
-                      <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#FFFFFF', margin: 0, letterSpacing: '-0.02em' }}>500+</h4>
-                      <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '0.15rem 0 0 0', fontWeight: 500 }}>HD Lectures</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Column: Educator Spotlight Card */}
+                {/* Top Pill Badges + Headline */}
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  style={{ display: 'flex', justifyContent: 'center', position: 'relative', cursor: 'pointer' }}
-                  onClick={() => setSelectedTeacher({
-                    name: 'Gaurav Sir & Team',
-                    photo: teacherImg
-                  })}
-                  title="Click to view Gaurav Sir & Team Teacher Profile"
+                  initial={{ opacity: 0, y: 25 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <div style={{
-                    position: 'relative',
-                    borderRadius: '2rem',
-                    padding: '10px',
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    boxShadow: '0 30px 60px rgba(0,0,0,0.4), 0 0 30px rgba(56, 189, 248, 0.25)',
-                    border: '1.5px solid rgba(255, 255, 255, 0.2)',
-                    width: '100%', 
-                    maxWidth: '440px',
-                  }}>
-                    <img
-                      className="hero-educator-img"
-                      src={teacherImg}
-                      onError={(e) => { e.target.src = '/gaurov.jpeg'; }}
-                      alt="Gaurav Sir & Team"
-                      style={{ width: '100%', height: '400px', objectFit: 'cover', borderRadius: '1.6rem', display: 'block' }}
-                    />
-
-                    {/* Floating Top-Left Micro Badge */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
                     <div style={{
-                      position: 'absolute',
-                      top: '24px',
-                      left: '24px',
-                      background: 'rgba(15, 23, 42, 0.85)',
-                      backdropFilter: 'blur(10px)',
-                      color: '#FFFFFF',
-                      padding: '0.45rem 0.9rem',
+                      display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                      padding: '0.45rem 1.1rem',
+                      background: 'rgba(37, 99, 235, 0.08)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(37, 99, 235, 0.2)',
                       borderRadius: '9999px',
-                      fontSize: '0.78rem',
-                      fontWeight: 800,
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
+                      fontSize: '0.82rem', fontWeight: 800,
+                      color: '#2563EB',
+                      letterSpacing: '0.02em',
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)'
                     }}>
-                      <Star size={14} fill="#F59E0B" color="#F59E0B" /> 4.9/5 Student Rating
-                    </div>
-
-                    {/* Floating Bottom Center Badge */}
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '-16px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                      color: 'white',
-                      padding: '0.65rem 2rem',
-                      borderRadius: '9999px',
-                      fontSize: '0.92rem',
-                      fontWeight: 900,
-                      whiteSpace: 'nowrap',
-                      boxShadow: '0 12px 30px rgba(37,99,235,0.5)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      border: '2px solid rgba(255,255,255,0.3)'
-                    }}>
-                      <Star size={16} fill="#FFFFFF" color="#FFFFFF" /> Gaurav Sir &amp; Team
+                      <Zap size={15} color="#2563EB" className="animate-pulse" /> {t('heroBadge')}
                     </div>
                   </div>
+
+                  <h1 className="hero-title-responsive" style={{
+                    fontSize: '3.2rem',
+                    fontWeight: 900,
+                    lineHeight: '1.16',
+                    letterSpacing: '-0.03em',
+                    color: '#0F172A',
+                    margin: 0,
+                    fontFamily: 'var(--font-main)'
+                  }}>
+                    Education is the most <span style={{
+                      background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 50%, #7C3AED 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 0 30px rgba(37, 99, 235, 0.15)'
+                    }}>powerful weapon</span> which you can use to <span style={{
+                      background: 'linear-gradient(135deg, #059669 0%, #0284C7 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>change the world.</span>
+                  </h1>
                 </motion.div>
+
+                {/* Subtitle */}
+                <p style={{ fontSize: '1.12rem', color: '#334155', margin: 0, maxWidth: '600px', lineHeight: '1.75', fontWeight: 450 }}>
+                  Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: '#0F172A', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
+                </p>
+
+                {/* CTA Buttons */}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/courses"
+                    className="btn"
+                    style={{
+                      padding: '1rem 2.25rem',
+                      fontSize: '1rem',
+                      fontWeight: 800,
+                      borderRadius: '1rem',
+                      gap: '0.65rem',
+                      background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                      color: '#FFFFFF',
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      boxShadow: '0 12px 28px rgba(37, 99, 235, 0.35)',
+                      transition: 'all 0.3s ease',
+                      display: 'inline-flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {t('exploreBatchesBtn')} <ArrowRight size={18} />
+                  </Link>
+
+                  <Link
+                    to="/notes"
+                    className="btn"
+                    style={{
+                      padding: '1rem 2rem',
+                      fontSize: '1rem',
+                      fontWeight: 700,
+                      borderRadius: '1rem',
+                      color: '#0F172A',
+                      border: '1.5px solid #CBD5E1',
+                      gap: '0.65rem',
+                      background: '#FFFFFF',
+                      boxShadow: '0 4px 15px rgba(15, 23, 42, 0.05)',
+                      display: 'inline-flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <FileText size={18} color="#2563EB" /> {t('freeNotesBtn')}
+                  </Link>
+                </div>
+
+                {/* Trust Stats Bar */}
+                <div className="hero-stats-responsive" style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '1.25rem',
+                  borderTop: '1px solid rgba(226, 232, 240, 0.9)',
+                  paddingTop: '1.75rem',
+                  marginTop: '0.5rem'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2563EB', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                      <Users size={14} /> Students
+                    </div>
+                    <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>15,000+</h4>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0.15rem 0 0 0', fontWeight: 600 }}>Enrolled Learners</p>
+                  </div>
+
+                  <div style={{ borderLeft: '1px solid rgba(226, 232, 240, 0.9)', paddingLeft: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#059669', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                      <Award size={14} /> Success Rate
+                    </div>
+                    <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>98.4%</h4>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0.15rem 0 0 0', fontWeight: 600 }}>Board Exam Pass</p>
+                  </div>
+
+                  <div style={{ borderLeft: '1px solid rgba(226, 232, 240, 0.9)', paddingLeft: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#7C3AED', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                      <Video size={14} /> Video Lessons
+                    </div>
+                    <h4 style={{ fontSize: '1.9rem', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>500+</h4>
+                    <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0.15rem 0 0 0', fontWeight: 600 }}>HD Lectures</p>
+                  </div>
+                </div>
+
               </div>
+
+              {/* Right Column: Premium Animated Rotating Logo Centerpiece */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                style={{
+                  flex: '1 1 420px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '460px'
+                }}
+              >
+                <HeroAnimatedLogo />
+              </motion.div>
 
             </div>
           </div>
         </div>
       </section>
 
+
+
       {/* ── 2. Quick Track Cards Grid ────────────────────────────── */}
       <section style={{ padding: '1rem 0 4.5rem 0' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
-          
+
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem' }}>
               <Layers size={14} /> EXPLORE PREPARATION TRACKS
@@ -417,21 +405,21 @@ const Home = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{ 
-                        width: '52px', height: '52px', 
-                        borderRadius: '1rem', 
-                        background: cat.bg, 
-                        color: cat.color, 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                        flexShrink: 0 
+                      <div style={{
+                        width: '52px', height: '52px',
+                        borderRadius: '1rem',
+                        background: cat.bg,
+                        color: cat.color,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0
                       }}>
                         <Icon size={26} />
                       </div>
-                      <span style={{ 
-                        fontSize: '0.68rem', fontWeight: 900, 
-                        padding: '0.2rem 0.6rem', borderRadius: '0.4rem', 
-                        background: cat.bg, color: cat.color, 
-                        letterSpacing: '0.05em' 
+                      <span style={{
+                        fontSize: '0.68rem', fontWeight: 900,
+                        padding: '0.2rem 0.6rem', borderRadius: '0.4rem',
+                        background: cat.bg, color: cat.color,
+                        letterSpacing: '0.05em'
                       }}>
                         {cat.badge}
                       </span>
@@ -460,15 +448,15 @@ const Home = () => {
       {/* ── 3. Features Section ───────────────────────────────────────── */}
       <section style={{ padding: '5.5rem 0', background: 'var(--bg-card)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', position: 'relative' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
-          
+
           <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 4rem auto' }}>
-            <div style={{ 
-              display: 'inline-flex', alignItems: 'center', gap: '0.5rem', 
-              padding: '0.4rem 1.1rem', 
-              background: 'rgba(37,99,235,0.08)', 
-              borderRadius: '9999px', 
-              fontSize: '0.82rem', fontWeight: 800, 
-              color: '#2563EB', 
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.4rem 1.1rem',
+              background: 'rgba(37,99,235,0.08)',
+              borderRadius: '9999px',
+              fontSize: '0.82rem', fontWeight: 800,
+              color: '#2563EB',
               marginBottom: '1rem',
               letterSpacing: '0.04em'
             }}>
@@ -482,19 +470,19 @@ const Home = () => {
             </p>
           </div>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', 
-            gap: '2rem' 
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: '2rem'
           }}>
-            
+
             {/* Feature 1 */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -522,12 +510,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 2 */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -555,12 +543,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 3 */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -588,12 +576,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 4 */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -621,12 +609,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 5 (NEW) */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -654,12 +642,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 6 (NEW) */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 boxShadow: '0 12px 30px -5px rgba(0,0,0,0.05)',
@@ -687,12 +675,12 @@ const Home = () => {
             </motion.div>
 
             {/* Feature 7 (NEW - Span Full Width or Feature Accent) */}
-            <motion.div 
-              whileHover={{ y: -7 }} 
-              className="card glass" 
-              style={{ 
-                padding: '2.25rem', 
-                borderRadius: '1.6rem', 
+            <motion.div
+              whileHover={{ y: -7 }}
+              className="card glass"
+              style={{
+                padding: '2.25rem',
+                borderRadius: '1.6rem',
                 border: '1.5px solid rgba(236, 72, 153, 0.3)',
                 background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.04) 0%, rgba(244, 114, 182, 0.01) 100%)',
                 boxShadow: '0 12px 30px -5px rgba(236, 72, 153, 0.08)',
@@ -726,7 +714,7 @@ const Home = () => {
       {/* ── 4. Featured Batches Showcase ───────────────────────────── */}
       <section style={{ padding: '5.5rem 0', background: 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%)' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
-          
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'rgba(37,99,235,0.08)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#2563EB', marginBottom: '0.75rem' }}>
@@ -750,35 +738,35 @@ const Home = () => {
                 const hasCustomThumb = course.thumbnailUrl && course.thumbnailUrl !== 'no-photo.jpg';
 
                 return (
-                  <motion.div 
-                    key={course._id} 
+                  <motion.div
+                    key={course._id}
                     whileHover={{ y: -8 }}
                     className="card glass"
-                    style={{ 
-                      borderRadius: '1.5rem', 
-                      overflow: 'hidden', 
-                      display: 'flex', 
+                    style={{
+                      borderRadius: '1.5rem',
+                      overflow: 'hidden',
+                      display: 'flex',
                       flexDirection: 'column',
                       border: '1px solid #E2E8F0',
                       background: '#FFFFFF',
                       boxShadow: '0 15px 35px -5px rgba(0,0,0,0.06)'
                     }}
                   >
-                    <div style={{ 
-                      height: '200px', 
-                      position: 'relative', 
+                    <div style={{
+                      height: '200px',
+                      position: 'relative',
                       backgroundColor: '#0F172A',
                       backgroundImage: `url(${hasCustomThumb ? course.thumbnailUrl : 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80'})`,
-                      backgroundSize: 'cover', 
+                      backgroundSize: 'cover',
                       backgroundPosition: 'center'
                     }}>
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,23,42,0.85) 0%, transparent 60%)' }}></div>
-                      
+
                       <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
-                        <span style={{ 
-                          fontSize: '0.72rem', fontWeight: 900, 
-                          padding: '0.3rem 0.75rem', borderRadius: '0.5rem', 
-                          background: isFree ? '#10B981' : '#2563EB', 
+                        <span style={{
+                          fontSize: '0.72rem', fontWeight: 900,
+                          padding: '0.3rem 0.75rem', borderRadius: '0.5rem',
+                          background: isFree ? '#10B981' : '#2563EB',
                           color: '#FFFFFF',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                         }}>
@@ -787,10 +775,10 @@ const Home = () => {
                       </div>
 
                       <div style={{ position: 'absolute', bottom: '0.85rem', left: '1rem', display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
-                        <img 
-                          src={course.teacherImageUrl || teacherImg} 
+                        <img
+                          src={course.teacherImageUrl || teacherImg}
                           onError={(e) => { e.target.src = teacherImg; }}
-                          alt={course.instructorName || 'Gaurav Sir'} 
+                          alt={course.instructorName || 'Gaurav Sir'}
                           style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #38BDF8' }}
                         />
                         <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#FFFFFF' }}>
@@ -806,7 +794,7 @@ const Home = () => {
                       <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
                         {course.description}
                       </p>
-                      
+
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #F1F5F9', paddingTop: '1.15rem', marginTop: 'auto' }}>
                         <span style={{ fontSize: '1.25rem', fontWeight: 900, color: isFree ? '#10B981' : '#2563EB' }}>
                           {isFree ? 'Free Access' : `Rs. ${course.price}`}
@@ -827,11 +815,11 @@ const Home = () => {
       {/* ── 5. Testimonials Section ─────────────────────────────────── */}
       <section style={{ padding: '5.5rem 0', background: '#FFFFFF', borderTop: '1px solid #E2E8F0' }}>
         <div className="container" style={{ maxWidth: '850px', textAlign: 'center' }}>
-          
+
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'rgba(37,99,235,0.08)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#2563EB', marginBottom: '1rem' }}>
             <Award size={15} /> STUDENT SUCCESS STORIES
           </div>
-          
+
           <h2 style={{ fontSize: '2.4rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
             Loved by Students Across Nepal
           </h2>
@@ -839,13 +827,13 @@ const Home = () => {
             Real feedback from students preparing for board exams with PiyushDhara.
           </p>
 
-          <div className="glass" style={{ 
-            padding: '3.5rem 3rem', 
-            borderRadius: '2rem', 
-            border: '1.5px solid #E2E8F0', 
-            background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)', 
-            boxShadow: '0 20px 45px -10px rgba(0,0,0,0.07)', 
-            position: 'relative' 
+          <div className="glass" style={{
+            padding: '3.5rem 3rem',
+            borderRadius: '2rem',
+            border: '1.5px solid #E2E8F0',
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)',
+            boxShadow: '0 20px 45px -10px rgba(0,0,0,0.07)',
+            position: 'relative'
           }}>
             <span style={{ position: 'absolute', top: '1.5rem', left: '2.5rem', fontSize: '6rem', color: 'rgba(37,99,235,0.12)', fontFamily: 'serif', lineHeight: 1 }}>“</span>
 
@@ -872,14 +860,14 @@ const Home = () => {
               <button
                 key={i}
                 onClick={() => setActiveTestimonial(i)}
-                style={{ 
-                  width: activeTestimonial === i ? '28px' : '10px', 
-                  height: '10px', 
-                  borderRadius: '9999px', 
-                  background: activeTestimonial === i ? '#2563EB' : '#CBD5E1', 
-                  border: 'none', 
-                  cursor: 'pointer', 
-                  transition: 'all 0.3s' 
+                style={{
+                  width: activeTestimonial === i ? '28px' : '10px',
+                  height: '10px',
+                  borderRadius: '9999px',
+                  background: activeTestimonial === i ? '#2563EB' : '#CBD5E1',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s'
                 }}
                 aria-label={`Testimonial ${i + 1}`}
               />
@@ -918,16 +906,16 @@ const Home = () => {
               </p>
             </div>
 
-            <Link 
-              to="/courses" 
-              className="btn" 
-              style={{ 
-                background: '#FFFFFF', 
-                color: '#1D4ED8', 
-                padding: '1.1rem 2.5rem', 
-                fontSize: '1.05rem', 
-                fontWeight: 900, 
-                borderRadius: '1rem', 
+            <Link
+              to="/courses"
+              className="btn"
+              style={{
+                background: '#FFFFFF',
+                color: '#1D4ED8',
+                padding: '1.1rem 2.5rem',
+                fontSize: '1.05rem',
+                fontWeight: 900,
+                borderRadius: '1rem',
                 boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
                 position: 'relative',
                 zIndex: 1,
@@ -943,9 +931,9 @@ const Home = () => {
       </section>
 
       {/* Teacher Profile Modal Popup */}
-      <TeacherProfileModal 
-        teacher={selectedTeacher} 
-        onClose={() => setSelectedTeacher(null)} 
+      <TeacherProfileModal
+        teacher={selectedTeacher}
+        onClose={() => setSelectedTeacher(null)}
       />
     </div>
   );

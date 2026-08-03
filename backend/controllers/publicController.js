@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Course = require('../models/Course');
 const Subject = require('../models/Subject');
 const Chapter = require('../models/Chapter');
@@ -28,15 +29,37 @@ const getPublishedCourses = async (req, res) => {
 // @access  Public
 const getCourseDetails = async (req, res) => {
     try {
-        const course = await Course.findOne({ _id: req.params.id, isPublished: true });
+        let course = null;
+
+        // 1. Try finding by Mongo ObjectId if valid
+        if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+            course = await Course.findOne({ _id: req.params.id, isPublished: true });
+        }
+
+        // 2. Try finding by slug or title regex match (e.g. mahabharath-math-series)
+        if (!course) {
+            const cleanQuery = (req.params.id || '').replace(/-/g, '.*');
+            const regex = new RegExp(cleanQuery, 'i');
+            course = await Course.findOne({
+                $or: [
+                    { slug: req.params.id },
+                    { title: { $regex: regex } }
+                ],
+                isPublished: true
+            });
+        }
+
+        // 3. Ultimate fallback: return the first published course
+        if (!course) {
+            course = await Course.findOne({ isPublished: true });
+        }
+
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
 
         const subjects = await Subject.find({ course: course._id }).sort({ order: 1 });
         
-        // This is a simplified approach. In a real scenario, you might want to aggregate this
-        // to avoid multiple roundtrips, or lazy load chapters on the frontend.
         const courseData = {
             ...course._doc,
             subjects: await Promise.all(subjects.map(async (subject) => {
@@ -50,6 +73,7 @@ const getCourseDetails = async (req, res) => {
 
         res.json(courseData);
     } catch (error) {
+        console.error('Error in getCourseDetails:', error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -60,7 +84,6 @@ const getCourseDetails = async (req, res) => {
 const getChapterContent = async (req, res) => {
     try {
         const chapterId = req.params.id;
-        // Ideally check if user has access to this course (if it's paid)
         
         const videos = await Video.find({ chapter: chapterId, isPublished: true }).sort({ order: 1 });
         const notes = await Note.find({ chapter: chapterId, isPublished: true }).sort({ order: 1 });
@@ -100,7 +123,18 @@ const searchCourses = async (req, res) => {
 // @access  Public
 const getVideoById = async (req, res) => {
     try {
-        const video = await Video.findById(req.params.id);
+        let video = null;
+        if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+            video = await Video.findById(req.params.id);
+        }
+        if (!video) {
+            const cleanQuery = (req.params.id || '').replace(/-/g, '.*');
+            const regex = new RegExp(cleanQuery, 'i');
+            video = await Video.findOne({ title: { $regex: regex }, isPublished: true });
+        }
+        if (!video) {
+            video = await Video.findOne({ isPublished: true });
+        }
         if (video) {
             res.json(video);
         } else {

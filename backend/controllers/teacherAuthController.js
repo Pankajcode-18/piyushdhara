@@ -13,7 +13,7 @@ const AUTHORIZED_TEACHER_EMAIL = (process.env.TEACHER_EMAIL || 'baduwalpankaj@gm
 const sendTeacherJwtCookie = (teacher, statusCode, res, message = 'Success') => {
   const token = jwt.sign(
     { id: teacher._id, role: 'teacher', firebaseUID: teacher.firebaseUID || '' },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_prod',
     { expiresIn: '8h' }
   );
 

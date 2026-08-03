@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 
 // Generate JWT
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_prod', {
         expiresIn: '7d',
     });
 };
 
 const generateRefreshToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET || 'super_secret_jwt_refresh_key_change_in_prod', {
         expiresIn: '7d',
     });
 };

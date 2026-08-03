@@ -101,6 +101,42 @@ const AdminDashboard = () => {
           </button>
 
           <Link
+            to="/admin/certifications"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #BFDBFE',
+              background: '#EFF6FF', color: '#1D4ED8', fontSize: '0.85rem', fontWeight: 800,
+              textDecoration: 'none'
+            }}
+          >
+            <GraduationCap size={16} /> Certifications Studio
+          </Link>
+
+          <Link
+            to="/admin/quizzes"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #DDD6FE',
+              background: '#F5F3FF', color: '#6D28D9', fontSize: '0.85rem', fontWeight: 800,
+              textDecoration: 'none'
+            }}
+          >
+            <Zap size={16} /> Assessment Builder
+          </Link>
+
+          <Link
+            to="/admin/settings"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0',
+              background: '#FFFFFF', color: '#334155', fontSize: '0.85rem', fontWeight: 800,
+              textDecoration: 'none'
+            }}
+          >
+            <Sparkles size={16} /> Homepage Customizer
+          </Link>
+
+          <Link
             to="/admin/courses"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',

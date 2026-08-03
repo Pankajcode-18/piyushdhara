@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
 // Auth Context
@@ -31,17 +32,52 @@ import VerifyEmailScreen from './pages/VerifyEmailScreen';
 import ForgotPasswordScreen from './pages/ForgotPasswordScreen';
 import MyCourses from './pages/MyCourses';
 import StudentProfile from './pages/StudentProfile';
+import ReportCard from './pages/ReportCard';
+import CommunityHub from './pages/CommunityHub';
+import CommunityPostDetail from './pages/CommunityPostDetail';
+
+// Certification LMS Pages
+import Certifications from './pages/Certifications';
+import CertificationDetails from './pages/CertificationDetails';
+import CertificationLearn from './pages/CertificationLearn';
+import CertificateView from './pages/CertificateView';
+import AdminManageCertifications from './pages/admin/AdminManageCertifications';
+
+// Quiz & Assessment System Pages
+import QuizzesList from './pages/QuizzesList';
+import QuizTake from './pages/QuizTake';
+import QuizResults from './pages/QuizResults';
+import QuizLeaderboard from './pages/QuizLeaderboard';
+import AdminQuizManager from './pages/AdminQuizManager';
 
 // Admin / Teacher Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminManageCourses from './pages/admin/AdminManageCourses';
 import AdminCourseContent from './pages/admin/AdminCourseContent';
+import AdminSecurityAudit from './pages/admin/AdminSecurityAudit';
+import AdminPlatformSettings from './pages/admin/AdminPlatformSettings';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
+const QuizTakeWrapper = () => {
+  const { id } = useParams();
+  return <QuizTake key={id} />;
+};
 
 function App() {
   return (
     <HelmetProvider>
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <div className="app">
             <Routes>
               {/* Student & Public Routes */}
@@ -49,6 +85,37 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="courses/:id" element={<CourseDetails />} />
+                
+                {/* Certifications LMS Routes */}
+                <Route path="certifications" element={<Certifications />} />
+                <Route path="certifications/:id" element={<CertificationDetails />} />
+                <Route 
+                  path="certifications/:id/learn" 
+                  element={
+                    <StudentRoute>
+                      <CertificationLearn />
+                    </StudentRoute>
+                  } 
+                />
+                <Route path="certificates/:certificateId" element={<CertificateView />} />
+
+                {/* Quiz & Assessment System Routes */}
+                <Route path="quizzes" element={<QuizzesList />} />
+                <Route 
+                  path="quizzes/:id/take" 
+                  element={
+                    <StudentRoute>
+                      <QuizTakeWrapper />
+                    </StudentRoute>
+                  } 
+                />
+                <Route path="quizzes/:id/results/:submissionId" element={<QuizResults />} />
+                <Route path="quizzes/:id/leaderboard" element={<QuizLeaderboard />} />
+
+                {/* Community Hub & Discussion Forum Routes */}
+                <Route path="community" element={<CommunityHub />} />
+                <Route path="community/post/:id" element={<CommunityPostDetail />} />
+
                 <Route path="about" element={<About />} />
                 <Route path="notes" element={<Notes />} />
                 <Route path="exam-alerts" element={<ExamAlerts />} />
@@ -94,6 +161,14 @@ function App() {
                     </StudentRoute>
                   } 
                 />
+                <Route 
+                  path="student/report-card" 
+                  element={
+                    <StudentRoute>
+                      <ReportCard />
+                    </StudentRoute>
+                  } 
+                />
               </Route>
 
               {/* Admin / Teacher Protected Routes */}
@@ -108,6 +183,10 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="courses" element={<AdminManageCourses />} />
                 <Route path="courses/:id/content" element={<AdminCourseContent />} />
+                <Route path="certifications" element={<AdminManageCertifications />} />
+                <Route path="quizzes" element={<AdminQuizManager />} />
+                <Route path="security-audit" element={<AdminSecurityAudit />} />
+                <Route path="settings" element={<AdminPlatformSettings />} />
               </Route>
             </Routes>
           </div>
