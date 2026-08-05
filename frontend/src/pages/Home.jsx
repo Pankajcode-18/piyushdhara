@@ -143,15 +143,15 @@ const Home = () => {
     <div className="home-page bg-mesh animate-fade-in" style={{ position: 'relative', overflowX: 'hidden' }}>
 
       {/* ── 1. Hero Section ─────────────────────────────────────────── */}
-      <section style={{ padding: '2.5rem 0 4rem 0', position: 'relative' }}>
+      <section style={{ padding: '1.5rem 0 3rem 0', position: 'relative' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
 
           <div className="hero-responsive-card" style={{
-            borderRadius: '2.25rem',
-            padding: '3.5rem 3rem',
+            borderRadius: '1.75rem',
+            padding: '2.5rem 2.5rem',
             background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 45%, #E0F2FE 100%)',
             color: '#0F172A',
-            boxShadow: '0 25px 60px -15px rgba(37, 99, 235, 0.14), 0 0 40px rgba(56, 189, 248, 0.15)',
+            boxShadow: '0 20px 50px -15px rgba(37, 99, 235, 0.14), 0 0 35px rgba(56, 189, 248, 0.12)',
             position: 'relative',
             overflow: 'hidden',
             border: '1px solid rgba(37, 99, 235, 0.16)'
@@ -169,12 +169,12 @@ const Home = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '3rem',
+              gap: '2rem',
               flexWrap: 'wrap'
             }}>
 
               {/* Left Column: Headlines + CTAs + Stats */}
-              <div style={{ flex: '1 1 540px', maxWidth: '650px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ flex: '1 1 500px', maxWidth: '650px', display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
 
                 {/* Top Pill Badges + Headline */}
                 <motion.div
@@ -182,40 +182,40 @@ const Home = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <div className="hero-badges-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+                  <div className="hero-badges-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
                     <div style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                      padding: '0.45rem 1.1rem',
+                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                      padding: '0.35rem 0.9rem',
                       background: 'rgba(37, 99, 235, 0.08)',
                       backdropFilter: 'blur(12px)',
                       border: '1px solid rgba(37, 99, 235, 0.2)',
                       borderRadius: '9999px',
-                      fontSize: '0.82rem', fontWeight: 800,
+                      fontSize: '0.78rem', fontWeight: 800,
                       color: '#2563EB',
                       letterSpacing: '0.02em',
-                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)'
+                      boxShadow: '0 4px 12px rgba(37, 99, 235, 0.06)'
                     }}>
-                      <Zap size={15} color="#2563EB" className="animate-pulse" /> {t('heroBadge')}
+                      <Zap size={14} color="#2563EB" className="animate-pulse" /> {t('heroBadge')}
                     </div>
 
                     <div style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.45rem',
-                      padding: '0.45rem 1rem',
+                      gap: '0.4rem',
+                      padding: '0.35rem 0.85rem',
                       background: 'rgba(255, 255, 255, 0.92)',
                       backdropFilter: 'blur(14px)',
                       WebkitBackdropFilter: 'blur(14px)',
                       border: '1.5px solid rgba(16, 185, 129, 0.35)',
                       borderRadius: '9999px',
-                      fontSize: '0.8rem',
+                      fontSize: '0.78rem',
                       fontWeight: 700,
                       color: '#059669',
-                      boxShadow: '0 4px 16px rgba(16, 185, 129, 0.18)'
+                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.12)'
                     }}>
                       <span style={{
-                        width: '8px',
-                        height: '8px',
+                        width: '7px',
+                        height: '7px',
                         borderRadius: '50%',
                         background: '#10B981',
                         display: 'inline-block',
@@ -227,10 +227,10 @@ const Home = () => {
                   </div>
 
                   <h1 className="hero-title-responsive" style={{
-                    fontSize: '3.2rem',
+                    fontSize: 'clamp(2.1rem, 4.5vw, 3.1rem)',
                     fontWeight: 900,
-                    lineHeight: '1.16',
-                    letterSpacing: '-0.03em',
+                    lineHeight: '1.15',
+                    letterSpacing: '-0.025em',
                     color: '#0F172A',
                     margin: 0,
                     fontFamily: 'var(--font-main)'
@@ -249,25 +249,25 @@ const Home = () => {
                 </motion.div>
 
                 {/* Subtitle */}
-                <p className="hero-subtitle-responsive" style={{ fontSize: '1.12rem', color: '#334155', margin: 0, maxWidth: '600px', lineHeight: '1.75', fontWeight: 450 }}>
+                <p className="hero-subtitle-responsive" style={{ fontSize: '1rem', color: '#475569', margin: 0, maxWidth: '600px', lineHeight: '1.55', fontWeight: 500 }}>
                   Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: '#0F172A', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="hero-cta-responsive" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div className="hero-cta-responsive" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                   <Link
                     to="/courses"
                     className="btn"
                     style={{
-                      padding: '1rem 2.25rem',
-                      fontSize: '1rem',
+                      padding: '0.8rem 1.75rem',
+                      fontSize: '0.95rem',
                       fontWeight: 800,
-                      borderRadius: '1rem',
-                      gap: '0.65rem',
+                      borderRadius: '0.85rem',
+                      gap: '0.55rem',
                       background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
                       color: '#FFFFFF',
                       border: '1px solid rgba(255,255,255,0.3)',
-                      boxShadow: '0 12px 28px rgba(37, 99, 235, 0.35)',
+                      boxShadow: '0 8px 22px rgba(37, 99, 235, 0.3)',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -281,15 +281,15 @@ const Home = () => {
                     to="/notes"
                     className="btn"
                     style={{
-                      padding: '1rem 2rem',
-                      fontSize: '1rem',
+                      padding: '0.8rem 1.6rem',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
-                      borderRadius: '1rem',
+                      borderRadius: '0.85rem',
                       color: '#0F172A',
                       border: '1.5px solid #CBD5E1',
-                      gap: '0.65rem',
+                      gap: '0.55rem',
                       background: '#FFFFFF',
-                      boxShadow: '0 4px 15px rgba(15, 23, 42, 0.05)',
+                      boxShadow: '0 3px 10px rgba(15, 23, 42, 0.04)',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -303,10 +303,10 @@ const Home = () => {
                 <div className="hero-stats-responsive" style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '1.25rem',
+                  gap: '1rem',
                   borderTop: '1px solid rgba(226, 232, 240, 0.9)',
-                  paddingTop: '1.75rem',
-                  marginTop: '0.5rem'
+                  paddingTop: '1.15rem',
+                  marginTop: '0.25rem'
                 }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2563EB', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>
