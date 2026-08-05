@@ -236,7 +236,7 @@ const MainLayout = () => {
                   <span style={{ color: 'var(--text-primary)' }}>Piyush</span>
                   <span style={{ color: 'var(--primary)' }}>Dhara</span>
                 </span>
-                <span className="navbar-brand-text-sub" style={{
+                <span className="navbar-brand-text-sub desktop-only" style={{
                   fontSize: '0.58rem', fontWeight: 800,
                   color: 'var(--primary)',
                   background: 'var(--primary-light)',

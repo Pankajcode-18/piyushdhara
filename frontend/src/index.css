@@ -5450,6 +5450,29 @@ button, .btn, input, select, textarea {
 }
 
 @media (max-width: 767px) {
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  .main-layout-wrapper, .navbar, .page-banner-responsive, .lecture-main-grid, .lecture-info-panel {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .navbar-brand-text-sub {
+    display: none !important;
+  }
+
+  .lecture-breadcrumb {
+    font-size: 0.78rem !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
   .container {
     width: 100% !important;
     max-width: 100% !important;
@@ -5467,11 +5490,22 @@ button, .btn, input, select, textarea {
 
   .aspect-ratio-16-9 {
     border-radius: 0.85rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .instructor-card {
+    padding: 0.65rem 0.75rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .lecture-discussion-panel {
     padding: 1rem !important;
     border-radius: 1rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .lecture-bottom-subtabs {
