@@ -5414,6 +5414,72 @@ button, .btn, input, select, textarea {
   }
 }
 
+/* ── LECTURE ROOM RESPONSIVE LAYOUT & ASPECT RATIO ──── */
+.aspect-ratio-16-9 {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 1.25rem;
+  background: #000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.lecture-video-container iframe,
+.lecture-video-container video {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  object-fit: contain !important;
+}
+
+@media (min-width: 992px) {
+  .mobile-only-resources {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .desktop-only-sidebar {
+    display: none !important;
+  }
+
+  .lecture-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .aspect-ratio-16-9 {
+    border-radius: 0.85rem !important;
+  }
+
+  .lecture-discussion-panel {
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  .lecture-bottom-subtabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .lecture-feedback-input-row {
+    flex-direction: column !important;
+  }
+
+  .lecture-feedback-input-row button {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
 /* ── Admin Sidebar Close Button: hide on desktop ─────── */
 .admin-sidebar-close-btn {
   display: none !important;
