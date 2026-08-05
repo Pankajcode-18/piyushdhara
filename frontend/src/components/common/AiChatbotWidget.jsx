@@ -296,32 +296,29 @@ const AiChatbotWidget = () => {
           {/* Floating "Ask Anything AI" Speech Bubble Banner */}
           {showPopupBanner && (
             <div 
-              className="animate-fade-in"
+              className="animate-fade-in ai-chatbot-popup-bubble"
               style={{
                 background: '#FFFFFF',
-                color: '#0F172A',
-                padding: '0.7rem 1.1rem',
-                borderRadius: '1.1rem',
-                boxShadow: '0 12px 35px rgba(15,23,42,0.22)',
+                color: '#1E4ED8',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '9999px',
+                boxShadow: '0 8px 25px rgba(37,99,235,0.2)',
                 border: '1.5px solid #2563EB',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.65rem',
+                gap: '0.45rem',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                position: 'relative'
+                position: 'relative',
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                letterSpacing: '-0.01em'
               }}
               onClick={() => { setIsOpen(true); setIsMinimized(false); }}
             >
-              <span style={{ fontSize: '1.2rem' }}>💬</span>
-              <div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 900, color: '#1E4ED8', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  Ask PiyushDhara AI Anything! <Sparkles size={14} color="#38BDF8" />
-                </div>
-                <div style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 600 }}>
-                  Batches, Notes, GenAI & Exam Q&A ⚡
-                </div>
-              </div>
+              <span style={{ fontSize: '1rem' }}>💬</span>
+              <span>Ask PiyushDhara AI</span>
+              <Sparkles size={14} color="#38BDF8" style={{ flexShrink: 0 }} />
 
               {/* Close Banner Button */}
               <button
@@ -331,12 +328,12 @@ const AiChatbotWidget = () => {
                   border: 'none',
                   color: '#94A3B8',
                   cursor: 'pointer',
-                  padding: '0.2rem',
-                  marginLeft: '0.25rem',
+                  padding: '0.1rem',
+                  marginLeft: '0.2rem',
                   display: 'flex',
                   alignItems: 'center'
                 }}
-                title="Dismiss preview"
+                title="Dismiss banner"
               >
                 <X size={14} />
               </button>
@@ -345,10 +342,10 @@ const AiChatbotWidget = () => {
               <div 
                 style={{
                   position: 'absolute',
-                  bottom: '-7px',
+                  bottom: '-6px',
                   right: '25px',
-                  width: '12px',
-                  height: '12px',
+                  width: '10px',
+                  height: '10px',
                   background: '#FFFFFF',
                   borderRight: '1.5px solid #2563EB',
                   borderBottom: '1.5px solid #2563EB',

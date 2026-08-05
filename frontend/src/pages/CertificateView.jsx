@@ -149,6 +149,7 @@ const CertificateView = () => {
       {/* ── THE OFFICIAL CERTIFICATE CANVAS / DIPLOMA TEMPLATE ──── */}
       <div 
         id="certificate-print-area"
+        className="cert-canvas-card"
         style={{
           background: 'linear-gradient(180deg, #FFFFFF 0%, #FCFCFA 50%, #FFFFFF 100%)',
           borderRadius: '12px',
@@ -172,7 +173,7 @@ const CertificateView = () => {
         <div style={{ position: 'absolute', bottom: '12px', right: '12px', width: '22px', height: '22px', borderBottom: '2.5px solid #C89A2B', borderRight: '2.5px solid #C89A2B', zIndex: 2, pointerEvents: 'none' }} />
 
         {/* Top-Left Folded Geometric Navy & Gold Ribbon */}
-        <svg style={{ position: 'absolute', top: 0, left: 0, width: '200px', height: '200px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 200 200" fill="none">
+        <svg className="cert-ribbon-tl" style={{ position: 'absolute', top: 0, left: 0, width: '200px', height: '200px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 200 200" fill="none">
           <path d="M0 0 L200 0 L0 200 Z" fill="#0D2B5C" />
           <path d="M0 0 L155 0 L0 155 Z" fill="#154288" opacity="0.35" />
           <path d="M0 180 L180 0 L190 0 L0 190 Z" fill="#C89A2B" />
@@ -180,7 +181,7 @@ const CertificateView = () => {
         </svg>
 
         {/* Bottom-Right Folded Geometric Navy & Gold Ribbon */}
-        <svg style={{ position: 'absolute', bottom: 0, right: 0, width: '140px', height: '140px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 140 140" fill="none">
+        <svg className="cert-ribbon-br" style={{ position: 'absolute', bottom: 0, right: 0, width: '140px', height: '140px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 140 140" fill="none">
           <path d="M140 140 L0 140 L140 0 Z" fill="#0D2B5C" />
           <path d="M140 140 L30 140 L140 30 Z" fill="#154288" opacity="0.35" />
           <path d="M140 14 L14 140 L6 140 L140 6 Z" fill="#C89A2B" />
@@ -193,7 +194,7 @@ const CertificateView = () => {
         </div>
 
         {/* Top Academy Logo & Horizontal Gold Flourish */}
-        <div style={{ marginBottom: '1.75rem', position: 'relative', zIndex: 3 }}>
+        <div className="cert-top-flourish" style={{ marginBottom: '1.75rem', position: 'relative', zIndex: 3 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '0.85rem' }}>
             <span style={{ color: '#C89A2B', fontSize: '1.1rem', letterSpacing: '2px' }}>────── ✦</span>
             <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '90px', height: '90px', borderRadius: '50%', background: '#0D2B5C', border: '3.5px solid #C89A2B', boxShadow: '0 4px 15px rgba(200, 154, 43, 0.35)', overflow: 'hidden' }}>
@@ -202,11 +203,11 @@ const CertificateView = () => {
             <span style={{ color: '#C89A2B', fontSize: '1.1rem', letterSpacing: '2px' }}>✦ ──────</span>
           </div>
 
-          <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: '3.2rem', fontWeight: 800, letterSpacing: '8px', color: '#0D2B5C', margin: '0 0 0.15rem 0', lineHeight: 1.1 }}>
+          <h1 className="cert-main-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '3.2rem', fontWeight: 800, letterSpacing: '8px', color: '#0D2B5C', margin: '0 0 0.15rem 0', lineHeight: 1.1 }}>
             CERTIFICATE
           </h1>
 
-          <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', fontWeight: 700, letterSpacing: '4px', color: '#0D2B5C', marginBottom: '0.4rem' }}>
+          <div className="cert-sub-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.25rem', fontWeight: 700, letterSpacing: '4px', color: '#0D2B5C', marginBottom: '0.4rem' }}>
             OF COMPLETION
           </div>
 
@@ -223,7 +224,7 @@ const CertificateView = () => {
             This certificate proudly certifies that
           </p>
 
-          <h2 style={{ fontFamily: "'Great Vibes', cursive", fontSize: '4.8rem', fontWeight: 400, color: '#0D2B5C', margin: '0 0 0.2rem 0', lineHeight: 1.1 }}>
+          <h2 className="cert-recipient-name" style={{ fontFamily: "'Great Vibes', cursive", fontSize: '4.8rem', fontWeight: 400, color: '#0D2B5C', margin: '0 0 0.2rem 0', lineHeight: 1.1 }}>
             {studentName}
           </h2>
 
@@ -234,7 +235,7 @@ const CertificateView = () => {
           </p>
 
           {/* Course Name Banner */}
-          <div style={{ 
+          <div className="cert-course-banner" style={{ 
             display: 'inline-block',
             background: '#0D2B5C',
             border: '2.5px solid #C89A2B',
@@ -249,10 +250,10 @@ const CertificateView = () => {
         </div>
 
         {/* Bottom Section: Three Columns */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '2rem', alignItems: 'center', marginTop: '2.5rem', position: 'relative', zIndex: 3 }}>
+        <div className="cert-bottom-grid" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '2rem', alignItems: 'center', marginTop: '2.5rem', position: 'relative', zIndex: 3 }}>
           
           {/* Left Metadata Column */}
-          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+          <div className="cert-meta-col" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#0D2B5C', border: '1.5px solid #C89A2B', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem' }}>📅</div>
               <span style={{ fontSize: '0.88rem', color: '#333333' }}><strong>Date Issued:</strong> {formattedDate}</span>
@@ -268,7 +269,7 @@ const CertificateView = () => {
           </div>
 
           {/* Center Embossed Seal */}
-          <div style={{ textAlign: 'center' }}>
+          <div className="cert-seal-box" style={{ textAlign: 'center' }}>
             <div style={{ 
               position: 'relative', 
               display: 'inline-flex', 
@@ -302,7 +303,7 @@ const CertificateView = () => {
           </div>
 
           {/* Right Signature Column */}
-          <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: 'auto', paddingRight: '1.75rem' }}>
+          <div className="cert-signature-col" style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: 'auto', paddingRight: '1.75rem' }}>
             <img 
               src="/signature1-removebg-preview.png" 
               alt="Pankaj Baduwal Signature" 

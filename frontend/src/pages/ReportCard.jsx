@@ -230,8 +230,8 @@ const ReportCard = () => {
           </div>
 
           {/* 1. PREMIUM HEADER BANNER */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px double #C89A2B', paddingBottom: '0.85rem', marginBottom: '1.1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="report-header-banner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px double #C89A2B', paddingBottom: '0.85rem', marginBottom: '1.1rem' }}>
+            <div className="report-header-logo-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#0F172A', border: '2.5px solid #C89A2B', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 15px rgba(15,23,42,0.15)', overflow: 'hidden', flexShrink: 0 }}>
                 <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = '/Logo1.png'; }} />
               </div>
@@ -248,7 +248,7 @@ const ReportCard = () => {
               </div>
             </div>
 
-            <div style={{ textAlign: 'right' }}>
+            <div className="report-header-session-box" style={{ textAlign: 'right' }}>
               <div style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.25rem 0.65rem', borderRadius: '0.5rem', fontSize: '0.65rem', fontWeight: 800, display: 'inline-block', marginBottom: '0.2rem' }}>
                 OFFICIAL TRANSCRIPT ✓
               </div>
@@ -259,10 +259,10 @@ const ReportCard = () => {
           </div>
 
           {/* 2. STUDENT PROFILE CARD */}
-          <div style={{ background: '#F8FAFC', borderRadius: '0.85rem', border: '1px solid #E2E8F0', padding: '0.85rem 1.1rem', marginBottom: '1.1rem', display: 'grid', gridTemplateColumns: '75px 1fr 1fr 110px', gap: '1rem', alignItems: 'center' }}>
+          <div className="report-student-card report-student-card-responsive" style={{ background: '#F8FAFC', borderRadius: '0.85rem', border: '1px solid #E2E8F0', padding: '0.85rem 1.1rem', marginBottom: '1.1rem', display: 'grid', gridTemplateColumns: '75px 1fr 1fr 110px', gap: '1rem', alignItems: 'center' }}>
             
             {/* Photo */}
-            <div style={{ position: 'relative', width: '75px', height: '75px' }}>
+            <div className="report-student-avatar-box" style={{ position: 'relative', width: '75px', height: '75px', flexShrink: 0 }}>
               <img 
                 src={getFileUrl(userProfile?.photo || userProfile?.profilePicture || studentInfo.photo) || '/pankaj-baduwal.jpg'} 
                 alt={studentInfo.fullName}
@@ -275,7 +275,7 @@ const ReportCard = () => {
             </div>
 
             {/* Profile Col 1 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.72rem' }}>
+            <div className="report-student-main-details" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.72rem' }}>
               <div>
                 <span style={{ color: '#64748B', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase' }}>Student Name</span>
                 <div style={{ fontWeight: 900, fontSize: '0.95rem', color: '#0F172A', lineHeight: 1.1 }}>{studentInfo.fullName}</div>
@@ -291,7 +291,7 @@ const ReportCard = () => {
             </div>
 
             {/* Profile Col 2 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.72rem' }}>
+            <div className="report-student-sub-details" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.72rem' }}>
               <div>
                 <span style={{ color: '#64748B', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase' }}>Registration No</span>
                 <div style={{ fontWeight: 800, color: '#0F172A' }}>{studentInfo.enrollmentNo}</div>
@@ -307,7 +307,7 @@ const ReportCard = () => {
             </div>
 
             {/* Profile Col 3: Rank & Standing */}
-            <div style={{ background: '#FFFFFF', padding: '0.65rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+            <div className="report-student-standing-card" style={{ background: '#FFFFFF', padding: '0.65rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
               <div style={{ fontSize: '0.6rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase' }}>Class Standing</div>
               <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#2563EB', margin: '0.15rem 0' }}>{studentInfo.rankStanding || 'Top 5%'}</div>
               <div style={{ fontSize: '0.58rem', color: '#10B981', fontWeight: 800 }}>★ Honor Standing</div>
@@ -316,7 +316,7 @@ const ReportCard = () => {
           </div>
 
           {/* 3. ACADEMIC PERFORMANCE KPI DASHBOARD CARDS */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.1rem' }}>
+          <div className="report-kpi-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.1rem' }}>
             
             {/* KPI 1 */}
             <div style={{ background: '#FFFFFF', borderRadius: '0.85rem', padding: '0.75rem 0.85rem', border: '1px solid #E2E8F0', boxShadow: '0 4px 10px rgba(0,0,0,0.03)', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -370,12 +370,17 @@ const ReportCard = () => {
 
           {/* 4. ENROLLED BATCHES & CERTIFICATION TRANSCRIPT TABLE */}
           <div style={{ marginBottom: '1.1rem' }}>
-            <h2 style={{ fontSize: '0.88rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <BookOpen size={16} color="#2563EB" /> Enrolled Batches &amp; Program Performance Transcript
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.3rem' }}>
+              <h2 style={{ fontSize: '0.88rem', fontWeight: 900, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <BookOpen size={16} color="#2563EB" /> Enrolled Batches &amp; Program Performance Transcript
+              </h2>
+              <span className="mobile-only" style={{ fontSize: '0.68rem', color: '#2563EB', fontWeight: 800, background: '#EFF6FF', padding: '0.15rem 0.5rem', borderRadius: '0.3rem', border: '1px solid #BFDBFE' }}>
+                👈 Slide horizontally 👉
+              </span>
+            </div>
 
-            <div style={{ overflowX: 'auto', borderRadius: '0.75rem', border: '1px solid #E2E8F0' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.72rem' }}>
+            <div className="report-table-wrapper" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: '0.75rem', border: '1px solid #E2E8F0' }}>
+              <table style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.72rem' }}>
                 <thead>
                   <tr style={{ background: '#0F172A', color: '#FFFFFF', fontSize: '0.64rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     <th style={{ padding: '0.5rem 0.65rem' }}>Program / Course Name</th>
@@ -450,12 +455,17 @@ const ReportCard = () => {
           {/* 5. RECORDED EXAMINATIONS & QUIZ SCORES LOG */}
           {quizSubmissions && quizSubmissions.length > 0 && (
             <div style={{ marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '0.88rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <CheckCircle2 size={16} color="#10B981" /> Recorded Examinations &amp; Quiz Scores Log
-              </h3>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.3rem' }}>
+                <h3 style={{ fontSize: '0.88rem', fontWeight: 900, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <CheckCircle2 size={16} color="#10B981" /> Recorded Examinations &amp; Quiz Scores Log
+                </h3>
+                <span className="mobile-only" style={{ fontSize: '0.68rem', color: '#10B981', fontWeight: 800, background: '#ECFDF5', padding: '0.15rem 0.5rem', borderRadius: '0.3rem', border: '1px solid #A7F3D0' }}>
+                  👈 Slide horizontally 👉
+                </span>
+              </div>
 
-              <div style={{ overflowX: 'auto', borderRadius: '0.75rem', border: '1px solid #E2E8F0' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.7rem' }}>
+              <div className="report-table-wrapper" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: '0.75rem', border: '1px solid #E2E8F0' }}>
+                <table style={{ width: '100%', minWidth: '620px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.7rem' }}>
                   <thead>
                     <tr style={{ background: '#334155', color: '#FFFFFF', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       <th style={{ padding: '0.45rem 0.65rem' }}>Examination Title</th>
@@ -523,7 +533,7 @@ const ReportCard = () => {
           </div>
 
           {/* 6. SKILL ASSESSMENT & PROGRESS BARS */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.1rem' }}>
+          <div className="report-skills-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.1rem' }}>
             
             {/* Left: Skill Progress Bars & Stars */}
             <div style={{ background: '#F8FAFC', borderRadius: '0.85rem', border: '1px solid #E2E8F0', padding: '0.85rem 1rem' }}>
@@ -599,7 +609,7 @@ const ReportCard = () => {
               <Brain size={16} /> AI Academic Learning Insights &amp; Evaluation
             </h3>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '0.85rem', fontSize: '0.72rem' }}>
+            <div className="report-ai-insights-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '0.85rem', fontSize: '0.72rem' }}>
               <div>
                 <strong style={{ color: '#047857', display: 'block', marginBottom: '0.2rem' }}>✔ Strong Areas</strong>
                 <ul style={{ margin: 0, paddingLeft: '1rem', color: '#1E3A8A' }}>
@@ -633,7 +643,7 @@ const ReportCard = () => {
               <Trophy size={16} color="#F59E0B" /> Verified Achievements &amp; Academic Honors
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.65rem' }}>
+            <div className="report-badges-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.65rem' }}>
               
               <div style={{ background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)', padding: '0.65rem', borderRadius: '0.75rem', border: '1px solid #FCD34D', boxShadow: '0 4px 10px rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#FFFFFF', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -684,7 +694,7 @@ const ReportCard = () => {
               <Layers size={16} color="#2563EB" /> Student Academic Journey Timeline
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem', textAlign: 'center', position: 'relative' }}>
+            <div className="report-timeline-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem', textAlign: 'center', position: 'relative' }}>
               {timeline.map((item, idx) => (
                 <div key={idx} style={{ background: '#FFFFFF', padding: '0.55rem', borderRadius: '0.65rem', border: '1px solid #E2E8F0' }}>
                   <div style={{ fontSize: '0.6rem', fontWeight: 800, color: '#2563EB', textTransform: 'uppercase' }}>{item.step}</div>
@@ -698,32 +708,34 @@ const ReportCard = () => {
           </div>
 
           {/* 10. INSTRUCTOR FEEDBACK & SIGNATURES */}
-          <div style={{ background: '#F8FAFC', borderRadius: '0.85rem', border: '1px solid #E2E8F0', padding: '0.85rem 1.1rem', marginBottom: '1.1rem', display: 'grid', gridTemplateColumns: '1fr 220px', gap: '1.25rem', alignItems: 'center' }}>
+          <div className="report-remarks-grid" style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%)', borderRadius: '0.85rem', border: '1px solid #BFDBFE', borderLeft: '4px solid #C89A2B', padding: '0.95rem 1.15rem', marginBottom: '1.1rem', display: 'grid', gridTemplateColumns: '1fr 220px', gap: '1.25rem', alignItems: 'center' }}>
             
             {/* Remarks */}
             <div>
-              <h3 style={{ fontSize: '0.82rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <FileText size={15} color="#2563EB" /> Official Educator Remarks &amp; Evaluation
-              </h3>
-              <p style={{ fontSize: '0.72rem', color: '#334155', margin: 0, lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
+                <FileText size={16} color="#2563EB" />
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>Official Educator Remarks &amp; Evaluation</h3>
+                <span style={{ fontSize: '0.58rem', fontWeight: 800, background: '#DBEAFE', color: '#1D4ED8', padding: '0.1rem 0.4rem', borderRadius: '0.25rem' }}>VERIFIED EVALUATION</span>
+              </div>
+              <p style={{ fontSize: '0.74rem', color: '#334155', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
                 {academicRemarks}
               </p>
             </div>
 
             {/* Signature Box */}
             <div style={{ textAlign: 'center', borderLeft: '1.5px solid #CBD5E1', paddingLeft: '1rem' }}>
-              <div style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img 
                   src="/signature1-removebg-preview.png" 
-                  alt="Pankaj Baduwal Signature" 
-                  style={{ height: '30px', objectFit: 'contain' }}
+                  alt="Er. Pankaj Baduwal Signature" 
+                  style={{ height: '34px', objectFit: 'contain' }}
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
-              <div style={{ borderTop: '1px solid #0F172A', paddingTop: '0.2rem', fontSize: '0.75rem', fontWeight: 900, color: '#0F172A' }}>
+              <div style={{ borderTop: '1.5px solid #0F172A', paddingTop: '0.25rem', fontSize: '0.78rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.01em' }}>
                 Er. Pankaj Baduwal
               </div>
-              <div style={{ fontSize: '0.6rem', color: '#64748B', fontWeight: 700 }}>
+              <div style={{ fontSize: '0.62rem', color: '#2563EB', fontWeight: 800 }}>
                 Founder &amp; Lead Educator
               </div>
             </div>
@@ -731,39 +743,44 @@ const ReportCard = () => {
           </div>
 
           {/* 11. CRYPTOGRAPHIC VERIFICATION & QR CODE */}
-          <div style={{ borderTop: '2px dashed #CBD5E1', paddingTop: '0.85rem', display: 'grid', gridTemplateColumns: '85px 1fr 180px', gap: '1rem', alignItems: 'center' }}>
+          <div className="report-verification-grid" style={{ background: '#0F172A', color: '#FFFFFF', borderRadius: '0.85rem', padding: '1rem 1.15rem', marginBottom: '1rem', display: 'grid', gridTemplateColumns: '85px 1fr 200px', gap: '1.1rem', alignItems: 'center', border: '1px solid #C89A2B', boxShadow: '0 4px 14px rgba(15,23,42,0.15)' }}>
             
             {/* QR Code */}
             <div style={{ textAlign: 'center' }}>
               <img 
                 src={verification.qrCodeUrl} 
                 alt="Verification QR" 
-                style={{ width: '65px', height: '65px', borderRadius: '0.4rem', border: '1px solid #CBD5E1', padding: '3px', background: '#FFFFFF' }} 
+                style={{ width: '68px', height: '68px', borderRadius: '0.45rem', border: '2px solid #C89A2B', padding: '3px', background: '#FFFFFF' }} 
               />
-              <div style={{ fontSize: '0.55rem', fontWeight: 800, color: '#64748B', marginTop: '0.15rem' }}>Scan to Verify</div>
+              <div style={{ fontSize: '0.56rem', fontWeight: 800, color: '#F59E0B', marginTop: '0.2rem', textTransform: 'uppercase' }}>Scan to Verify</div>
             </div>
 
             {/* Verification Metadata */}
-            <div style={{ fontSize: '0.65rem', color: '#64748B', display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
-              <div>Verification ID: <strong style={{ color: '#0F172A' }}>{verification.verificationId}</strong></div>
-              <div>Generated Date: <strong style={{ color: '#0F172A' }}>{verification.generatedAt}</strong></div>
-              <div>Authority: <strong style={{ color: '#0F172A' }}>{verification.institutionName}</strong></div>
-              <div style={{ color: '#10B981', fontWeight: 800, marginTop: '0.1rem' }}>✓ CRYPTOGRAPHICALLY VERIFIED &amp; TAMPER-PROOF TRANSCRIPT</div>
+            <div style={{ fontSize: '0.66rem', color: '#CBD5E1', display: 'flex', flexDirection: 'column', gap: '0.18rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <ShieldCheck size={14} color="#10B981" />
+                <span style={{ color: '#10B981', fontWeight: 900, letterSpacing: '0.02em', fontSize: '0.68rem' }}>CRYPTOGRAPHICALLY VERIFIED &amp; TAMPER-PROOF TRANSCRIPT</span>
+              </div>
+              <div>Verification ID: <strong style={{ color: '#FFFFFF', background: 'rgba(255,255,255,0.1)', padding: '0.1rem 0.4rem', borderRadius: '0.25rem', fontFamily: 'monospace' }}>{verification.verificationId}</strong></div>
+              <div>Generated Date: <strong style={{ color: '#F1F5F9' }}>{verification.generatedAt}</strong></div>
+              <div>Authority: <strong style={{ color: '#F1F5F9' }}>{verification.institutionName}</strong></div>
             </div>
 
             {/* GPA Scale Legend */}
-            <div style={{ background: '#F8FAFC', padding: '0.45rem 0.65rem', borderRadius: '0.5rem', border: '1px solid #E2E8F0', fontSize: '0.58rem', color: '#475569' }}>
-              <div style={{ fontWeight: 800, color: '#0F172A', marginBottom: '0.15rem' }}>GPA Grading Legend</div>
-              <div>4.00 = A+ (Distinction)</div>
-              <div>3.50 = A (Excellent)</div>
-              <div>3.00 = B+ (Very Good)</div>
-              <div>2.00 = C+ (Satisfactory)</div>
+            <div style={{ background: 'rgba(255,255,255,0.06)', padding: '0.6rem 0.75rem', borderRadius: '0.65rem', border: '1px solid rgba(255,255,255,0.12)', fontSize: '0.58rem', color: '#CBD5E1' }}>
+              <div style={{ fontWeight: 900, color: '#F59E0B', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>GPA Grading Legend</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem' }}>
+                <div><span style={{ color: '#10B981', fontWeight: 800 }}>4.00</span> = A+</div>
+                <div><span style={{ color: '#2563EB', fontWeight: 800 }}>3.50</span> = A</div>
+                <div><span style={{ color: '#F59E0B', fontWeight: 800 }}>3.00</span> = B+</div>
+                <div><span style={{ color: '#EF4444', fontWeight: 800 }}>2.00</span> = C+</div>
+              </div>
             </div>
 
           </div>
 
           {/* 12. OFFICIAL FOOTER DISCLAIMER */}
-          <div style={{ textAlign: 'center', fontSize: '0.6rem', color: '#94A3B8', marginTop: '0.85rem', borderTop: '1px solid #F1F5F9', paddingTop: '0.4rem' }}>
+          <div style={{ textAlign: 'center', fontSize: '0.62rem', color: '#64748B', borderTop: '2px double #C89A2B', paddingTop: '0.5rem', fontWeight: 600 }}>
             © {new Date().getFullYear()} PiyushDhara Learning Academy • Official Verified Academic Performance Transcript • www.piyushdhara.com
           </div>
 

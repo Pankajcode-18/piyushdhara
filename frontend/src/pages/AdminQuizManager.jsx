@@ -270,7 +270,7 @@ const AdminQuizManager = () => {
     <div style={{ padding: '2rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
 
       {/* ── TOP HEADER & METRICS ───────────────────────────────── */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #E2E8F0', padding: '2rem 2.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+      <div className="admin-quiz-header" style={{ background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #E2E8F0', padding: '2rem 2.5rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
         <div>
           <span style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.25rem 0.65rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800 }}>
             📜 TEACHER &amp; ADMIN PORTAL
@@ -285,6 +285,7 @@ const AdminQuizManager = () => {
 
         <button
           onClick={handleOpenCreate}
+          className="admin-quiz-create-btn"
           style={{
             background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
             color: 'white',
@@ -305,7 +306,7 @@ const AdminQuizManager = () => {
       </div>
 
       {/* ── METRICS SUMMARY CARDS ──────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+      <div className="admin-quiz-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
         <div style={{ background: '#FFFFFF', borderRadius: '1.25rem', border: '1px solid #E2E8F0', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ background: '#EFF6FF', color: '#2563EB', padding: '0.75rem', borderRadius: '0.85rem' }}><HelpCircle size={24} /></div>
           <div>
@@ -332,7 +333,7 @@ const AdminQuizManager = () => {
       </div>
 
       {/* ── TABS (QUIZZES LIST vs SUBMISSIONS GRADING) ──────────── */}
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #E2E8F0', marginBottom: '2rem' }}>
+      <div className="admin-quiz-tabs" style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #E2E8F0', marginBottom: '2rem', overflowX: 'auto' }}>
         <button
           onClick={() => setActiveTab('quizzes')}
           style={{
@@ -376,6 +377,7 @@ const AdminQuizManager = () => {
           {quizzes.map((quiz) => (
             <div 
               key={quiz._id}
+              className="admin-quiz-item-card"
               style={{
                 background: '#FFFFFF',
                 borderRadius: '1.25rem',
@@ -388,7 +390,7 @@ const AdminQuizManager = () => {
                 flexWrap: 'wrap'
               }}
             >
-              <div>
+              <div className="admin-quiz-item-info">
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.35rem' }}>
                   <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '0.15rem 0.55rem', borderRadius: '0.4rem', fontSize: '0.72rem', fontWeight: 800 }}>
                     {quiz.type.toUpperCase()}
@@ -432,7 +434,7 @@ const AdminQuizManager = () => {
               </div>
 
               {/* Actions */}
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <div className="admin-quiz-item-actions" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <button
                   onClick={() => handleOpenQuestionsStudio(quiz)}
                   style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.55rem 0.95rem', borderRadius: '0.65rem', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
@@ -471,58 +473,130 @@ const AdminQuizManager = () => {
 
       {/* ── TAB 2: SUBMISSIONS & GRADING HUB ─────────────────────── */}
       {activeTab === 'submissions' && (
-        <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
-            <thead>
-              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                <th style={{ padding: '1rem 1.25rem' }}>Submission ID</th>
-                <th style={{ padding: '1rem 1.25rem' }}>Student</th>
-                <th style={{ padding: '1rem 1.25rem' }}>Quiz Title</th>
-                <th style={{ padding: '1rem 1.25rem' }}>Score &amp; Grade</th>
-                <th style={{ padding: '1rem 1.25rem' }}>Status</th>
-                <th style={{ padding: '1rem 1.25rem' }}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {submissions.map((sub) => (
-                <tr key={sub.submissionId} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                  <td style={{ padding: '1rem 1.25rem', fontFamily: 'monospace', fontWeight: 700, color: '#0F172A' }}>
-                    {sub.submissionId}
-                  </td>
-                  <td style={{ padding: '1rem 1.25rem' }}>
-                    <div style={{ fontWeight: 800, color: '#0F172A' }}>{sub.studentName}</div>
-                    <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{sub.studentEmail}</div>
-                  </td>
-                  <td style={{ padding: '1rem 1.25rem', fontWeight: 700, color: '#334155' }}>
-                    {sub.quizTitle}
-                  </td>
-                  <td style={{ padding: '1rem 1.25rem', fontWeight: 800 }}>
-                    {sub.scoreObtained} / {sub.totalMarks} ({sub.percentage}%) [{sub.grade}]
-                  </td>
-                  <td style={{ padding: '1rem 1.25rem' }}>
-                    <span style={{ background: sub.passed ? '#ECFDF5' : '#FEF2F2', color: sub.passed ? '#065F46' : '#991B1B', border: `1px solid ${sub.passed ? '#A7F3D0' : '#FEE2E2'}`, padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800 }}>
-                      {sub.passed ? 'PASSED' : 'FAILED'}
-                    </span>
-                  </td>
-                  <td style={{ padding: '1rem 1.25rem' }}>
-                    <button
-                      onClick={() => handleOpenGrading(sub)}
-                      style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.85rem', borderRadius: '0.65rem', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer' }}
-                    >
-                      Evaluate / Grade
-                    </button>
-                  </td>
+        <>
+          {/* Desktop Table View (hidden on mobile) */}
+          <div className="admin-table-responsive hidden-mobile" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+              <thead>
+                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <th style={{ padding: '1rem 1.25rem' }}>Submission ID</th>
+                  <th style={{ padding: '1rem 1.25rem' }}>Student</th>
+                  <th style={{ padding: '1rem 1.25rem' }}>Quiz Title</th>
+                  <th style={{ padding: '1rem 1.25rem' }}>Score &amp; Grade</th>
+                  <th style={{ padding: '1rem 1.25rem' }}>Status</th>
+                  <th style={{ padding: '1rem 1.25rem' }}>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {submissions.map((sub) => (
+                  <tr key={sub.submissionId} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                    <td style={{ padding: '1rem 1.25rem', fontFamily: 'monospace', fontWeight: 700, color: '#0F172A' }}>
+                      {sub.submissionId}
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem' }}>
+                      <div style={{ fontWeight: 800, color: '#0F172A' }}>{sub.studentName}</div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{sub.studentEmail}</div>
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem', fontWeight: 700, color: '#334155' }}>
+                      {sub.quizTitle}
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem', fontWeight: 800 }}>
+                      {sub.scoreObtained} / {sub.totalMarks} ({sub.percentage}%) [{sub.grade}]
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem' }}>
+                      <span style={{ background: sub.passed ? '#ECFDF5' : '#FEF2F2', color: sub.passed ? '#065F46' : '#991B1B', border: `1px solid ${sub.passed ? '#A7F3D0' : '#FEE2E2'}`, padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800 }}>
+                        {sub.passed ? 'PASSED' : 'FAILED'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '1rem 1.25rem' }}>
+                      <button
+                        onClick={() => handleOpenGrading(sub)}
+                        style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.85rem', borderRadius: '0.65rem', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer' }}
+                      >
+                        Evaluate / Grade
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card List View (visible only on screens < 768px) */}
+          <div className="admin-submissions-mobile-cards hidden-desktop" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {submissions.map((sub) => (
+              <div 
+                key={sub.submissionId} 
+                style={{ 
+                  background: '#FFFFFF', 
+                  borderRadius: '1.25rem', 
+                  border: '1px solid #E2E8F0', 
+                  padding: '1.25rem',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.85rem'
+                }}
+              >
+                {/* Status & ID Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: '0.75rem', fontWeight: 700, color: '#64748B', background: '#F1F5F9', padding: '0.15rem 0.45rem', borderRadius: '0.35rem' }}>
+                    {sub.submissionId}
+                  </span>
+                  <span style={{ background: sub.passed ? '#ECFDF5' : '#FEF2F2', color: sub.passed ? '#065F46' : '#991B1B', border: `1px solid ${sub.passed ? '#A7F3D0' : '#FEE2E2'}`, padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800 }}>
+                    {sub.passed ? '✓ PASSED' : '✕ FAILED'}
+                  </span>
+                </div>
+
+                {/* Student Info */}
+                <div>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.15rem 0' }}>{sub.studentName}</h4>
+                  <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>{sub.studentEmail}</span>
+                </div>
+
+                {/* Quiz Title */}
+                <div style={{ background: '#F8FAFC', padding: '0.75rem', borderRadius: '0.75rem', border: '1px solid #F1F5F9' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563EB', textTransform: 'uppercase', display: 'block', marginBottom: '0.2rem' }}>Target Assessment:</span>
+                  <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1E293B', display: 'block' }}>{sub.quizTitle}</span>
+                </div>
+
+                {/* Score & Grade pill */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', background: '#EFF6FF', padding: '0.65rem 0.85rem', borderRadius: '0.65rem', border: '1px solid #BFDBFE' }}>
+                  <span style={{ color: '#1E4ED8', fontWeight: 700 }}>Score Obtained:</span>
+                  <strong style={{ color: '#1D4ED8', fontWeight: 900, fontSize: '0.92rem' }}>
+                    {sub.scoreObtained} / {sub.totalMarks} ({sub.percentage}%) [{sub.grade}]
+                  </strong>
+                </div>
+
+                {/* Action Button */}
+                <button
+                  onClick={() => handleOpenGrading(sub)}
+                  style={{ 
+                    width: '100%', 
+                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', 
+                    color: 'white', 
+                    border: 'none', 
+                    padding: '0.75rem', 
+                    borderRadius: '0.75rem', 
+                    fontWeight: 800, 
+                    fontSize: '0.88rem', 
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                  }}
+                >
+                  Evaluate / Grade Submission
+                </button>
+
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* ── CREATE / EDIT QUIZ MODAL ────────────────────────────── */}
       {showCreateModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '650px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: '2rem', position: 'relative' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '650px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: '2rem', position: 'relative' }}>
             
             <button onClick={() => setShowCreateModal(false)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#F1F5F9', border: 'none', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', color: '#64748B' }}>
               <X size={18} />
@@ -619,8 +693,8 @@ const AdminQuizManager = () => {
 
       {/* ── QUESTION BUILDER STUDIO MODAL ───────────────────────── */}
       {editingQuestionsQuiz && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '850px', width: '100%', maxHeight: '92vh', overflowY: 'auto', padding: '2rem', position: 'relative' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '850px', width: '100%', maxHeight: '92vh', overflowY: 'auto', padding: '2rem', position: 'relative' }}>
             
             <button onClick={() => setEditingQuestionsQuiz(null)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#F1F5F9', border: 'none', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', color: '#64748B' }}>
               <X size={18} />
@@ -781,8 +855,8 @@ const AdminQuizManager = () => {
 
       {/* ── MANUAL EVALUATION MODAL ─────────────────────────────── */}
       {gradingSubmission && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '550px', width: '100%', padding: '2rem', position: 'relative' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1.5rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '550px', width: '100%', padding: '2rem', position: 'relative' }}>
             <button onClick={() => setGradingSubmission(null)} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: '#F1F5F9', border: 'none', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', color: '#64748B' }}>
               <X size={18} />
             </button>

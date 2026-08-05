@@ -59,10 +59,10 @@ const AdminSecurityAudit = () => {
   const autoSubmittedCount = logs.filter(l => l.submissionReason === 'Security Violation').length;
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="admin-audit-container" style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
       
       {/* ── HEADER TITLE ────────────────────────────────────────── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div className="admin-audit-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
             <ShieldAlert size={28} color="#2563EB" />
@@ -77,6 +77,7 @@ const AdminSecurityAudit = () => {
 
         <button
           onClick={loadLogs}
+          className="admin-audit-refresh-btn"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -96,7 +97,7 @@ const AdminSecurityAudit = () => {
       </div>
 
       {/* ── STATS SUMMARY CARDS ─────────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.25rem', marginBottom: '2rem' }}>
+      <div className="admin-audit-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.25rem', marginBottom: '2rem' }}>
         
         <div style={{ background: '#FFFFFF', borderRadius: '1.25rem', border: '1px solid #E2E8F0', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase' }}>TOTAL EXAM SESSIONS</span>
@@ -121,10 +122,10 @@ const AdminSecurityAudit = () => {
       </div>
 
       {/* ── FILTER & SEARCH BAR ─────────────────────────────────── */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1.25rem', border: '1px solid #E2E8F0', padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+      <div className="admin-audit-filter-bar" style={{ background: '#FFFFFF', borderRadius: '1.25rem', border: '1px solid #E2E8F0', padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
         
         {/* Search */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '0.6rem 1rem', borderRadius: '0.75rem', flex: 1, maxWidth: '400px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '0.6rem 1rem', borderRadius: '0.75rem', flex: 1, maxWidth: '400px', width: '100%' }}>
           <Search size={18} color="#64748B" />
           <input 
             type="text" 
@@ -136,7 +137,7 @@ const AdminSecurityAudit = () => {
         </div>
 
         {/* Filter Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="admin-audit-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           {['All', 'Violations', 'AutoSubmitted', 'Strict'].map((mode) => (
             <button
               key={mode}
@@ -159,8 +160,8 @@ const AdminSecurityAudit = () => {
 
       </div>
 
-      {/* ── AUDIT LOGS TABLE ────────────────────────────────────── */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+      {/* ── AUDIT LOGS TABLE & CARDS ────────────────────────────── */}
+      <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
         
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748B' }}>
@@ -178,113 +179,203 @@ const AdminSecurityAudit = () => {
             <p style={{ fontSize: '0.85rem' }}>No exam security events match your current search filters.</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
-              <thead>
-                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#475569', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  <th style={{ padding: '1rem 1.25rem' }}>Student Details</th>
-                  <th style={{ padding: '1rem 1.25rem' }}>Exam Name &amp; Type</th>
-                  <th style={{ padding: '1rem 1.25rem' }}>Policy Mode</th>
-                  <th style={{ padding: '1rem 1.25rem' }}>Violations</th>
-                  <th style={{ padding: '1rem 1.25rem' }}>Submission Reason</th>
-                  <th style={{ padding: '1rem 1.25rem' }}>Events Count</th>
-                  <th style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>Audit Timeline</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLogs.map((log) => {
-                  const isViolation = log.totalViolations > 0;
-                  const isBreach = log.submissionReason === 'Security Violation';
+          <>
+            {/* Desktop Table View */}
+            <div className="admin-table-responsive hidden-mobile" style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#475569', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <th style={{ padding: '1rem 1.25rem' }}>Student Details</th>
+                    <th style={{ padding: '1rem 1.25rem' }}>Exam Name &amp; Type</th>
+                    <th style={{ padding: '1rem 1.25rem' }}>Policy Mode</th>
+                    <th style={{ padding: '1rem 1.25rem' }}>Violations</th>
+                    <th style={{ padding: '1rem 1.25rem' }}>Submission Reason</th>
+                    <th style={{ padding: '1rem 1.25rem' }}>Events Count</th>
+                    <th style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>Audit Timeline</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLogs.map((log) => {
+                    const isViolation = log.totalViolations > 0;
+                    const isBreach = log.submissionReason === 'Security Violation';
 
-                  return (
-                    <tr key={log._id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                      
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <div style={{ fontWeight: 800, color: '#0F172A' }}>{log.studentName || 'Student'}</div>
-                        <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{log.studentEmail}</div>
-                      </td>
+                    return (
+                      <tr key={log._id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                        
+                        <td style={{ padding: '1rem 1.25rem' }}>
+                          <div style={{ fontWeight: 800, color: '#0F172A' }}>{log.studentName || 'Student'}</div>
+                          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>{log.studentEmail}</div>
+                        </td>
 
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <div style={{ fontWeight: 800, color: '#1E293B' }}>{log.examTitle}</div>
-                        <span style={{ fontSize: '0.72rem', background: '#F1F5F9', color: '#475569', padding: '0.15rem 0.5rem', borderRadius: '0.4rem', fontWeight: 700 }}>
-                          {log.examType || 'Quiz'}
-                        </span>
-                      </td>
+                        <td style={{ padding: '1rem 1.25rem' }}>
+                          <div style={{ fontWeight: 800, color: '#1E293B' }}>{log.examTitle}</div>
+                          <span style={{ fontSize: '0.72rem', background: '#F1F5F9', color: '#475569', padding: '0.15rem 0.5rem', borderRadius: '0.4rem', fontWeight: 700 }}>
+                            {log.examType || 'Quiz'}
+                          </span>
+                        </td>
 
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <span style={{
-                          fontSize: '0.75rem',
-                          fontWeight: 800,
-                          padding: '0.25rem 0.65rem',
-                          borderRadius: '0.4rem',
-                          background: log.securityPolicyMode === 'Strict' ? '#FEF2F2' : '#F0FDF4',
-                          color: log.securityPolicyMode === 'Strict' ? '#DC2626' : '#166534',
-                          border: `1px solid ${log.securityPolicyMode === 'Strict' ? '#FEE2E2' : '#DCFCE7'}`
-                        }}>
-                          {log.securityPolicyMode || 'Standard'}
-                        </span>
-                      </td>
-
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <span style={{
-                          fontWeight: 900,
-                          color: isViolation ? '#DC2626' : '#059669',
-                          background: isViolation ? '#FEF2F2' : '#ECFDF5',
-                          padding: '0.25rem 0.65rem',
-                          borderRadius: '0.4rem'
-                        }}>
-                          {log.totalViolations || 0} Violations
-                        </span>
-                      </td>
-
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <span style={{
-                          fontSize: '0.78rem',
-                          fontWeight: 800,
-                          color: isBreach ? '#DC2626' : (log.submissionReason === 'Time Expired' ? '#D97706' : '#0F172A')
-                        }}>
-                          {log.submissionReason || 'Normal'}
-                        </span>
-                      </td>
-
-                      <td style={{ padding: '1rem 1.25rem', fontWeight: 700, color: '#64748B' }}>
-                        {log.events ? log.events.length : 0} Events Logged
-                      </td>
-
-                      <td style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>
-                        <button
-                          onClick={() => setSelectedLogModal(log)}
-                          style={{
-                            padding: '0.45rem 0.85rem',
-                            borderRadius: '0.65rem',
-                            border: '1px solid #CBD5E1',
-                            background: '#FFFFFF',
-                            color: '#2563EB',
+                        <td style={{ padding: '1rem 1.25rem' }}>
+                          <span style={{
+                            fontSize: '0.75rem',
                             fontWeight: 800,
-                            fontSize: '0.78rem',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.35rem'
-                          }}
-                        >
-                          <Eye size={14} /> View Timeline
-                        </button>
-                      </td>
+                            padding: '0.25rem 0.65rem',
+                            borderRadius: '0.4rem',
+                            background: log.securityPolicyMode === 'Strict' ? '#FEF2F2' : '#F0FDF4',
+                            color: log.securityPolicyMode === 'Strict' ? '#DC2626' : '#166534',
+                            border: `1px solid ${log.securityPolicyMode === 'Strict' ? '#FEE2E2' : '#DCFCE7'}`
+                          }}>
+                            {log.securityPolicyMode || 'Standard'}
+                          </span>
+                        </td>
 
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <td style={{ padding: '1rem 1.25rem' }}>
+                          <span style={{
+                            fontWeight: 900,
+                            color: isViolation ? '#DC2626' : '#059669',
+                            background: isViolation ? '#FEF2F2' : '#ECFDF5',
+                            padding: '0.25rem 0.65rem',
+                            borderRadius: '0.4rem'
+                          }}>
+                            {log.totalViolations || 0} Violations
+                          </span>
+                        </td>
+
+                        <td style={{ padding: '1rem 1.25rem' }}>
+                          <span style={{
+                            fontSize: '0.78rem',
+                            fontWeight: 800,
+                            color: isBreach ? '#DC2626' : (log.submissionReason === 'Time Expired' ? '#D97706' : '#0F172A')
+                          }}>
+                            {log.submissionReason || 'Normal'}
+                          </span>
+                        </td>
+
+                        <td style={{ padding: '1rem 1.25rem', fontWeight: 700, color: '#64748B' }}>
+                          {log.events ? log.events.length : 0} Events Logged
+                        </td>
+
+                        <td style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>
+                          <button
+                            onClick={() => setSelectedLogModal(log)}
+                            style={{
+                              padding: '0.45rem 0.85rem',
+                              borderRadius: '0.65rem',
+                              border: '1px solid #CBD5E1',
+                              background: '#FFFFFF',
+                              color: '#2563EB',
+                              fontWeight: 800,
+                              fontSize: '0.78rem',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.35rem'
+                            }}
+                          >
+                            <Eye size={14} /> View Timeline
+                          </button>
+                        </td>
+
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards List View */}
+            <div className="admin-audit-mobile-cards hidden-desktop" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {filteredLogs.map((log) => {
+                const isViolation = log.totalViolations > 0;
+                const isBreach = log.submissionReason === 'Security Violation';
+
+                return (
+                  <div
+                    key={log._id}
+                    style={{
+                      background: '#FFFFFF',
+                      borderRadius: '1.25rem',
+                      border: '1px solid #E2E8F0',
+                      padding: '1.25rem',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.85rem'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 800,
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '9999px',
+                        background: log.securityPolicyMode === 'Strict' ? '#FEF2F2' : '#F0FDF4',
+                        color: log.securityPolicyMode === 'Strict' ? '#DC2626' : '#166534',
+                        border: `1px solid ${log.securityPolicyMode === 'Strict' ? '#FEE2E2' : '#DCFCE7'}`
+                      }}>
+                        🔒 {log.securityPolicyMode || 'Standard'} Mode
+                      </span>
+
+                      <span style={{
+                        fontWeight: 900,
+                        fontSize: '0.78rem',
+                        color: isViolation ? '#DC2626' : '#059669',
+                        background: isViolation ? '#FEF2F2' : '#ECFDF5',
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '9999px'
+                      }}>
+                        {log.totalViolations || 0} Violations
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.15rem 0' }}>{log.studentName || 'Student'}</h4>
+                      <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>{log.studentEmail}</span>
+                    </div>
+
+                    <div style={{ background: '#F8FAFC', padding: '0.75rem', borderRadius: '0.75rem', border: '1px solid #F1F5F9' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563EB', textTransform: 'uppercase', display: 'block', marginBottom: '0.2rem' }}>Exam Target:</span>
+                      <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1E293B', display: 'block' }}>{log.examTitle} ({log.examType || 'Quiz'})</span>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', background: '#F8FAFC', padding: '0.6rem 0.8rem', borderRadius: '0.6rem' }}>
+                      <span style={{ color: '#64748B', fontWeight: 700 }}>Submission Status:</span>
+                      <strong style={{ color: isBreach ? '#DC2626' : (log.submissionReason === 'Time Expired' ? '#D97706' : '#0F172A'), fontWeight: 800 }}>
+                        {log.submissionReason || 'Normal'}
+                      </strong>
+                    </div>
+
+                    <button
+                      onClick={() => setSelectedLogModal(log)}
+                      style={{
+                        width: '100%',
+                        padding: '0.7rem',
+                        borderRadius: '0.75rem',
+                        border: '1px solid #BFDBFE',
+                        background: '#EFF6FF',
+                        color: '#1D4ED8',
+                        fontWeight: 800,
+                        fontSize: '0.88rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.4rem'
+                      }}
+                    >
+                      <Eye size={16} /> View Audit Timeline ({log.events ? log.events.length : 0} Events)
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
       </div>
 
       {/* ── SECURITY EVENT TIMELINE MODAL ───────────────────────── */}
       {selectedLogModal && (
-        <div style={{
+        <div className="admin-modal-container" style={{
           position: 'fixed',
           inset: 0,
           background: 'rgba(15, 23, 42, 0.8)',
@@ -295,7 +386,7 @@ const AdminSecurityAudit = () => {
           zIndex: 9999,
           padding: '1.5rem'
         }}>
-          <div style={{
+          <div className="admin-modal-card" style={{
             background: '#FFFFFF',
             borderRadius: '1.75rem',
             maxWidth: '700px',

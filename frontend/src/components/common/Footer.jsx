@@ -23,7 +23,7 @@ const Footer = () => {
     loadStats();
   }, []);
   return (
-    <footer style={{
+    <footer className="site-footer" style={{
       background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
       color: '#475569',
       padding: '4.5rem 0 2.5rem 0',
@@ -37,7 +37,7 @@ const Footer = () => {
         <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
           
           {/* Column 1: Brand & Platform Summary */}
-          <div>
+          <div className="footer-brand-col">
             <Link to="/" style={{ textDecoration: 'none', gap: '0.25rem', display: 'flex', alignItems: 'center', marginBottom: '1.25rem' }}>
               <img 
                 src="/Logo1.png" 
@@ -77,66 +77,69 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 2: Preparation Batches */}
-          <div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
-              Preparation Batches
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link to="/courses" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Mahabharath Math Series</span>
-              </Link>
-              <Link to="/courses" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Web Development (MERN)</span>
-              </Link>
-              <Link to="/courses" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>IOE Engineering Entrance</span>
-              </Link>
-              <Link to="/courses" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Loksewa Tayari (GK &amp; IQ)</span>
-              </Link>
+          {/* Navigation Columns Group (2-column grid on mobile) */}
+          <div className="footer-nav-group" style={{ display: 'contents' }}>
+            {/* Column 2: Preparation Batches */}
+            <div className="footer-nav-col">
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
+                Preparation Batches
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Link to="/courses" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Mahabharath Math Series</span>
+                </Link>
+                <Link to="/courses" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Web Development (MERN)</span>
+                </Link>
+                <Link to="/courses" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>IOE Engineering Entrance</span>
+                </Link>
+                <Link to="/courses" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Loksewa Tayari (GK &amp; IQ)</span>
+                </Link>
+              </div>
             </div>
-          </div>
 
-          {/* Column 3: Student Corner */}
-          <div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
-              Student Corner
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Link to="/courses" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Explore All Batches</span>
-              </Link>
-              <Link to="/notes" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Free Handwritten Notes</span>
-              </Link>
-              <Link to="/exam-alerts" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>SEE / NEB Exam Alerts</span>
-              </Link>
-              <Link to="/about" className="footer-link">
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>About Platform</span>
-              </Link>
-              <Link to="/login" className="footer-link" style={{ color: '#2563EB', fontWeight: 700 }}>
-                <ChevronRight size={14} className="link-arrow" color="#2563EB" />
-                <span>Teacher Portal Login →</span>
-              </Link>
+            {/* Column 3: Student Corner */}
+            <div className="footer-nav-col">
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
+                Student Corner
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Link to="/courses" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Explore All Batches</span>
+                </Link>
+                <Link to="/notes" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Free Handwritten Notes</span>
+                </Link>
+                <Link to="/exam-alerts" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>SEE / NEB Exam Alerts</span>
+                </Link>
+                <Link to="/about" className="footer-link">
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>About Platform</span>
+                </Link>
+                <Link to="/login" className="footer-link" style={{ color: '#2563EB', fontWeight: 700 }}>
+                  <ChevronRight size={14} className="link-arrow" color="#2563EB" />
+                  <span>Teacher Portal Login →</span>
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Column 4: Academic Helpline & Support */}
-          <div>
+          <div className="footer-support-col">
             <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
               24/7 Academic Support
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', color: '#475569' }}>
+            <div className="footer-contact-list" style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', color: '#475569' }}>
               <div className="footer-contact-item">
                 <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Phone size={16} color="#2563EB" />
@@ -174,7 +177,7 @@ const Footer = () => {
         {/* Footer Bottom Attribution & Copyright */}
         <div className="footer-bottom-bar" style={{ borderTop: '1px solid #E2E8F0', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.25rem', fontSize: '0.88rem' }}>
           
-          <div>
+          <div className="footer-copyright-box">
             <p style={{ margin: 0, color: '#64748B', fontWeight: 500 }}>
               &copy; {new Date().getFullYear()} <strong style={{ color: '#0F172A' }}>PiyushDhara</strong>. All rights reserved.
             </p>
@@ -204,9 +207,9 @@ const Footer = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '1.5rem', fontWeight: 600, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="footer-bottom-right" style={{ display: 'flex', gap: '1.5rem', fontWeight: 600, alignItems: 'center', flexWrap: 'wrap' }}>
             {/* Live Visitor Analytics Counter */}
-            <div style={{
+            <div className="footer-visitor-badge" style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.75rem',
@@ -227,9 +230,11 @@ const Footer = () => {
               </span>
             </div>
 
-            <Link to="/about" className="footer-link">Privacy Policy</Link>
-            <Link to="/about" className="footer-link">Terms of Service</Link>
-            <Link to="/support" className="footer-link" style={{ color: '#2563EB' }}>Academic Helpline</Link>
+            <div className="footer-legal-links" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <Link to="/about" className="footer-link">Privacy Policy</Link>
+              <Link to="/about" className="footer-link">Terms of Service</Link>
+              <Link to="/support" className="footer-link" style={{ color: '#2563EB' }}>Academic Helpline</Link>
+            </div>
           </div>
 
         </div>

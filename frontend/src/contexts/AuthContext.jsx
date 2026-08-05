@@ -53,6 +53,20 @@ export const AuthProvider = ({ children }) => {
 
   // Sync Firebase Auth State
   useEffect(() => {
+    // ── Fast-resolve for JWT-only users (admin/teacher login) ──
+    // If a valid JWT token + role exist in localStorage but there's no
+    // active Firebase session, don't wait for onAuthStateChanged to hang.
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    if (savedToken && !savedUser?.includes('"provider":"')) {
+      const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+      const role = parsedUser?.role;
+      if (role === 'admin' || role === 'teacher') {
+        // Admin/teacher are JWT-only — resolve immediately, no Firebase needed
+        setLoading(false);
+      }
+    }
+
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
       if (user) {

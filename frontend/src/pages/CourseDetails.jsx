@@ -138,7 +138,7 @@ const CourseDetails = () => {
       <div className="container">
         
         {/* Banner Header Card */}
-        <div style={{ 
+        <div className="course-details-hero-banner" style={{ 
           borderRadius: '1.5rem', 
           padding: '3.5rem', 
           marginBottom: '2.5rem', 
@@ -152,16 +152,16 @@ const CourseDetails = () => {
           {/* Subtle glowing ring decoration */}
           <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 75%)', filter: 'blur(30px)' }}></div>
           
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 500px', minWidth: '280px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
+          <div className="course-details-hero-flex" style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+            <div className="course-details-hero-content" style={{ flex: '1 1 500px', minWidth: '280px' }}>
+              <div className="course-details-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
                 <BookOpen size={12} /> BATCH PREPARATION
               </div>
-              <h1 style={{ fontSize: '2.75rem', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.02em', color: '#0F172A' }}>{course.title}</h1>
-              <p style={{ color: '#475569', fontSize: '1.1rem', maxWidth: '750px', marginBottom: '2rem', lineHeight: '1.7' }}>{course.description}</p>
+              <h1 className="course-details-hero-title" style={{ fontSize: '2.75rem', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.02em', color: '#0F172A' }}>{course.title}</h1>
+              <p className="course-details-hero-desc" style={{ color: '#475569', fontSize: '1.1rem', maxWidth: '750px', marginBottom: '2rem', lineHeight: '1.7' }}>{course.description}</p>
               
-              <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1.5rem', borderTop: '1px solid #CBD5E1', paddingTop: '1.75rem' }}>
-                <div style={{ display: 'flex', gap: '2rem' }}>
+              <div className="course-details-meta-row flex-between" style={{ flexWrap: 'wrap', gap: '1.5rem', borderTop: '1px solid #CBD5E1', paddingTop: '1.75rem' }}>
+                <div className="course-details-meta-items" style={{ display: 'flex', gap: '2rem' }}>
                   <div>
                     <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>PRICE TIER</span>
                     <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#2563EB', margin: 0 }}>
@@ -183,7 +183,7 @@ const CourseDetails = () => {
                   </div>
                 </div>
                 
-                <button onClick={handleEnrollClick} className="btn btn-primary" style={{ padding: '0.9rem 2rem', fontSize: '1rem' }}>
+                <button onClick={handleEnrollClick} className="btn btn-primary course-details-enroll-btn" style={{ padding: '0.9rem 2rem', fontSize: '1rem' }}>
                   {isAlreadyEnrolled ? 'Enrolled ✓ (Access Batch)' : (!token ? 'Login to Enroll in Batch' : 'Enroll in Batch')}
                 </button>
               </div>
@@ -191,6 +191,7 @@ const CourseDetails = () => {
 
             {/* Teacher Photo on Right - Clickable */}
             <div 
+              className="course-details-teacher-photo"
               onClick={() => setSelectedTeacher({
                 name: course.instructorName || 'Gaurav Sir & Team',
                 photo: course.teacherImageUrl || '/teacher.png'
@@ -260,7 +261,7 @@ const CourseDetails = () => {
         <div style={{ marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '1rem' }}>Batch Curriculum &amp; Subjects</h2>
           
-          <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+          <div className="tab-strip-scroll course-details-subject-tabs" style={{ gap: '0.75rem', paddingBottom: '0.5rem' }}>
             {course.subjects?.map((subj) => {
               const isSelected = subj._id === activeSubject;
               return (
@@ -348,6 +349,7 @@ const CourseDetails = () => {
                             <Link
                               key={vid._id}
                               to={`/lecture/${vid._id}`}
+                              className="course-details-lecture-row"
                               style={{
                                 display: 'flex',
                                 alignItems: 'center',

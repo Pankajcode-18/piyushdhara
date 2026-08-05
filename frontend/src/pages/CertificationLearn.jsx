@@ -52,6 +52,9 @@ const CertificationLearn = () => {
   const [activeLessonId, setActiveLessonId] = useState('');
   const [copiedCodeIdx, setCopiedCodeIdx] = useState(null);
 
+  // Workspace State
+  const [showMobileModules, setShowMobileModules] = useState(false);
+
   // Quiz State
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitting, setQuizSubmitting] = useState(false);
@@ -353,21 +356,21 @@ const CertificationLearn = () => {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#F8FAFC' }}>
 
       {/* ── TOP PROGRESS HEADER ───────────────────────────────── */}
-      <header style={{ background: '#FFFFFF', borderBottom: '1px solid #E2E8F0', padding: '1rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', sticky: 'top', top: 0, zIndex: 10 }}>
+      <header className="learn-header" style={{ background: '#FFFFFF', borderBottom: '1px solid #E2E8F0', padding: '1rem 1.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', sticky: 'top', top: 0, zIndex: 10 }}>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link to={`/certifications/${certification.slug}`} style={{ textDecoration: 'none', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', fontWeight: 700 }}>
+        <div className="learn-header-title-box" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
+          <Link to={`/certifications/${certification.slug}`} style={{ textDecoration: 'none', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
             <ChevronLeft size={18} /> Overview
           </Link>
-          <div style={{ height: '20px', width: '1px', background: '#CBD5E1' }} />
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Award color="#2563EB" size={20} /> {certification.title}
+          <div style={{ height: '20px', width: '1px', background: '#CBD5E1', flexShrink: 0 }} />
+          <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <Award color="#2563EB" size={18} style={{ flexShrink: 0 }} /> {certification.title}
           </h2>
         </div>
 
         {/* Center Progress Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: '320px' }}>
-          <div style={{ flex: 1 }}>
+        <div className="learn-progress-container" style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: '320px' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 800, color: '#475569', marginBottom: '0.25rem' }}>
               <span>Course Progress</span>
               <span>{completedCount} of {totalLessons} Lessons ({progressPct}%)</span>
@@ -403,10 +406,35 @@ const CertificationLearn = () => {
       </header>
 
       {/* ── MAIN WORKSPACE (SIDEBAR + CONTENT) ─────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', flex: 1, minHeight: 'calc(100vh - 70px)' }}>
+      <div className="learn-workspace-grid" style={{ display: 'grid', gridTemplateColumns: '320px 1fr', flex: 1, minHeight: 'calc(100vh - 70px)' }}>
+
+        {/* ── MOBILE-ONLY MODULE TOGGLE BAR ──────────────────────── */}
+        <button
+          type="button"
+          className="mobile-modules-toggle-btn"
+          onClick={() => setShowMobileModules(!showMobileModules)}
+          style={{
+            display: 'none',
+            width: '100%',
+            padding: '0.75rem 1rem',
+            background: '#FFFFFF',
+            borderBottom: '1px solid #E2E8F0',
+            color: '#1D4ED8',
+            fontWeight: 800,
+            fontSize: '0.88rem',
+            cursor: 'pointer',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <BookOpen size={16} style={{ flexShrink: 0 }} /> Course Modules ({modules.length})
+          </span>
+          <span style={{ flexShrink: 0, paddingLeft: '0.5rem', fontSize: '0.82rem' }}>{showMobileModules ? '▲ Hide' : '▼ Expand'}</span>
+        </button>
 
         {/* ── LEFT SIDEBAR: MODULE LIST TREE ────────────────────── */}
-        <aside style={{ background: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', overflowY: 'auto' }}>
+        <aside className={`learn-sidebar ${showMobileModules ? 'mobile-visible' : ''}`} style={{ background: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.25rem 1rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', overflowY: 'auto' }}>
           
           <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Course Modules ({modules.length})
@@ -425,7 +453,10 @@ const CertificationLearn = () => {
                   return (
                     <button
                       key={les._id}
-                      onClick={() => handleSelectLesson(les)}
+                      onClick={() => {
+                        handleSelectLesson(les);
+                        setShowMobileModules(false);
+                      }}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -467,7 +498,7 @@ const CertificationLearn = () => {
         </aside>
 
         {/* ── RIGHT MAIN WORKSPACE: LESSON CONTENT ───────────────── */}
-        <main ref={mainRef} style={{ padding: '2.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <main ref={mainRef} className="learn-main-content" style={{ padding: '2.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
           {actionMsg && (
             <div style={{ background: '#F0FDF4', border: '1px solid #DCFCE7', color: '#166534', padding: '0.85rem 1.25rem', borderRadius: '1rem', fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -478,19 +509,19 @@ const CertificationLearn = () => {
           {activeLesson ? (
             <>
               {/* Lesson Title & Completion Status */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '1.25rem' }}>
+              <div className="learn-title-status-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '1.25rem' }}>
                 <div>
                   <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 800, textTransform: 'uppercase' }}>Lesson Content</span>
                   <h1 style={{ fontSize: '1.85rem', fontWeight: 900, color: '#0F172A', margin: '0.2rem 0 0 0' }}>{activeLesson.title}</h1>
                 </div>
 
-                <div>
+                <div style={{ flexShrink: 0 }}>
                   {isCurrentCompleted ? (
-                    <span style={{ background: '#DCFCE7', color: '#15803D', border: '1px solid #A7F3D0', padding: '0.45rem 0.95rem', borderRadius: '9999px', fontWeight: 800, fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <span style={{ background: '#DCFCE7', color: '#15803D', border: '1px solid #A7F3D0', padding: '0.45rem 0.95rem', borderRadius: '9999px', fontWeight: 800, fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
                       <CheckCircle2 size={16} /> Completed ✓
                     </span>
                   ) : (
-                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.95rem', borderRadius: '9999px', fontWeight: 800, fontSize: '0.82rem' }}>
+                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.95rem', borderRadius: '9999px', fontWeight: 800, fontSize: '0.82rem', whiteSpace: 'nowrap', display: 'inline-block' }}>
                       In Progress 📖
                     </span>
                   )}
@@ -500,6 +531,7 @@ const CertificationLearn = () => {
               {/* Rich Lesson Body Content */}
               <div 
                 ref={lessonContainerRef}
+                className="learn-lesson-card"
                 style={{ 
                   background: '#FFFFFF', 
                   borderRadius: '1.5rem', 
@@ -595,7 +627,7 @@ const CertificationLearn = () => {
 
               {/* ── LESSON QUIZ WIDGET ──────────────────────────── */}
               {activeLesson.hasQuiz && activeLesson.quiz && (
-                <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem' }}>
+                <div className="learn-quiz-card" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem' }}>
                   <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', margin: '0 0 1.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <HelpCircle color="#D97706" size={22} /> {activeLesson.quiz.title || 'Lesson Checkpoint Quiz'}
                   </h3>
@@ -684,7 +716,7 @@ const CertificationLearn = () => {
               )}
 
               {/* Bottom Lesson Completion Card */}
-              <div style={{ background: isCurrentCompleted ? '#F0FDF4' : '#FFFFFF', border: `1.5px solid ${isCurrentCompleted ? '#A7F3D0' : '#E2E8F0'}`, borderRadius: '1.5rem', padding: '1.75rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.25rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+              <div className="learn-completion-card" style={{ background: isCurrentCompleted ? '#F0FDF4' : '#FFFFFF', border: `1.5px solid ${isCurrentCompleted ? '#A7F3D0' : '#E2E8F0'}`, borderRadius: '1.5rem', padding: '1.75rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.25rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
                 <div>
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#0F172A', margin: '0 0 0.25rem 0' }}>
                     {isCurrentCompleted ? '🎉 Lesson Completed!' : 'Done Reading This Lesson?'}
@@ -719,7 +751,7 @@ const CertificationLearn = () => {
               </div>
 
               {/* Prev / Next Navigation Bar */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0' }}>
+              <div className="learn-nav-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0' }}>
                 {prevLesson ? (
                   <button
                     onClick={() => handleSelectLesson(prevLesson)}
@@ -761,7 +793,7 @@ const CertificationLearn = () => {
 
       {/* ── FINAL ASSESSMENT EXAM MODAL ───────────────────────── */}
       {showFinalExamModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '1rem' }}>
           <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', maxWidth: '750px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: '2.5rem', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', paddingBottom: '1rem', marginBottom: '1.5rem' }}>

@@ -822,7 +822,7 @@ const LectureRoom = () => {
             <div className="card lecture-discussion-panel" style={{ padding: '1.75rem', borderRadius: 'var(--radius-xl)', marginTop: '1rem', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               
               {/* Bottom Section Sub-tabs */}
-              <div style={{ display: 'flex', gap: '1rem', borderBottom: '1.5px solid var(--border)', paddingBottom: '0.85rem', marginBottom: '1.5rem' }}>
+              <div className="tab-strip-scroll lecture-bottom-subtabs" style={{ gap: '0.5rem', borderBottom: '1.5px solid var(--border)', paddingBottom: '0.85rem', marginBottom: '1.5rem' }}>
                 <button
                   type="button"
                   onClick={() => setBottomTab('discussion')}
@@ -838,6 +838,7 @@ const LectureRoom = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.45rem',
+                    whiteSpace: 'nowrap',
                     transition: 'all 0.2s ease'
                   }}
                 >
@@ -859,6 +860,7 @@ const LectureRoom = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.45rem',
+                    whiteSpace: 'nowrap',
                     transition: 'all 0.2s ease'
                   }}
                 >
@@ -912,7 +914,7 @@ const LectureRoom = () => {
                             resize: 'none'
                           }}
                         />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.25rem' }}>
+                        <div className="lecture-post-comment-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.25rem' }}>
                           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                             {userObj ? `Posting as ${userObj.name} (${userObj.role === 'admin' ? 'Teacher' : 'Enrolled Student'})` : `Posting as ${guestName.trim() || 'Enrolled Student'}`}
                           </span>
@@ -1080,8 +1082,8 @@ const LectureRoom = () => {
               {bottomTab === 'feedback' && (
                 <div>
                   {/* Rating Header Metrics */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem', padding: '1.25rem', background: '#FEF3C7', borderRadius: '1rem', border: '1px solid #FDE68A' }}>
-                    <div style={{ textAlign: 'center' }}>
+                  <div className="lecture-rating-hero-card" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem', padding: '1.25rem', background: '#FEF3C7', borderRadius: '1rem', border: '1px solid #FDE68A' }}>
+                    <div className="lecture-rating-score-box" style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#D97706', lineHeight: 1 }}>
                         {feedbackSummary.averageRating}
                       </div>
@@ -1101,7 +1103,7 @@ const LectureRoom = () => {
                     </div>
 
                     {/* Interactive Star Selector & Form */}
-                    <form onSubmit={handleSubmitFeedback} style={{ flex: 1 }}>
+                    <form onSubmit={handleSubmitFeedback} style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.88rem', color: '#92400E' }}>
                         Rate &amp; Review this Lecture:
                       </div>
@@ -1139,7 +1141,7 @@ const LectureRoom = () => {
                           />
                         )}
 
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <div className="lecture-feedback-input-row" style={{ display: 'flex', gap: '0.5rem' }}>
                           <input
                             type="text"
                             value={userFeedbackText}
@@ -1147,6 +1149,7 @@ const LectureRoom = () => {
                             placeholder="Write short feedback or quality review..."
                             style={{
                               flex: 1,
+                              minWidth: 0,
                               borderRadius: '0.5rem',
                               padding: '0.5rem 0.85rem',
                               fontSize: '0.85rem',
@@ -1158,7 +1161,7 @@ const LectureRoom = () => {
                             type="submit"
                             disabled={submittingFeedback}
                             className="btn btn-primary"
-                            style={{ padding: '0.5rem 1rem', fontSize: '0.82rem', background: '#D97706', borderColor: '#D97706' }}
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.82rem', background: '#D97706', borderColor: '#D97706', whiteSpace: 'nowrap' }}
                           >
                             Submit Rating
                           </button>

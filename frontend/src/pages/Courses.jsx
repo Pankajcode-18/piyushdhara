@@ -208,13 +208,13 @@ const Courses = () => {
             border: '1px solid #DBEAFE'
           }}
         >
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 500px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+            <div className="courses-banner-content" style={{ flex: '1 1 500px' }}>
+              <div className="courses-banner-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#DBEAFE', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#1D4ED8', marginBottom: '1.25rem' }}>
                 <Sparkles size={14} /> {isEnrolledFilter ? 'VERIFIED ENROLLED BATCHES' : 'NEPAL PREPARATION PORTAL'}
               </div>
 
-              <h1 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
+              <h1 className="courses-banner-title" style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
                 {isEnrolledFilter ? (
                   <>My Enrolled <span style={{ color: '#2563EB' }}>Batches</span></>
                 ) : (
@@ -222,7 +222,7 @@ const Courses = () => {
                 )}
               </h1>
 
-              <p style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
+              <p className="courses-banner-desc" style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
                 {isEnrolledFilter 
                   ? 'Here are all your active enrolled batches. Click any batch to stream HD lectures, practice numericals, and view handwritten PDFs.'
                   : 'Master SEE, NEB Class 11-12, and Entrance Exams with chapter-wise video series led by Gaurav Sir & Team.'
@@ -231,9 +231,9 @@ const Courses = () => {
             </div>
 
             {/* Quick Stat Counter */}
-            <div style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #DBEAFE', boxShadow: '0 10px 25px rgba(37,99,235,0.06)', textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#2563EB' }}>{filteredCourses.length}</div>
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="courses-banner-stat-box" style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #DBEAFE', boxShadow: '0 10px 25px rgba(37,99,235,0.06)', textAlign: 'center' }}>
+              <div className="courses-banner-stat-num" style={{ fontSize: '2.2rem', fontWeight: 900, color: '#2563EB' }}>{filteredCourses.length}</div>
+              <div className="courses-banner-stat-label" style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {isEnrolledFilter ? 'Enrolled Courses' : 'Active Batches'}
               </div>
             </div>
@@ -353,7 +353,7 @@ const Courses = () => {
                     }}
                   >
                     {/* Thumbnail Image Header */}
-                    <div style={{ 
+                    <div className="courses-card-thumb" style={{ 
                       height: '195px', 
                       position: 'relative', 
                       backgroundColor: '#0F172A',
@@ -412,12 +412,12 @@ const Courses = () => {
                     </div>
 
                     {/* Card Content Body */}
-                    <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: '1.35' }}>
+                    <div className="courses-card-body" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <h3 className="courses-card-title" style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: '1.35' }}>
                         {course.title}
                       </h3>
 
-                      <p style={{ 
+                      <p className="courses-card-desc" style={{ 
                         color: 'var(--text-muted)', 
                         fontSize: '0.88rem', 
                         lineHeight: '1.55',
@@ -432,7 +432,7 @@ const Courses = () => {
                       </p>
 
                       {/* Key Features Badges */}
-                      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', flexWrap: 'wrap' }}>
+                      <div className="courses-card-features" style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                           <Video size={13} color="var(--primary)" /> HD Lectures
                         </span>
@@ -442,10 +442,10 @@ const Courses = () => {
                       </div>
 
                       {/* Card Footer Actions */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-                        <div>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--text-placeholder)', fontWeight: 600, display: 'block', textTransform: 'uppercase' }}>Tuition Fee</span>
-                          <span style={{ fontSize: '1.3rem', fontWeight: 800, color: isFree ? 'var(--success)' : 'var(--primary)' }}>
+                      <div className="courses-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+                        <div className="courses-card-price-block">
+                          <span className="courses-card-fee-label" style={{ fontSize: '0.7rem', color: 'var(--text-placeholder)', fontWeight: 600, display: 'block', textTransform: 'uppercase' }}>Tuition Fee</span>
+                          <span className="courses-card-price-text" style={{ fontSize: '1.3rem', fontWeight: 800, color: isFree ? 'var(--success)' : 'var(--primary)' }}>
                             {isFree ? 'Free Access' : `Rs. ${course.price}`}
                           </span>
                         </div>
@@ -453,11 +453,12 @@ const Courses = () => {
                         <Link 
                           to={`/courses/${course._id}`} 
                           onClick={(e) => handleCourseCardClick(e, course._id)}
-                          className="btn btn-primary" 
+                          className="btn btn-primary courses-card-btn" 
                           style={{ 
-                            padding: '0.65rem 1.25rem', 
-                            fontSize: '0.85rem', 
-                            borderRadius: '0.65rem',
+                            padding: '0.65rem 1.35rem', 
+                            fontSize: '0.88rem', 
+                            borderRadius: '0.75rem',
+                            fontWeight: 700,
                             gap: '0.4rem',
                           }}
                         >

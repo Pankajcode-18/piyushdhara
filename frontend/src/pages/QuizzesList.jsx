@@ -78,10 +78,11 @@ const QuizzesList = () => {
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }} className="quizzes-page-container">
 
       {/* ── HERO BANNER ────────────────────────────────────────── */}
       <div 
+        className="quizzes-hero-banner"
         style={{
           background: 'linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 50%, #F0F9FF 100%)',
           borderRadius: '1.75rem',
@@ -95,15 +96,15 @@ const QuizzesList = () => {
         }}
       >
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '720px' }}>
-          <span style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', color: '#2563EB', padding: '0.35rem 0.95rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <span className="quizzes-hero-badge" style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', color: '#2563EB', padding: '0.35rem 0.95rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             ⚡ Examination &amp; Practice Arena
           </span>
 
-          <h1 style={{ fontSize: '2.4rem', fontWeight: 900, margin: '0.85rem 0 0.5rem 0', letterSpacing: '-0.02em', lineHeight: 1.25 }}>
+          <h1 className="quizzes-hero-title" style={{ fontSize: '2.4rem', fontWeight: 900, margin: '0.85rem 0 0.5rem 0', letterSpacing: '-0.02em', lineHeight: 1.25 }}>
             Quizzes, Mock Exams &amp; Assignments
           </h1>
 
-          <p style={{ fontSize: '1.02rem', color: '#94A3B8', margin: 0, lineHeight: 1.6 }}>
+          <p className="quizzes-hero-desc" style={{ fontSize: '1.02rem', color: '#94A3B8', margin: 0, lineHeight: 1.6 }}>
             Test your knowledge with weekly quizzes, competitive grand mock exams, practical coding challenges, and track your global rank on the live leaderboard.
           </p>
         </div>
@@ -113,12 +114,12 @@ const QuizzesList = () => {
         </div>
       </div>
 
-      {/* ── CONTROLS & FILTER BAR ──────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+      {/* ── CONTROLS & FILTER BAR ────────────────────────────── */}
+      <div className="quizzes-controls-container" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2rem' }}>
+        <div className="quizzes-filter-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           
           {/* Search Box */}
-          <div style={{ position: 'relative', minWidth: '320px', flex: 1 }}>
+          <div className="quizzes-search-box" style={{ position: 'relative', minWidth: '320px', flex: 1 }}>
             <Search size={18} color="#64748B" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
             <input 
               type="text" 
@@ -139,7 +140,7 @@ const QuizzesList = () => {
           </div>
 
           {/* Difficulty Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="quizzes-difficulty-filter" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Difficulty:</span>
             {['All', 'Beginner', 'Intermediate', 'Advanced'].map(diff => (
               <button
@@ -164,7 +165,7 @@ const QuizzesList = () => {
         </div>
 
         {/* Category Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.35rem' }}>
+        <div className="tab-strip-scroll" style={{ gap: '0.5rem', paddingBottom: '0.35rem' }}>
           {[
             { id: 'All', label: 'All Assessments' },
             { id: 'weekly', label: '⚡ Weekly Quizzes' },

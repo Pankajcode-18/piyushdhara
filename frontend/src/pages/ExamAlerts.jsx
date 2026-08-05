@@ -122,7 +122,7 @@ const ExamAlerts = () => {
       </motion.div>
 
       {/* Quick Links Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+      <div className="notice-quick-links" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
         <a href="https://neb.ntc.net.np" target="_blank" rel="noopener noreferrer" style={{ background: 'linear-gradient(135deg, #2563EB, #3B82F6)', color: 'white', borderRadius: '1rem', padding: '1.25rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'transform 0.2s' }} className="card">
           <Award size={22} />
           <div>
@@ -174,7 +174,7 @@ const ExamAlerts = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: i * 0.05 }}
-            className="card glass"
+            className="card glass notice-card-responsive"
             style={{ padding: '1.25rem 1.5rem', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}
           >
             <div style={{ width: '40px', height: '40px', borderRadius: '0.65rem', background: notice.tagBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '0.1rem' }}>

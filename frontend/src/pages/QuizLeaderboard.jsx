@@ -67,7 +67,7 @@ const QuizLeaderboard = () => {
   };
 
   return (
-    <div style={{ padding: '2.5rem 1.5rem', maxWidth: '1050px', margin: '0 auto' }}>
+    <div className="leaderboard-container" style={{ padding: '2.5rem 1.5rem', maxWidth: '1050px', margin: '0 auto' }}>
 
       {/* Top Action Bar */}
       <div style={{ marginBottom: '1.5rem' }}>
@@ -77,16 +77,16 @@ const QuizLeaderboard = () => {
       </div>
 
       {/* ── HEADER BANNER ────────────────────────────────────────── */}
-      <div style={{ background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)', borderRadius: '1.75rem', padding: '2.5rem', color: 'white', marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', boxShadow: '0 15px 35px rgba(49,46,129,0.2)' }}>
+      <div className="leaderboard-hero-banner" style={{ background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)', borderRadius: '1.75rem', padding: '2.5rem', color: 'white', marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', boxShadow: '0 15px 35px rgba(49,46,129,0.2)' }}>
         <div>
           <span style={{ background: 'rgba(255,255,255,0.15)', padding: '0.35rem 0.85rem', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#A5B4FC' }}>
             🏆 GLOBAL EXAMINATION LEADERBOARD
           </span>
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0.65rem 0 0.25rem 0' }}>{quizTitle}</h1>
+          <h1 className="leaderboard-title" style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0.65rem 0 0.25rem 0' }}>{quizTitle}</h1>
           <p style={{ fontSize: '0.92rem', color: '#C7D2FE', margin: 0 }}>Ranked by highest score, shortest completion time, and earliest submission.</p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(255,255,255,0.1)', padding: '1rem 1.5rem', borderRadius: '1.25rem', border: '1px solid rgba(255,255,255,0.15)' }}>
+        <div className="leaderboard-participants-box" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(255,255,255,0.1)', padding: '1rem 1.5rem', borderRadius: '1.25rem', border: '1px solid rgba(255,255,255,0.15)' }}>
           <Trophy size={36} color="#F59E0B" />
           <div>
             <span style={{ fontSize: '0.75rem', color: '#A5B4FC', display: 'block', fontWeight: 700 }}>PARTICIPANTS</span>
@@ -103,8 +103,8 @@ const QuizLeaderboard = () => {
           <p style={{ color: '#64748B', margin: 0 }}>Be the first student to complete this assessment and claim Rank #1!</p>
         </div>
       ) : (
-        <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+        <div className="leaderboard-table-card" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', overflowX: 'auto', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+          <table className="leaderboard-table" style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 <th style={{ padding: '1rem 1.5rem' }}>Rank</th>

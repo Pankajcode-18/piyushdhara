@@ -162,45 +162,6 @@ const Home = () => {
             <div style={{ position: 'absolute', bottom: '-20%', left: '-5%', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
             <div style={{ position: 'absolute', top: '40%', left: '45%', width: '250px', height: '250px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)', filter: 'blur(45px)', pointerEvents: 'none' }}></div>
 
-            {/* ── Live Batches Badge — Top Right Corner ── */}
-            <motion.div
-              initial={{ opacity: 0, y: -12, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              style={{
-                position: 'absolute',
-                top: '1.25rem',
-                right: '1.5rem',
-                zIndex: 10,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.45rem 1rem',
-                background: 'rgba(255, 255, 255, 0.92)',
-                backdropFilter: 'blur(14px)',
-                WebkitBackdropFilter: 'blur(14px)',
-                border: '1.5px solid rgba(16, 185, 129, 0.35)',
-                borderRadius: '9999px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                color: '#059669',
-                boxShadow: '0 4px 16px rgba(16, 185, 129, 0.18), 0 1px 4px rgba(0,0,0,0.06)',
-                letterSpacing: '0.01em',
-                pointerEvents: 'none'
-              }}
-            >
-              <span style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#10B981',
-                display: 'inline-block',
-                boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.25)',
-                animation: 'livePulse 2s infinite'
-              }} />
-              2081/2082 Live Batches Active
-            </motion.div>
-
             {/* 2-Column Responsive Layout Grid */}
             <div style={{
               position: 'relative',
@@ -221,7 +182,7 @@ const Home = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+                  <div className="hero-badges-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
                     <div style={{
                       display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                       padding: '0.45rem 1.1rem',
@@ -235,6 +196,33 @@ const Home = () => {
                       boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)'
                     }}>
                       <Zap size={15} color="#2563EB" className="animate-pulse" /> {t('heroBadge')}
+                    </div>
+
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.45rem',
+                      padding: '0.45rem 1rem',
+                      background: 'rgba(255, 255, 255, 0.92)',
+                      backdropFilter: 'blur(14px)',
+                      WebkitBackdropFilter: 'blur(14px)',
+                      border: '1.5px solid rgba(16, 185, 129, 0.35)',
+                      borderRadius: '9999px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#059669',
+                      boxShadow: '0 4px 16px rgba(16, 185, 129, 0.18)'
+                    }}>
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: '#10B981',
+                        display: 'inline-block',
+                        boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.25)',
+                        animation: 'livePulse 2s infinite'
+                      }} />
+                      2081/2082 Live Batches Active
                     </div>
                   </div>
 
@@ -261,12 +249,12 @@ const Home = () => {
                 </motion.div>
 
                 {/* Subtitle */}
-                <p style={{ fontSize: '1.12rem', color: '#334155', margin: 0, maxWidth: '600px', lineHeight: '1.75', fontWeight: 450 }}>
+                <p className="hero-subtitle-responsive" style={{ fontSize: '1.12rem', color: '#334155', margin: 0, maxWidth: '600px', lineHeight: '1.75', fontWeight: 450 }}>
                   Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: '#0F172A', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
                 </p>
 
                 {/* CTA Buttons */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div className="hero-cta-responsive" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <Link
                     to="/courses"
                     className="btn"
@@ -282,7 +270,8 @@ const Home = () => {
                       boxShadow: '0 12px 28px rgba(37, 99, 235, 0.35)',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
                   >
                     {t('exploreBatchesBtn')} <ArrowRight size={18} />
@@ -302,7 +291,8 @@ const Home = () => {
                       background: '#FFFFFF',
                       boxShadow: '0 4px 15px rgba(15, 23, 42, 0.05)',
                       display: 'inline-flex',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
                   >
                     <FileText size={18} color="#2563EB" /> {t('freeNotesBtn')}
@@ -350,6 +340,7 @@ const Home = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
+                className="hero-logo-centerpiece-responsive"
                 style={{
                   flex: '1 1 420px',
                   display: 'flex',
@@ -376,7 +367,7 @@ const Home = () => {
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem' }}>
               <Layers size={14} /> EXPLORE PREPARATION TRACKS
             </div>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+            <h2 className="section-title-responsive" style={{ fontSize: '2.2rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
               Tailored Batches for Every Academic Goal
             </h2>
           </div>
@@ -388,7 +379,7 @@ const Home = () => {
                 <motion.div key={i} whileHover={{ y: -6, transition: { duration: 0.2 } }}>
                   <Link
                     to={cat.link}
-                    className="card"
+                    className="card quick-tracks-card-responsive"
                     style={{
                       padding: '1.75rem',
                       textDecoration: 'none',
@@ -405,7 +396,7 @@ const Home = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{
+                      <div className="quick-tracks-icon-box" style={{
                         width: '52px', height: '52px',
                         borderRadius: '1rem',
                         background: cat.bg,
@@ -462,15 +453,15 @@ const Home = () => {
             }}>
               <ShieldCheck size={16} /> THE PIYUSHDHARA ADVANTAGE
             </div>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.85rem', letterSpacing: '-0.025em' }}>
+            <h2 className="section-title-responsive" style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.85rem', letterSpacing: '-0.025em' }}>
               Designed for Ultimate Board Exam Excellence
             </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.08rem', lineHeight: '1.7', margin: 0 }}>
+            <p className="section-subtitle-responsive" style={{ color: 'var(--text-muted)', fontSize: '1.08rem', lineHeight: '1.7', margin: 0 }}>
               Everything you need to score top grades in SEE and NEB exams organized into one powerful digital workspace.
             </p>
           </div>
 
-          <div style={{
+          <div className="features-responsive-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
             gap: '2rem'
@@ -479,7 +470,7 @@ const Home = () => {
             {/* Feature 1 */}
             <motion.div
               whileHover={{ y: -7 }}
-              className="card glass"
+              className="card glass feature-card-responsive"
               style={{
                 padding: '2.25rem',
                 borderRadius: '1.6rem',
@@ -711,25 +702,25 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── 4. Featured Batches Showcase ───────────────────────────── */}
-      <section style={{ padding: '5.5rem 0', background: 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%)' }}>
+      {/* ── 4. Featured Batches Showcase ──────────────────────────── */}
+      <section className="featured-batches-section" style={{ padding: '5.5rem 0', background: 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%)' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className="featured-batches-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'rgba(37,99,235,0.08)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#2563EB', marginBottom: '0.75rem' }}>
                 <TrendingUp size={14} /> POPULAR PREPARATION COURSES
               </div>
-              <h2 style={{ fontSize: '2.3rem', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
+              <h2 className="featured-batches-h2" style={{ fontSize: '2.3rem', fontWeight: 900, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
                 Featured Batches
               </h2>
             </div>
-            <Link to="/courses" className="btn btn-outline" style={{ gap: '0.4rem', fontSize: '0.9rem', padding: '0.6rem 1.25rem', borderRadius: '0.85rem', fontWeight: 700 }}>
+            <Link to="/courses" className="btn btn-outline featured-batches-view-all" style={{ gap: '0.4rem', fontSize: '0.9rem', padding: '0.6rem 1.25rem', borderRadius: '0.85rem', fontWeight: 700 }}>
               View All Batches <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          <div className="featured-batches-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '2rem' }}>
             {loading ? (
               <p style={{ color: '#64748B' }}>Loading preparation batches...</p>
             ) : (
@@ -741,7 +732,7 @@ const Home = () => {
                   <motion.div
                     key={course._id}
                     whileHover={{ y: -8 }}
-                    className="card glass"
+                    className="card glass batch-card-responsive"
                     style={{
                       borderRadius: '1.5rem',
                       overflow: 'hidden',
@@ -752,7 +743,7 @@ const Home = () => {
                       boxShadow: '0 15px 35px -5px rgba(0,0,0,0.06)'
                     }}
                   >
-                    <div style={{
+                    <div className="batch-card-thumb" style={{
                       height: '200px',
                       position: 'relative',
                       backgroundColor: '#0F172A',
@@ -762,7 +753,7 @@ const Home = () => {
                     }}>
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,23,42,0.85) 0%, transparent 60%)' }}></div>
 
-                      <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
+                      <div style={{ position: 'absolute', top: '0.85rem', left: '0.85rem' }}>
                         <span style={{
                           fontSize: '0.72rem', fontWeight: 900,
                           padding: '0.3rem 0.75rem', borderRadius: '0.5rem',
@@ -774,28 +765,28 @@ const Home = () => {
                         </span>
                       </div>
 
-                      <div style={{ position: 'absolute', bottom: '0.85rem', left: '1rem', display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                      <div style={{ position: 'absolute', bottom: '0.75rem', left: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                         <img
                           src={course.teacherImageUrl || teacherImg}
                           onError={(e) => { e.target.src = teacherImg; }}
                           alt={course.instructorName || 'Gaurav Sir'}
-                          style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #38BDF8' }}
+                          style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #38BDF8' }}
                         />
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#FFFFFF' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#FFFFFF' }}>
                           {course.instructorName || 'Gaurav Sir & Team'}
                         </span>
                       </div>
                     </div>
 
-                    <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                      <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', lineHeight: '1.3' }}>
+                    <div className="batch-card-body" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <h3 className="batch-card-title" style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem', lineHeight: '1.3' }}>
                         {course.title}
                       </h3>
-                      <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
+                      <p className="batch-card-desc" style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
                         {course.description}
                       </p>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #F1F5F9', paddingTop: '1.15rem', marginTop: 'auto' }}>
+                      <div className="batch-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #F1F5F9', paddingTop: '1.15rem', marginTop: 'auto' }}>
                         <span style={{ fontSize: '1.25rem', fontWeight: 900, color: isFree ? '#10B981' : '#2563EB' }}>
                           {isFree ? 'Free Access' : `Rs. ${course.price}`}
                         </span>
@@ -813,21 +804,21 @@ const Home = () => {
       </section>
 
       {/* ── 5. Testimonials Section ─────────────────────────────────── */}
-      <section style={{ padding: '5.5rem 0', background: '#FFFFFF', borderTop: '1px solid #E2E8F0' }}>
+      <section className="testimonials-section-responsive" style={{ padding: '5.5rem 0', background: '#FFFFFF', borderTop: '1px solid #E2E8F0' }}>
         <div className="container" style={{ maxWidth: '850px', textAlign: 'center' }}>
 
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'rgba(37,99,235,0.08)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#2563EB', marginBottom: '1rem' }}>
             <Award size={15} /> STUDENT SUCCESS STORIES
           </div>
 
-          <h2 style={{ fontSize: '2.4rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
+          <h2 className="section-title-responsive" style={{ fontSize: '2.4rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
             Loved by Students Across Nepal
           </h2>
-          <p style={{ color: '#64748B', fontSize: '1.05rem', marginBottom: '3.5rem' }}>
+          <p className="section-subtitle-responsive" style={{ color: '#64748B', fontSize: '1.05rem', marginBottom: '3.5rem' }}>
             Real feedback from students preparing for board exams with PiyushDhara.
           </p>
 
-          <div className="glass" style={{
+          <div className="glass testimonial-card-responsive" style={{
             padding: '3.5rem 3rem',
             borderRadius: '2rem',
             border: '1.5px solid #E2E8F0',
@@ -835,9 +826,9 @@ const Home = () => {
             boxShadow: '0 20px 45px -10px rgba(0,0,0,0.07)',
             position: 'relative'
           }}>
-            <span style={{ position: 'absolute', top: '1.5rem', left: '2.5rem', fontSize: '6rem', color: 'rgba(37,99,235,0.12)', fontFamily: 'serif', lineHeight: 1 }}>“</span>
+            <span className="testimonial-quote-icon" style={{ position: 'absolute', top: '1.5rem', left: '2.5rem', fontSize: '6rem', color: 'rgba(37,99,235,0.12)', fontFamily: 'serif', lineHeight: 1 }}>“</span>
 
-            <p style={{ fontSize: '1.25rem', fontStyle: 'italic', lineHeight: '1.8', color: '#1E293B', marginBottom: '2.25rem', position: 'relative', zIndex: 1, fontWeight: 500 }}>
+            <p className="testimonial-quote-text" style={{ fontSize: '1.25rem', fontStyle: 'italic', lineHeight: '1.8', color: '#1E293B', marginBottom: '2.25rem', position: 'relative', zIndex: 1, fontWeight: 500 }}>
               &quot;{testimonials[activeTestimonial].quote}&quot;
             </p>
 
@@ -880,7 +871,7 @@ const Home = () => {
       {/* ── 6. Bottom CTA Banner ───────────────────────────────────── */}
       <section style={{ padding: '0 0 5rem 0' }}>
         <div className="container" style={{ maxWidth: '1240px' }}>
-          <div style={{
+          <div className="cta-responsive-banner" style={{
             borderRadius: '2.25rem',
             padding: '4rem 3.5rem',
             background: 'linear-gradient(135deg, #1E1B4B 0%, #2563EB 50%, #1D4ED8 100%)',
@@ -898,10 +889,10 @@ const Home = () => {
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.9rem', background: 'rgba(255,255,255,0.15)', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '1rem' }}>
                 <Sparkles size={14} /> JOIN NEPAL&apos;S BEST LEARNING PORTAL
               </div>
-              <h3 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '0.85rem', color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.2' }}>
+              <h3 className="page-title-responsive" style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: '0.85rem', color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.2' }}>
                 Ready to Excel in Your SEE &amp; NEB Exams?
               </h3>
-              <p style={{ color: '#DBEAFE', fontSize: '1.08rem', margin: 0, lineHeight: '1.7' }}>
+              <p style={{ color: '#DBEAFE', fontSize: '1.05rem', margin: 0, lineHeight: '1.7' }}>
                 Join thousands of Nepali students studying with Gaurav Sir &amp; Team. Get instant access to video series and handwritten PDF handouts.
               </p>
             </div>
@@ -921,6 +912,7 @@ const Home = () => {
                 zIndex: 1,
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '0.5rem'
               }}
             >

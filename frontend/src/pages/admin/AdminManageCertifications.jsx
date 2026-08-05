@@ -36,6 +36,7 @@ import {
   Check,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   X,
   FileText,
   Clock,
@@ -57,6 +58,21 @@ const AdminManageCertifications = () => {
   const [selectedCertId, setSelectedCertId] = useState(null);
   const [studioCert, setStudioCert] = useState(null);
   const [studioModules, setStudioModules] = useState([]);
+  const [collapsedModules, setCollapsedModules] = useState({});
+
+  const toggleModuleCollapse = (modId) => {
+    setCollapsedModules(prev => ({
+      ...prev,
+      [modId]: !prev[modId]
+    }));
+  };
+
+  const expandAllModules = () => setCollapsedModules({});
+  const collapseAllModules = () => {
+    const map = {};
+    studioModules.forEach(m => { map[m._id] = true; });
+    setCollapsedModules(map);
+  };
 
   // --- CREATE / EDIT CERTIFICATION FORM STATE ---
   const [certForm, setCertForm] = useState({
@@ -489,9 +505,9 @@ const AdminManageCertifications = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '1280px', margin: '0 auto', padding: '1rem' }}>
 
       {/* Admin Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#FFFFFF', padding: '1.5rem 2rem', borderRadius: '1.5rem', border: '1px solid #E2E8F0', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
+      <div className="admin-cert-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', background: '#FFFFFF', padding: '1.5rem 2rem', borderRadius: '1.5rem', border: '1px solid #E2E8F0', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <h1 style={{ fontSize: 'clamp(1.35rem, 4vw, 1.75rem)', fontWeight: 900, color: '#0F172A', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <Award color="#2563EB" size={28} /> Certification LMS Studio
           </h1>
           <p style={{ color: '#64748B', fontSize: '0.9rem', margin: '0.2rem 0 0 0' }}>
@@ -499,7 +515,7 @@ const AdminManageCertifications = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div className="admin-cert-tabs" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
             onClick={() => setActiveTab('courses')}
             style={{
@@ -578,9 +594,20 @@ const AdminManageCertifications = () => {
       {activeTab === 'courses' && (
         <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
           
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0F172A', margin: '0 0 1.25rem 0' }}>
-            Published Certification Courses
-          </h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>
+                Published Certification Courses
+              </h2>
+              <span style={{ fontSize: '0.82rem', color: '#64748B', fontWeight: 600 }}>
+                Manage modules, lessons, quizzes, and credentials for active programs
+              </span>
+            </div>
+
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563EB', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.3rem 0.8rem', borderRadius: '9999px' }}>
+              {certifications.length} Course{certifications.length !== 1 ? 's' : ''} Published
+            </span>
+          </div>
 
           {certifications.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748B' }}>
@@ -589,53 +616,135 @@ const AdminManageCertifications = () => {
               <p style={{ margin: 0 }}>Click "New Certification" above to create your first certification course!</p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="admin-cert-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
               {certifications.map((cert) => (
-                <div key={cert._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', background: '#F8FAFC', borderRadius: '1rem', border: '1px solid #E2E8F0', flexWrap: 'wrap', gap: '1rem' }}>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                    <img src={cert.thumbnail} alt={cert.title} style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '0.75rem' }} />
-                    <div>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#2563EB', textTransform: 'uppercase' }}>[{cert.category}]</span>
-                      <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: '0.1rem 0 0.35rem 0' }}>{cert.title}</h3>
-                      <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-                        <span>Difficulty: <strong>{cert.difficulty}</strong></span>
-                        <span>Duration: <strong>{cert.estimatedDuration}</strong></span>
-                        <span>Enrolled: <strong>{cert.enrolledCount || 0} students</strong></span>
-                      </div>
+                <div 
+                  key={cert._id} 
+                  className="admin-cert-card hover-lift"
+                  style={{ 
+                    background: '#FFFFFF', 
+                    borderRadius: '1.5rem', 
+                    border: '1px solid #E2E8F0', 
+                    boxShadow: '0 8px 25px -4px rgba(15,23,42,0.06)', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    justifyContent: 'space-between',
+                    overflow: 'hidden',
+                    transition: 'all 0.25s ease'
+                  }}
+                >
+                  {/* Banner Image Header */}
+                  <div style={{ height: '150px', position: 'relative', overflow: 'hidden', background: '#0F172A' }}>
+                    <img 
+                      src={cert.thumbnail || 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80'} 
+                      alt={cert.title} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80'; }}
+                    />
+                    
+                    {/* Gradient overlay */}
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.7) 100%)' }} />
+
+                    {/* Category & Difficulty Badges */}
+                    <div style={{ position: 'absolute', top: '0.85rem', left: '0.85rem', right: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 2 }}>
+                      <span style={{ 
+                        fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.65rem', borderRadius: '9999px', 
+                        background: '#2563EB', color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: '0.03em',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+                      }}>
+                        {cert.category || 'PROGRAMMING'}
+                      </span>
+
+                      <span style={{ 
+                        fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.65rem', borderRadius: '9999px', 
+                        background: 'rgba(255,255,255,0.95)', color: '#0F172A', backdropFilter: 'blur(4px)',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+                      }}>
+                        ⚡ {cert.difficulty || 'Beginner'}
+                      </span>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    <button
-                      onClick={() => handleOpenEditOverview(cert._id)}
-                      style={{ padding: '0.6rem 0.95rem', borderRadius: '0.75rem', border: '1px solid #BFDBFE', background: '#EFF6FF', color: '#1D4ED8', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-                    >
-                      <Edit3 size={15} /> Edit Info
-                    </button>
+                  {/* Card Main Body */}
+                  <div style={{ padding: '1.25rem 1.25rem 0.75rem 1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.4rem', lineHeight: 1.35 }}>
+                      {cert.title}
+                    </h3>
 
+                    {cert.subtitle && (
+                      <p style={{ color: '#64748B', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {cert.subtitle}
+                      </p>
+                    )}
+
+                    {/* Metadata Footer */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid #F1F5F9', fontSize: '0.8rem', color: '#475569' }}>
+                      <span style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        ⏱️ {cert.estimatedDuration || '10 Hours'}
+                      </span>
+                      <span style={{ fontWeight: 800, color: '#2563EB', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.15rem 0.55rem', borderRadius: '9999px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <Users size={12} /> {cert.enrolledCount || 0} Students
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Actions Footer */}
+                  <div style={{ padding: '0.75rem 1.25rem 1.25rem 1.25rem', background: '#FFFFFF', borderTop: '1px solid #F8FAFC', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    
+                    {/* Primary Action: Manage Studio */}
                     <button
                       onClick={() => handleOpenStudio(cert._id)}
-                      style={{ padding: '0.6rem 1.1rem', borderRadius: '0.75rem', border: 'none', background: '#2563EB', color: 'white', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', boxShadow: '0 4px 12px rgba(37,99,235,0.2)' }}
+                      style={{ 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                        padding: '0.7rem', fontSize: '0.88rem', fontWeight: 800,
+                        background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', color: '#FFFFFF', borderRadius: '0.85rem',
+                        border: 'none', cursor: 'pointer', boxShadow: '0 6px 18px rgba(37,99,235,0.25)',
+                        transition: 'all 0.2s ease'
+                      }}
+                      className="hover-lift"
                     >
                       <Layers size={16} /> Manage Modules &amp; Lessons Studio
                     </button>
 
-                    <a 
-                      href={`/certifications/${cert.slug}`} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      style={{ padding: '0.6rem 0.9rem', borderRadius: '0.75rem', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#334155', textDecoration: 'none', fontWeight: 700, fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-                    >
-                      <Eye size={14} /> Preview
-                    </a>
+                    {/* Secondary Actions Row */}
+                    <div style={{ display: 'flex', gap: '0.45rem', width: '100%' }}>
+                      <button
+                        onClick={() => handleOpenEditOverview(cert._id)}
+                        style={{ 
+                          flex: 1, padding: '0.5rem', fontSize: '0.82rem', fontWeight: 700,
+                          background: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#334155',
+                          borderRadius: '0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                        }}
+                      >
+                        <Edit3 size={14} /> Edit Info
+                      </button>
 
-                    <button
-                      onClick={() => handleDeleteCertification(cert._id, cert.title)}
-                      style={{ padding: '0.6rem 0.85rem', borderRadius: '0.75rem', border: '1px solid #FEE2E2', background: '#FEF2F2', color: '#DC2626', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                      <a 
+                        href={`/certifications/${cert.slug}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        style={{ 
+                          padding: '0.5rem 0.75rem', fontSize: '0.82rem', fontWeight: 700,
+                          background: '#EFF6FF', border: '1.5px solid #BFDBFE', color: '#1D4ED8',
+                          borderRadius: '0.65rem', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem'
+                        }}
+                      >
+                        <Eye size={14} /> Preview
+                      </a>
+
+                      <button
+                        onClick={() => handleDeleteCertification(cert._id, cert.title)}
+                        style={{ 
+                          padding: '0.5rem 0.65rem', background: '#FEF2F2', border: '1.5px solid #FEE2E2',
+                          color: '#DC2626', borderRadius: '0.65rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                        title="Delete Certification"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
                   </div>
 
                 </div>
@@ -651,7 +760,7 @@ const AdminManageCertifications = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
           {/* Studio Top Info Bar */}
-          <div style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', padding: '2rem', borderRadius: '1.5rem', color: '#FFFFFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
+          <div className="admin-studio-top-bar" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', padding: '2rem', borderRadius: '1.5rem', color: '#FFFFFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
             <div>
               <span style={{ background: '#2563EB', color: 'white', padding: '0.2rem 0.65rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800 }}>
                 {studioCert.category} &bull; {studioCert.difficulty}
@@ -670,26 +779,61 @@ const AdminManageCertifications = () => {
 
           {/* Modules & Lessons Hierarchy Tree */}
           <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0F172A', margin: '0 0 1.5rem 0' }}>
-              Course Modules &amp; Interactive Lessons ({studioModules.length} Modules)
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>
+                Course Modules &amp; Interactive Lessons ({studioModules.length} Modules)
+              </h2>
+
+              {studioModules.length > 0 && (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    onClick={expandAllModules}
+                    style={{ padding: '0.35rem 0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#475569', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Expand All
+                  </button>
+                  <button
+                    onClick={collapseAllModules}
+                    style={{ padding: '0.35rem 0.75rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#475569', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    Collapse All
+                  </button>
+                </div>
+              )}
+            </div>
 
             {studioModules.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem 0', color: '#64748B' }}>
                 <p style={{ fontWeight: 700 }}>No modules added yet. Click "+ Add New Course Module" above.</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 {studioModules.map((mod, mIdx) => (
-                  <div key={mod._id} style={{ border: '1.5px solid #CBD5E1', borderRadius: '1.25rem', padding: '1.5rem', background: '#F8FAFC' }}>
+                  <div key={mod._id} style={{ border: '1.5px solid #CBD5E1', borderRadius: '1.25rem', padding: '1.25rem', background: '#F8FAFC' }}>
                     
-                    {/* Module Header */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #E2E8F0', paddingBottom: '0.85rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#1E293B', margin: 0 }}>
-                          Module {mIdx + 1}: {mod.title}
-                        </h3>
-                        {mod.description && <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>{mod.description}</p>}
+                    {/* Module Header with Accordion Toggle */}
+                    <div className="admin-module-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: collapsedModules[mod._id] ? '0' : '1rem', borderBottom: collapsedModules[mod._id] ? 'none' : '1px solid #E2E8F0', paddingBottom: collapsedModules[mod._id] ? '0' : '0.85rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div 
+                        onClick={() => toggleModuleCollapse(mod._id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', flex: 1, minWidth: 0 }}
+                      >
+                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#2563EB', fontWeight: 800, fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {mIdx + 1}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#1E293B', margin: 0 }}>
+                              Module {mIdx + 1}: {mod.title}
+                            </h3>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#2563EB', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.15rem 0.55rem', borderRadius: '9999px' }}>
+                              {mod.lessons ? mod.lessons.length : 0} Lesson{(mod.lessons?.length !== 1) ? 's' : ''}
+                            </span>
+                          </div>
+                          {mod.description && <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '0.15rem 0 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{mod.description}</p>}
+                        </div>
+                        <button style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '0.25rem' }} aria-label="Toggle module">
+                          {collapsedModules[mod._id] ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+                        </button>
                       </div>
 
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -697,53 +841,57 @@ const AdminManageCertifications = () => {
                           onClick={() => handleOpenAddLessonModal(mod._id)}
                           style={{ background: '#2563EB', color: 'white', border: 'none', padding: '0.55rem 1rem', borderRadius: '0.65rem', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
                         >
-                          <Plus size={15} /> Add Lesson to Module
+                          <Plus size={15} /> Add Lesson
                         </button>
                         <button
                           onClick={() => handleDeleteModule(mod._id, mod.title)}
                           style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FEE2E2', padding: '0.55rem 0.85rem', borderRadius: '0.65rem', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+                          title="Delete Module"
                         >
                           <Trash2 size={15} />
                         </button>
                       </div>
                     </div>
 
-                    {/* Lessons List inside Module */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingLeft: '1rem' }}>
-                      {mod.lessons && mod.lessons.length > 0 ? (
-                        mod.lessons.map((les, lIdx) => (
-                          <div key={les._id} style={{ background: '#FFFFFF', padding: '1rem 1.25rem', borderRadius: '0.85rem', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                              <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.25rem 0' }}>
-                                Lesson {lIdx + 1}: {les.title}
-                              </h4>
-                              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', color: '#64748B', fontWeight: 600 }}>
-                                <span>Duration: {les.estimatedTimeMinutes} mins</span>
-                                {les.hasQuiz && <span style={{ color: '#D97706', fontWeight: 800 }}>✓ Quiz Included</span>}
-                                {les.hasAssignment && <span style={{ color: '#7C3AED', fontWeight: 800 }}>✓ Practical Assignment Included</span>}
+                    {/* Lessons List inside Module (Collapsible) */}
+                    {!collapsedModules[mod._id] && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingLeft: '0.5rem' }}>
+                        {mod.lessons && mod.lessons.length > 0 ? (
+                          mod.lessons.map((les, lIdx) => (
+                            <div key={les._id} className="admin-lesson-item-card" style={{ background: '#FFFFFF', padding: '1rem 1.25rem', borderRadius: '0.85rem', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                              <div>
+                                <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0F172A', margin: '0 0 0.25rem 0' }}>
+                                  Lesson {lIdx + 1}: {les.title}
+                                </h4>
+                                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', color: '#64748B', fontWeight: 600, flexWrap: 'wrap' }}>
+                                  <span>Duration: <strong>{les.estimatedTimeMinutes} mins</strong></span>
+                                  {les.hasQuiz && <span style={{ color: '#D97706', fontWeight: 800 }}>✓ Quiz Included</span>}
+                                  {les.hasAssignment && <span style={{ color: '#7C3AED', fontWeight: 800 }}>✓ Practical Assignment Included</span>}
+                                </div>
+                              </div>
+
+                              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button
+                                  onClick={() => handleOpenEditLessonModal(les)}
+                                  style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.85rem', borderRadius: '0.65rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                                >
+                                  <Edit3 size={14} /> Edit Content &amp; Quiz
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteLesson(les._id, les.title)}
+                                  style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FEE2E2', padding: '0.45rem 0.65rem', borderRadius: '0.65rem', cursor: 'pointer' }}
+                                  title="Delete Lesson"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
                               </div>
                             </div>
-
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                              <button
-                                onClick={() => handleOpenEditLessonModal(les)}
-                                style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.45rem 0.85rem', borderRadius: '0.65rem', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-                              >
-                                <Edit3 size={14} /> Edit Content &amp; Quiz
-                              </button>
-                              <button
-                                onClick={() => handleDeleteLesson(les._id, les.title)}
-                                style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FEE2E2', padding: '0.45rem 0.65rem', borderRadius: '0.65rem', cursor: 'pointer' }}
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic', margin: 0 }}>No lessons added to this module yet.</p>
-                      )}
-                    </div>
+                          ))
+                        ) : (
+                          <p style={{ fontSize: '0.85rem', color: '#94A3B8', fontStyle: 'italic', margin: 0 }}>No lessons added to this module yet.</p>
+                        )}
+                      </div>
+                    )}
 
                   </div>
                 ))}
@@ -757,7 +905,7 @@ const AdminManageCertifications = () => {
 
       {/* ── TAB 3: CREATE / EDIT OVERVIEW FORM ───────────────────── */}
       {activeTab === 'create' && (
-        <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2.5rem', maxWidth: '900px' }}>
+        <div className="admin-cert-form-card" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2.5rem', maxWidth: '900px' }}>
           
           <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#0F172A', margin: '0 0 1.5rem 0' }}>
             Certification Overview &amp; Final Assessment Settings
@@ -786,7 +934,7 @@ const AdminManageCertifications = () => {
                 🖼️ Certification Thumbnail &amp; Banner Cover Image
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '1.25rem', alignItems: 'center', marginBottom: '1rem' }}>
+              <div className="admin-cert-thumb-grid" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '1.25rem', alignItems: 'center', marginBottom: '1rem' }}>
                 <div style={{ width: '140px', height: '95px', borderRadius: '0.75rem', border: '2px solid #CBD5E1', overflow: 'hidden', background: '#E2E8F0', position: 'relative' }}>
                   <img
                     src={certForm.thumbnail || 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80'}
@@ -871,7 +1019,7 @@ const AdminManageCertifications = () => {
 
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+            <div className="admin-cert-3col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>Category</label>
                 <select value={certForm.category} onChange={(e) => setCertForm({ ...certForm, category: e.target.value })} style={{ width: '100%', padding: '0.75rem', borderRadius: '0.75rem', border: '1.5px solid #CBD5E1' }}>
@@ -898,7 +1046,7 @@ const AdminManageCertifications = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="admin-cert-2col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>Estimated Duration (e.g. 10 Hours)</label>
                 <input type="text" value={certForm.estimatedDuration} onChange={(e) => setCertForm({ ...certForm, estimatedDuration: e.target.value })} style={{ width: '100%', padding: '0.75rem', borderRadius: '0.75rem', border: '1.5px solid #CBD5E1' }} />
@@ -963,7 +1111,7 @@ const AdminManageCertifications = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.75rem' }}>
+              <div className="admin-cert-2col-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.75rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.3rem' }}>Instructor Name</label>
                   <input type="text" value={certForm.instructorName} onChange={(e) => setCertForm({ ...certForm, instructorName: e.target.value })} style={{ width: '100%', padding: '0.65rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.88rem' }} />
@@ -1064,13 +1212,15 @@ const AdminManageCertifications = () => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {submissions.map((sub) => (
-                <div key={sub._id} style={{ padding: '1.25rem', background: '#F8FAFC', borderRadius: '1rem', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={sub._id} className="admin-submission-item-card" style={{ padding: '1.25rem', background: '#F8FAFC', borderRadius: '1rem', border: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <span style={{ fontSize: '0.75rem', fontWeight: 800, color: sub.status === 'graded' ? '#059669' : '#D97706', textTransform: 'uppercase' }}>
-                      [{sub.status}]
+                      [{sub.status || 'pending'}]
                     </span>
                     <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0F172A', margin: '0.2rem 0 0.2rem 0' }}>{sub.studentName} ({sub.studentEmail})</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#64748B', margin: 0 }}>Submitted at: {new Date(sub.submittedAt).toLocaleString()}</p>
+                    <p style={{ fontSize: '0.8rem', color: '#64748B', margin: 0 }}>
+                      Submitted at: {sub.submittedAt || sub.createdAt ? new Date(sub.submittedAt || sub.createdAt).toLocaleString('en-NP', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent Submission'}
+                    </p>
                   </div>
 
                   <button
@@ -1092,8 +1242,8 @@ const AdminManageCertifications = () => {
 
       {/* ── MODAL 1: ADD MODULE ────────────────────────────────── */}
       {showAddModuleModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', padding: '2rem', maxWidth: '500px', width: '100%', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.5rem', padding: '2rem', maxWidth: '500px', width: '100%', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0F172A', margin: '0 0 1.25rem 0' }}>Add Module to Course</h3>
             <form onSubmit={handleAddModuleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
@@ -1116,8 +1266,8 @@ const AdminManageCertifications = () => {
 
       {/* ── MODAL 2: ADD / EDIT LESSON WITH QUIZ & ASSIGNMENT BUILDER ─ */}
       {showLessonModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', padding: '2.25rem', maxWidth: '850px', width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', padding: '2.25rem', maxWidth: '850px', width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0F172A', margin: 0 }}>
@@ -1238,8 +1388,8 @@ const AdminManageCertifications = () => {
 
       {/* ── MODAL 3: GRADE STUDENT ASSIGNMENT SUBMISSION ────────── */}
       {selectedSubmission && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', padding: '2rem', maxWidth: '650px', width: '100%', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
+          <div className="admin-modal-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', padding: '2rem', maxWidth: '650px', width: '100%', boxShadow: '0 25px 50px rgba(0,0,0,0.25)' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0F172A', margin: '0 0 1rem 0' }}>
               Grade Submission for {selectedSubmission.studentName}
             </h3>

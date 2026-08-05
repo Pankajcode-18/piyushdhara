@@ -143,7 +143,7 @@ const CertificationDetails = () => {
   };
 
   return (
-    <div style={{ padding: '2rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="cert-details-container" style={{ padding: '2rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
 
       {/* ── Top Breadcrumb & Back ───────────────────────────────── */}
       <div style={{ marginBottom: '1.5rem' }}>
@@ -153,7 +153,7 @@ const CertificationDetails = () => {
       </div>
 
       {/* ── Course Header Hero Card ─────────────────────────────── */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #E2E8F0', padding: '2.5rem', marginBottom: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.04)', display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2.5rem' }}>
+      <div className="cert-details-hero-card" style={{ background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #E2E8F0', padding: '2.5rem', marginBottom: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.04)', display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2.5rem' }}>
         
         {/* Left Header Info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -166,7 +166,7 @@ const CertificationDetails = () => {
             </span>
           </div>
 
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em', margin: 0, lineHeight: 1.25 }}>
+          <h1 className="cert-details-title" style={{ fontSize: '2.2rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em', margin: 0, lineHeight: 1.25 }}>
             {title}
           </h1>
 
@@ -175,7 +175,7 @@ const CertificationDetails = () => {
           </p>
 
           {/* Quick Details Bar */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', fontSize: '0.88rem', color: '#64748B', paddingTop: '0.75rem', borderTop: '1px solid #F1F5F9' }}>
+          <div className="cert-details-quick-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', fontSize: '0.88rem', color: '#64748B', paddingTop: '0.75rem', borderTop: '1px solid #F1F5F9' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} color="#2563EB" /> {estimatedDuration}</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Globe size={16} color="#059669" /> {language}</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><BookOpen size={16} color="#D97706" /> {totalLessons || 0} Lessons</span>
@@ -183,7 +183,7 @@ const CertificationDetails = () => {
           </div>
 
           {/* Instructor Badge & Sample Certificate Preview Trigger Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '0.35rem' }}>
+          <div className="cert-details-instructor-badge-row" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginTop: '0.35rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '0.75rem 1.1rem', background: '#F8FAFC', borderRadius: '1rem', border: '1px solid #E2E8F0' }}>
               <img src={instructor?.photo || '/pankaj-baduwal.jpg'} alt={instructor?.name || 'Pankaj Baduwal'} style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 20%', border: '2px solid #2563EB' }} />
               <div>
@@ -216,7 +216,7 @@ const CertificationDetails = () => {
         </div>
 
         {/* Right CTA / Action Card */}
-        <div style={{ background: '#F8FAFC', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div className="cert-details-cta-card" style={{ background: '#F8FAFC', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <img src={thumbnail} alt={title} style={{ width: '100%', height: '170px', objectFit: 'cover', borderRadius: '1rem' }} />
 
           {isCompleted ? (
@@ -337,7 +337,7 @@ const CertificationDetails = () => {
           )}
 
           {/* Streamlined Modules List (Compact Preview + Expand Toggle) */}
-          <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1.75rem' }}>
+          <div className="cert-details-modules-card" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1.75rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
                 Course Modules ({modules ? modules.length : 0} Modules)
@@ -386,8 +386,8 @@ const CertificationDetails = () => {
 
       {/* ── SAMPLE CERTIFICATE PREVIEW MODAL ───────────────────── */}
       {showSampleCertModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '1.5rem' }}>
-          <div style={{ background: '#FFFFFF', borderRadius: '2rem', maxWidth: '900px', width: '100%', maxHeight: '92vh', overflowY: 'auto', padding: '2rem', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', position: 'relative' }}>
+        <div className="cert-modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, padding: '1.5rem' }}>
+          <div className="cert-modal-content" style={{ background: '#FFFFFF', borderRadius: '2rem', maxWidth: '900px', width: '100%', maxHeight: '92vh', overflowY: 'auto', padding: '2rem', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', position: 'relative' }}>
             
             <button 
               onClick={() => setShowSampleCertModal(false)}
@@ -407,6 +407,7 @@ const CertificationDetails = () => {
 
             {/* Certificate Template (16:9 Landscape Ratio, Luxury Corporate Design) */}
             <div 
+              className="cert-canvas-card"
               style={{
                 background: 'linear-gradient(180deg, #FFFFFF 0%, #FCFCFA 50%, #FFFFFF 100%)',
                 borderRadius: '12px',
@@ -430,7 +431,7 @@ const CertificationDetails = () => {
               <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '18px', height: '18px', borderBottom: '2px solid #C89A2B', borderRight: '2px solid #C89A2B', zIndex: 2, pointerEvents: 'none' }} />
 
               {/* Top-Left Folded Geometric Navy & Gold Ribbon */}
-              <svg style={{ position: 'absolute', top: 0, left: 0, width: '125px', height: '125px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 125 125" fill="none">
+              <svg className="cert-ribbon-tl" style={{ position: 'absolute', top: 0, left: 0, width: '125px', height: '125px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 125 125" fill="none">
                 <path d="M0 0 L125 0 L0 125 Z" fill="#0D2B5C" />
                 <path d="M0 0 L100 0 L0 100 Z" fill="#154288" opacity="0.35" />
                 <path d="M0 113 L113 0 L121 0 L0 121 Z" fill="#C89A2B" />
@@ -438,7 +439,7 @@ const CertificationDetails = () => {
               </svg>
 
               {/* Bottom-Right Folded Geometric Navy & Gold Ribbon */}
-              <svg style={{ position: 'absolute', bottom: 0, right: 0, width: '125px', height: '125px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 125 125" fill="none">
+              <svg className="cert-ribbon-br" style={{ position: 'absolute', bottom: 0, right: 0, width: '125px', height: '125px', pointerEvents: 'none', zIndex: 2 }} viewBox="0 0 125 125" fill="none">
                 <path d="M125 125 L0 125 L125 0 Z" fill="#0D2B5C" />
                 <path d="M125 125 L25 125 L125 25 Z" fill="#154288" opacity="0.35" />
                 <path d="M125 12 L12 125 L4 125 L125 4 Z" fill="#C89A2B" />
@@ -451,7 +452,7 @@ const CertificationDetails = () => {
               </div>
 
               {/* Top Academy Logo & Horizontal Gold Flourish */}
-              <div style={{ marginBottom: '1.25rem', position: 'relative', zIndex: 3, paddingTop: '0.5rem' }}>
+              <div className="cert-top-flourish" style={{ marginBottom: '1.25rem', position: 'relative', zIndex: 3, paddingTop: '0.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.85rem', marginBottom: '0.65rem' }}>
                   <span style={{ color: '#C89A2B', fontSize: '1rem', letterSpacing: '2px' }}>────── ✦</span>
                   <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '90px', height: '90px', borderRadius: '50%', background: '#0D2B5C', border: '3.5px solid #C89A2B', boxShadow: '0 4px 15px rgba(200, 154, 43, 0.35)', overflow: 'hidden' }}>
@@ -460,11 +461,11 @@ const CertificationDetails = () => {
                   <span style={{ color: '#C89A2B', fontSize: '1rem', letterSpacing: '2px' }}>✦ ──────</span>
                 </div>
 
-                <h1 style={{ fontFamily: "'Cinzel', serif", fontSize: '2.8rem', fontWeight: 800, letterSpacing: '8px', color: '#0D2B5C', margin: '0 0 0.15rem 0', lineHeight: 1.1 }}>
+                <h1 className="cert-main-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '2.8rem', fontWeight: 800, letterSpacing: '8px', color: '#0D2B5C', margin: '0 0 0.15rem 0', lineHeight: 1.1 }}>
                   CERTIFICATE
                 </h1>
 
-                <div style={{ fontFamily: "'Cinzel', serif", fontSize: '1.1rem', fontWeight: 700, letterSpacing: '4px', color: '#0D2B5C', marginBottom: '0.35rem' }}>
+                <div className="cert-sub-title" style={{ fontFamily: "'Cinzel', serif", fontSize: '1.1rem', fontWeight: 700, letterSpacing: '4px', color: '#0D2B5C', marginBottom: '0.35rem' }}>
                   OF COMPLETION
                 </div>
 
@@ -481,7 +482,7 @@ const CertificationDetails = () => {
                   This certificate proudly certifies that
                 </p>
 
-                <h2 style={{ fontFamily: "'Great Vibes', cursive", fontSize: '4.2rem', fontWeight: 400, color: '#0D2B5C', margin: '0 0 0.2rem 0', lineHeight: 1.1 }}>
+                <h2 className="cert-recipient-name" style={{ fontFamily: "'Great Vibes', cursive", fontSize: '4.2rem', fontWeight: 400, color: '#0D2B5C', margin: '0 0 0.2rem 0', lineHeight: 1.1 }}>
                   {studentName}
                 </h2>
 
@@ -492,7 +493,7 @@ const CertificationDetails = () => {
                 </p>
 
                 {/* Course Name Banner */}
-                <div style={{ 
+                <div className="cert-course-banner" style={{ 
                   display: 'inline-block',
                   background: '#0D2B5C',
                   border: '2px solid #C89A2B',
@@ -507,10 +508,10 @@ const CertificationDetails = () => {
               </div>
 
               {/* Bottom Section: Three Columns */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '1.5rem', alignItems: 'center', marginTop: '2rem', position: 'relative', zIndex: 3 }}>
+              <div className="cert-bottom-grid" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '1.5rem', alignItems: 'center', marginTop: '2rem', position: 'relative', zIndex: 3 }}>
                 
                 {/* Left Metadata Column */}
-                <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div className="cert-meta-col" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#0D2B5C', border: '1.5px solid #C89A2B', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.82rem' }}>📅</div>
                     <span style={{ fontSize: '0.82rem', color: '#333333' }}><strong>Date Issued:</strong> {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -526,7 +527,7 @@ const CertificationDetails = () => {
                 </div>
 
                 {/* Center Embossed Seal */}
-                <div style={{ textAlign: 'center' }}>
+                <div className="cert-seal-box" style={{ textAlign: 'center' }}>
                   <div style={{ 
                     position: 'relative', 
                     display: 'inline-flex', 
@@ -560,7 +561,7 @@ const CertificationDetails = () => {
                 </div>
 
                 {/* Right Signature Column */}
-                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: 'auto', paddingRight: '1.5rem' }}>
+                <div className="cert-signature-col" style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: 'auto', paddingRight: '1.5rem' }}>
                   <img 
                     src="/signature1-removebg-preview.png" 
                     alt="Pankaj Baduwal Signature" 

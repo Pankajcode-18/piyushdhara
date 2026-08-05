@@ -326,17 +326,17 @@ const AdminCourseContent = () => {
     <div className="container animate-fade-in" style={{ padding: '2rem 1.5rem' }}>
       
       {/* Header bar */}
-      <div className="flex-between" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="admin-content-header-row flex-between" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button onClick={() => navigate('/admin/courses')} className="btn btn-outline" style={{ padding: '0.5rem' }}>
             <ArrowLeft size={18} />
           </button>
           <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Manage Curriculum</h1>
+            <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800 }}>Manage Curriculum</h1>
             <p style={{ color: 'var(--text-muted)' }}>{course.title}</p>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div className="admin-content-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           {/* Edit Batch Details Button */}
           <button
             onClick={openEditBatchModal}
@@ -381,8 +381,8 @@ const AdminCourseContent = () => {
 
       {/* Edit Batch Details Modal */}
       {showEditBatchModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ width: '100%', maxWidth: '580px', padding: '2.5rem 2.25rem', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE', boxShadow: '0 25px 60px -15px rgba(37,99,235,0.2)', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="admin-modal-card" style={{ width: '100%', maxWidth: '580px', padding: '2.5rem 2.25rem', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE', boxShadow: '0 25px 60px -15px rgba(37,99,235,0.2)', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
             
             {/* Close Icon Button */}
             <button
@@ -444,7 +444,7 @@ const AdminCourseContent = () => {
               </div>
 
               {/* Instructor Name & Price */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="admin-modal-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
                     Instructor Name
@@ -480,7 +480,7 @@ const AdminCourseContent = () => {
               </div>
 
               {/* Image Upload Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="admin-modal-upload-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 
                 {/* Upload Teacher Image */}
                 <div style={{ background: '#F8FAFC', border: '1.5px dashed #BFDBFE', borderRadius: '0.85rem', padding: '1rem', textAlign: 'center' }}>
@@ -535,7 +535,7 @@ const AdminCourseContent = () => {
               </div>
 
               {/* Form Actions */}
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
+              <div className="admin-modal-actions" style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
                 <button 
                   type="button" 
                   onClick={() => setShowEditBatchModal(false)} 
@@ -572,8 +572,8 @@ const AdminCourseContent = () => {
           {enrolledStudents.length === 0 ? (
             <p style={{ color: 'var(--text-muted)' }}>No students have enrolled in this batch yet.</p>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+            <div className="admin-enrolled-table-wrap" style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', minWidth: '520px' }}>
                 <thead>
                   <tr style={{ background: '#F1F5F9' }}>
                     <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 600, color: '#475569', borderBottom: '1px solid #E2E8F0' }}>#</th>
@@ -604,7 +604,7 @@ const AdminCourseContent = () => {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2rem' }}>
+      <div className="admin-curriculum-grid" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2rem' }}>
         
         {/* Left column: Subjects listing */}
         <div>
@@ -685,18 +685,18 @@ const AdminCourseContent = () => {
                 </div>
 
                 {/* Create Chapter Form */}
-                <form onSubmit={handleAddChapter} style={{ display: 'flex', gap: '0.75rem', maxWidth: '400px' }}>
+                <form onSubmit={handleAddChapter} className="admin-add-chapter-form" style={{ display: 'flex', gap: '0.75rem', maxWidth: '400px' }}>
                   <input
                     type="text"
                     required
                     value={newChapterTitle}
                     onChange={(e) => setNewChapterTitle(e.target.value)}
                     className="search-input"
-                    style={{ flex: 1, borderRadius: '0.3rem', paddingLeft: '0.75rem' }}
+                    style={{ flex: 1, borderRadius: '0.5rem', paddingLeft: '0.75rem', height: '42px' }}
                     placeholder="New Chapter Title (e.g. Unit 1: Optics)"
                   />
-                  <button type="submit" className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>
-                    Add Chapter
+                  <button type="submit" className="btn btn-primary" style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', whiteSpace: 'nowrap' }}>
+                    <Plus size={16} /> Add Chapter
                   </button>
                 </form>
               </div>
@@ -712,7 +712,7 @@ const AdminCourseContent = () => {
                     {loadingContents ? (
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Loading uploaded files...</p>
                     ) : (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                      <div className="admin-content-uploaded-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                         
                         {/* Videos List */}
                         <div>
@@ -848,7 +848,7 @@ const AdminCourseContent = () => {
                   </div>
 
                   {/* Upload Actions Grid Panel */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                  <div className="admin-content-upload-forms-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                     
                     {/* Video Upload Section */}
                     <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 10px 30px -5px rgba(0,0,0,0.04)' }}>

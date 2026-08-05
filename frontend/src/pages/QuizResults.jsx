@@ -79,15 +79,15 @@ const QuizResults = () => {
   const secondsTaken = timeTakenSeconds % 60;
 
   return (
-    <div style={{ padding: '2.5rem 1.5rem', maxWidth: '1050px', margin: '0 auto' }}>
+    <div className="quiz-results-container" style={{ padding: '2.5rem 1.5rem', maxWidth: '1050px', margin: '0 auto' }}>
 
       {/* Top Action Back Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
+      <div className="quiz-results-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
         <Link to="/quizzes" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#64748B', fontWeight: 700, textDecoration: 'none', fontSize: '0.88rem' }}>
           <ArrowLeft size={16} /> Back to Quizzes Arena
         </Link>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="quiz-results-top-actions" style={{ display: 'flex', gap: '0.75rem' }}>
           <Link 
             to={`/quizzes/${id}/leaderboard`}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.65rem 1.25rem', borderRadius: '0.75rem', border: '1px solid #CBD5E1', background: '#FFFFFF', color: '#D97706', fontWeight: 800, fontSize: '0.85rem', textDecoration: 'none' }}
@@ -106,6 +106,7 @@ const QuizResults = () => {
 
       {/* ── SCORE SUMMARY CARD ──────────────────────────────────── */}
       <div 
+        className="quiz-results-hero-card"
         style={{
           background: passed ? 'linear-gradient(135deg, #065F46 0%, #047857 100%)' : 'linear-gradient(135deg, #991B1B 0%, #7F1D1D 100%)',
           borderRadius: '1.75rem',
@@ -124,7 +125,7 @@ const QuizResults = () => {
             {passed ? '🎉 PASSED' : '❌ NEEDS IMPROVEMENT'}
           </span>
 
-          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0.75rem 0 0.25rem 0' }}>
+          <h1 className="quiz-results-title" style={{ fontSize: '2.2rem', fontWeight: 900, margin: '0.75rem 0 0.25rem 0' }}>
             {quizTitle}
           </h1>
 
@@ -132,7 +133,7 @@ const QuizResults = () => {
             Official Examination Result Summary
           </p>
 
-          <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1.25rem' }}>
+          <div className="quiz-results-stats-grid" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1.25rem' }}>
             <div>
               <span style={{ fontSize: '0.75rem', opacity: 0.8, display: 'block', fontWeight: 700 }}>GRADE SCORE</span>
               <span style={{ fontSize: '1.6rem', fontWeight: 900 }}>{scoreObtained} / {totalMarks} ({percentage}%)</span>
@@ -156,7 +157,7 @@ const QuizResults = () => {
         </div>
 
         {/* Circular Metric */}
-        <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '1.5rem', padding: '1.75rem', textAlign: 'center', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <div className="quiz-results-percentage-box" style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '1.5rem', padding: '1.75rem', textAlign: 'center', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.2)' }}>
           <div style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1 }}>{percentage}%</div>
           <div style={{ fontSize: '0.85rem', fontWeight: 800, marginTop: '0.5rem', opacity: 0.9 }}>{passed ? 'Qualification Achieved' : 'Below Passing Benchmark'}</div>
         </div>
@@ -181,6 +182,7 @@ const QuizResults = () => {
         {answers.map((q, idx) => (
           <div 
             key={idx}
+            className="quiz-results-question-card"
             style={{
               background: '#FFFFFF',
               borderRadius: '1.5rem',
@@ -192,7 +194,7 @@ const QuizResults = () => {
             }}
           >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="quiz-results-qheader" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#2563EB', background: '#EFF6FF', padding: '0.25rem 0.65rem', borderRadius: '0.5rem' }}>
                 Question {idx + 1}
               </span>

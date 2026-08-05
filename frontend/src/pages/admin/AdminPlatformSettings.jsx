@@ -113,7 +113,7 @@ const AdminPlatformSettings = () => {
   return (
     <div style={{ maxWidth: '1240px' }}>
       {/* Top Banner */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
+      <div className="admin-settings-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0.65rem', borderRadius: '9999px', background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1D4ED8', fontSize: '0.78rem', fontWeight: 800, marginBottom: '0.5rem' }}>
             <Sparkles size={14} /> LIVE LMS PLATFORM CONTROL
@@ -129,6 +129,7 @@ const AdminPlatformSettings = () => {
         <button
           onClick={handleSaveAll}
           disabled={saving}
+          className="admin-settings-save-btn"
           style={{
             display: 'flex', alignItems: 'center', gap: '0.5rem',
             padding: '0.75rem 1.4rem', borderRadius: '0.75rem', background: '#2563EB', color: '#FFFFFF',
@@ -155,38 +156,38 @@ const AdminPlatformSettings = () => {
       )}
 
       {/* Hero Banner Manager */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div className="admin-settings-card" style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginTop: 0, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Layout size={20} color="#2563EB" /> Homepage Hero Banner
         </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>Hero Badge Text</label>
             <input
               type="text"
               value={hero.badge}
               onChange={(e) => setHero({ ...hero, badge: e.target.value })}
-              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
             />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.4rem' }}>Primary CTA Text &amp; Link</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+            <div className="admin-settings-cta-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
               <input
                 type="text"
                 value={hero.primaryCtaText}
                 onChange={(e) => setHero({ ...hero, primaryCtaText: e.target.value })}
                 placeholder="Button Label"
-                style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+                style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
               />
               <input
                 type="text"
                 value={hero.primaryCtaLink}
                 onChange={(e) => setHero({ ...hero, primaryCtaLink: e.target.value })}
                 placeholder="/link"
-                style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+                style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
               />
             </div>
           </div>
@@ -197,7 +198,7 @@ const AdminPlatformSettings = () => {
               type="text"
               value={hero.title}
               onChange={(e) => setHero({ ...hero, title: e.target.value })}
-              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.95rem', fontWeight: 600 }}
+              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.95rem', fontWeight: 600, boxSizing: 'border-box' }}
             />
           </div>
 
@@ -207,7 +208,7 @@ const AdminPlatformSettings = () => {
               rows={2}
               value={hero.subtitle}
               onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
-              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
             />
           </div>
 
@@ -217,14 +218,14 @@ const AdminPlatformSettings = () => {
               type="text"
               value={hero.heroImageUrl}
               onChange={(e) => setHero({ ...hero, heroImageUrl: e.target.value })}
-              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+              style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
             />
           </div>
         </div>
       </div>
 
       {/* Announcements Manager */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div className="admin-settings-card" style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginTop: 0, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Megaphone size={20} color="#7C3AED" /> Announcements &amp; Notice Board
         </h2>
@@ -237,14 +238,14 @@ const AdminPlatformSettings = () => {
               placeholder="Announcement Title"
               value={newAnn.title}
               onChange={(e) => setNewAnn({ ...newAnn, title: e.target.value })}
-              style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+              style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
             />
             <input
               type="text"
               placeholder="Badge Label (e.g. EXAM NOTICE)"
               value={newAnn.badgeText}
               onChange={(e) => setNewAnn({ ...newAnn, badgeText: e.target.value })}
-              style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+              style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
             />
           </div>
           <textarea
@@ -252,7 +253,7 @@ const AdminPlatformSettings = () => {
             placeholder="Detailed announcement text for students..."
             value={newAnn.content}
             onChange={(e) => setNewAnn({ ...newAnn, content: e.target.value })}
-            style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', marginBottom: '0.75rem' }}
+            style={{ width: '100%', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', marginBottom: '0.75rem', boxSizing: 'border-box' }}
           />
           <button
             onClick={addAnnouncement}
@@ -265,7 +266,7 @@ const AdminPlatformSettings = () => {
         {/* List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {announcements.map((ann, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '1rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '0.75rem' }}>
+            <div key={idx} className="admin-announcement-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '1rem', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '0.75rem' }}>
               <div>
                 <span style={{ display: 'inline-block', padding: '0.2rem 0.5rem', borderRadius: '0.375rem', background: ann.badgeColor || '#2563EB', color: '#FFF', fontSize: '0.72rem', fontWeight: 800, marginBottom: '0.4rem' }}>
                   {ann.badgeText}
@@ -285,37 +286,37 @@ const AdminPlatformSettings = () => {
       </div>
 
       {/* Categories Manager */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      <div className="admin-settings-card" style={{ background: '#FFFFFF', borderRadius: '1rem', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginTop: 0, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Tag size={20} color="#059669" /> Learning Categories Manager
         </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1.25rem' }}>
           <input
             type="text"
             placeholder="Category Name"
             value={newCat.name}
             onChange={(e) => setNewCat({ ...newCat, name: e.target.value })}
-            style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+            style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
           />
           <input
             type="text"
             placeholder="Description"
             value={newCat.description}
             onChange={(e) => setNewCat({ ...newCat, description: e.target.value })}
-            style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem' }}
+            style={{ padding: '0.6rem 0.8rem', borderRadius: '0.5rem', border: '1px solid #CBD5E1', fontSize: '0.9rem', boxSizing: 'border-box' }}
           />
           <button
             onClick={addCategory}
-            style={{ padding: '0.6rem 1rem', background: '#059669', color: '#FFF', borderRadius: '0.5rem', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyCenter: 'center', gap: '0.4rem' }}
+            style={{ padding: '0.6rem 1rem', background: '#059669', color: '#FFF', borderRadius: '0.5rem', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
           >
             <Plus size={16} /> Add Category
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
+        <div className="admin-category-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1rem' }}>
           {categories.map((cat, idx) => (
-            <div key={idx} style={{ padding: '1rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div key={idx} className="admin-category-item-card" style={{ padding: '1rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h4 style={{ margin: '0 0 0.2rem 0', fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>{cat.name}</h4>
                 <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748B' }}>{cat.description || cat.slug}</p>

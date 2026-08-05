@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchCourses, createCourseApi, updateCourseApi, deleteCourseApi, fetchTeachersApi } from '../../utils/api';
+import { fetchAllCoursesAdmin, createCourseApi, updateCourseApi, deleteCourseApi, fetchTeachersApi } from '../../utils/api';
 import { Plus, Trash, Eye, EyeOff, FolderPlus, UploadCloud, Image, User, BookOpen, CheckCircle2, X, Layers, Edit3, Users, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -53,10 +53,12 @@ const AdminManageCourses = () => {
   const loadCourses = async () => {
     try {
       setLoading(true);
-      const data = await fetchCourses();
-      setCourses(data);
+      // Use admin endpoint so ALL batches show (including unpublished ones)
+      const data = await fetchAllCoursesAdmin(token);
+      setCourses(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to load admin courses:', err);
+      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -154,13 +156,13 @@ const AdminManageCourses = () => {
     <div style={{ maxWidth: '1200px' }}>
       
       {/* Page Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.25rem', flexWrap: 'wrap', gap: '1.25rem' }}>
+      <div className="admin-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.25rem', flexWrap: 'wrap', gap: '1.25rem' }}>
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0.65rem', borderRadius: '9999px', background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1D4ED8', fontSize: '0.78rem', fontWeight: 800, marginBottom: '0.5rem' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563EB', display: 'inline-block' }}></span>
             COURSE MANAGEMENT CENTER
           </div>
-          <h1 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
             Manage Batches
           </h1>
           <p style={{ color: '#64748B', fontSize: '0.92rem', margin: '0.25rem 0 0 0' }}>
@@ -168,7 +170,7 @@ const AdminManageCourses = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="admin-page-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#FFFFFF', padding: '0.55rem 1rem', borderRadius: '9999px', border: '1px solid #E2E8F0', fontSize: '0.82rem', fontWeight: 700, color: '#475569', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
             <BookOpen size={16} color="#2563EB" />
             <span>{courses.length} Active Batch{courses.length !== 1 ? 'es' : ''}</span>
@@ -183,7 +185,7 @@ const AdminManageCourses = () => {
               fontSize: '0.92rem', fontWeight: 800, cursor: 'pointer',
               boxShadow: '0 8px 25px rgba(37,99,235,0.3)', transition: 'all 0.25s ease'
             }}
-            className="hover-lift"
+            className="admin-add-btn hover-lift"
           >
             <Plus size={20} /> Add New Course
           </button>
@@ -191,9 +193,12 @@ const AdminManageCourses = () => {
       </div>
 
       {loading ? (
-        <div>Loading course directory...</div>
+        <div style={{ padding: '3rem', textAlign: 'center', color: '#64748B', fontWeight: 600 }}>
+          <div className="loading-spinner" style={{ margin: '0 auto 1rem' }} />
+          Loading course directory...
+        </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div className="admin-courses-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
           {courses.map((course) => (
             <div 
               key={course._id} 
@@ -208,7 +213,7 @@ const AdminManageCourses = () => {
                 overflow: 'hidden',
                 transition: 'all 0.25s ease'
               }}
-              className="hover-lift"
+              className="admin-course-card hover-lift"
             >
               {/* Thumbnail Banner Header */}
               <div style={{ height: '160px', position: 'relative', overflow: 'hidden', background: '#F1F5F9' }}>
@@ -311,8 +316,8 @@ const AdminManageCourses = () => {
 
       {/* Course Edit/Create Modal */}
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
-          <div style={{ width: '100%', maxWidth: '580px', padding: '2.5rem 2.25rem', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE', boxShadow: '0 25px 60px -15px rgba(37,99,235,0.2)', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
+        <div className="admin-modal-container" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
+          <div className="admin-modal-card" style={{ width: '100%', maxWidth: '580px', padding: '2.5rem 2.25rem', background: '#FFFFFF', borderRadius: '1.75rem', border: '1px solid #DBEAFE', boxShadow: '0 25px 60px -15px rgba(37,99,235,0.2)', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
             
             {/* Close Icon Button */}
             <button
@@ -430,7 +435,7 @@ const AdminManageCourses = () => {
               </div>
 
               {/* Image Upload Grid (Teacher Photo + Thumbnail Image) */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="admin-modal-upload-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 
                 {/* Teacher Photo */}
                 <div style={{ background: '#F8FAFC', border: '1.5px dashed #BFDBFE', borderRadius: '0.85rem', padding: '1rem', textAlign: 'center' }}>
@@ -485,7 +490,7 @@ const AdminManageCourses = () => {
               </div>
 
               {/* Price & Publish Status */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="admin-modal-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
                     Price (Rs.)
@@ -520,7 +525,7 @@ const AdminManageCourses = () => {
               </div>
 
               {/* Form Action Buttons */}
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
+              <div className="admin-modal-actions" style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}

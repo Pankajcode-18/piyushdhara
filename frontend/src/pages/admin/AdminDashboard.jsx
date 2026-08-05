@@ -20,6 +20,7 @@ const AdminDashboard = () => {
       setStats(data);
     } catch (err) {
       console.error('Failed to load dashboard stats', err);
+      // Don't block rendering — fall through to show dashboard with sample data
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div style={{ padding: '4rem', textAlign: 'center', color: '#64748B', fontWeight: 600 }}>
+        <div className="loading-spinner" style={{ margin: '0 auto 1rem' }} />
         Loading real-time platform metrics &amp; analytics charts...
       </div>
     );
@@ -72,80 +74,80 @@ const AdminDashboard = () => {
     <div style={{ maxWidth: '1240px' }} className="admin-content-padding">
       
       {/* Header Banner */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2.25rem' }}>
+      <div className="admin-dash-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.25rem', marginBottom: '2.25rem' }}>
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.2rem 0.65rem', borderRadius: '9999px', background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1D4ED8', fontSize: '0.78rem', fontWeight: 800, marginBottom: '0.5rem' }}>
             <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span>
             REAL-TIME ANALYTICS DASHBOARD
           </div>
-          <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(1.25rem, 3vw, 2.25rem)', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
             Teacher Admin Portal
           </h1>
-          <p style={{ color: '#64748B', fontSize: '0.92rem', margin: '0.25rem 0 0 0' }}>
+          <p style={{ color: '#64748B', fontSize: '0.88rem', margin: '0.25rem 0 0 0' }}>
             Manage PiyushDhara course batches, student enrollments, and academic materials.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="admin-dash-actions" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <button
             onClick={loadStats}
             disabled={refreshing}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.65rem 1.1rem', borderRadius: '0.75rem', border: '1.5px solid #CBD5E1',
-              background: '#FFFFFF', color: '#334155', fontSize: '0.88rem', fontWeight: 700,
-              cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.03)'
+              padding: '0.6rem 0.9rem', borderRadius: '0.75rem', border: '1.5px solid #CBD5E1',
+              background: '#FFFFFF', color: '#334155', fontSize: '0.82rem', fontWeight: 700,
+              cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.03)', whiteSpace: 'nowrap'
             }}
           >
-            <RefreshCw size={16} className={refreshing ? 'spin' : ''} /> {refreshing ? 'Refreshing...' : 'Sync Stats'}
+            <RefreshCw size={15} className={refreshing ? 'spin' : ''} /> {refreshing ? 'Refreshing...' : 'Sync Stats'}
           </button>
 
           <Link
             to="/admin/certifications"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #BFDBFE',
-              background: '#EFF6FF', color: '#1D4ED8', fontSize: '0.85rem', fontWeight: 800,
-              textDecoration: 'none'
+              padding: '0.55rem 0.85rem', borderRadius: '0.75rem', border: '1px solid #BFDBFE',
+              background: '#EFF6FF', color: '#1D4ED8', fontSize: '0.8rem', fontWeight: 800,
+              textDecoration: 'none', whiteSpace: 'nowrap'
             }}
           >
-            <GraduationCap size={16} /> Certifications Studio
+            <GraduationCap size={15} /> Certifications
           </Link>
 
           <Link
             to="/admin/quizzes"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #DDD6FE',
-              background: '#F5F3FF', color: '#6D28D9', fontSize: '0.85rem', fontWeight: 800,
-              textDecoration: 'none'
+              padding: '0.55rem 0.85rem', borderRadius: '0.75rem', border: '1px solid #DDD6FE',
+              background: '#F5F3FF', color: '#6D28D9', fontSize: '0.8rem', fontWeight: 800,
+              textDecoration: 'none', whiteSpace: 'nowrap'
             }}
           >
-            <Zap size={16} /> Assessment Builder
+            <Zap size={15} /> Assessments
           </Link>
 
           <Link
             to="/admin/settings"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0',
-              background: '#FFFFFF', color: '#334155', fontSize: '0.85rem', fontWeight: 800,
-              textDecoration: 'none'
+              padding: '0.55rem 0.85rem', borderRadius: '0.75rem', border: '1px solid #E2E8F0',
+              background: '#FFFFFF', color: '#334155', fontSize: '0.8rem', fontWeight: 800,
+              textDecoration: 'none', whiteSpace: 'nowrap'
             }}
           >
-            <Sparkles size={16} /> Homepage Customizer
+            <Sparkles size={15} /> Settings
           </Link>
 
           <Link
             to="/admin/courses"
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.65rem 1.25rem', borderRadius: '0.75rem', border: 'none',
-              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFFFFF', fontSize: '0.88rem', fontWeight: 700,
-              textDecoration: 'none', boxShadow: '0 6px 20px rgba(37,99,235,0.25)'
+              padding: '0.6rem 1rem', borderRadius: '0.75rem', border: 'none',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFFFFF', fontSize: '0.82rem', fontWeight: 700,
+              textDecoration: 'none', boxShadow: '0 6px 20px rgba(37,99,235,0.25)', whiteSpace: 'nowrap'
             }}
           >
-            <Plus size={18} /> Manage Batches
+            <Plus size={16} /> Manage Batches
           </Link>
         </div>
       </div>
@@ -190,7 +192,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Realtime Charts & Course Breakdown Section */}
-      <div className="main-content-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
+      <div className="admin-charts-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
         
         {/* Left Analytics: Batch Student Enrollment Distribution Chart */}
         <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
@@ -324,7 +326,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Student Enrollments Section */}
-      <div style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', marginBottom: '2.5rem' }}>
+      <div className="admin-enrollments-section" style={{ background: '#FFFFFF', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', marginBottom: '2.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#EFF6FF', border: '1px solid #DBEAFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -340,36 +342,47 @@ const AdminDashboard = () => {
           </Link>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+        <div className="admin-table-responsive" style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '1.5px solid #E2E8F0' }}>
-                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569' }}>Student Name</th>
-                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569' }}>School / College</th>
-                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569' }}>Phone</th>
-                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569' }}>Enrolled Batch</th>
-                <th style={{ padding: '0.85rem 1rem', textAlign: 'right', fontWeight: 700, color: '#475569' }}>Date</th>
+                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>Student Name</th>
+                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>School / College</th>
+                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>Phone</th>
+                <th style={{ padding: '0.85rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>Enrolled Batch</th>
+                <th style={{ padding: '0.85rem 1rem', textAlign: 'right', fontWeight: 700, color: '#475569', whiteSpace: 'nowrap' }}>Date</th>
               </tr>
             </thead>
             <tbody>
-              {enrollmentsList.map((student) => (
+              {enrollmentsList.filter(s => s && s._id).map((student) => (
                 <tr key={student._id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#0F172A' }}>
+                  <td style={{ padding: '0.85rem 1rem', fontWeight: 700, color: '#0F172A', whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#EFF6FF', color: '#2563EB', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {student.name.charAt(0).toUpperCase()}
+                        {(student.name || student.studentName || 'S').charAt(0).toUpperCase()}
                       </div>
-                      {student.name}
+                      {student.name || student.studentName || 'Unknown Student'}
                     </div>
                   </td>
-                  <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{student.school || 'N/A'}</td>
-                  <td style={{ padding: '0.85rem 1rem', color: '#475569' }}>{student.phone}</td>
+                  <td style={{ padding: '0.85rem 1rem', color: '#475569', whiteSpace: 'nowrap' }}>{student.school || 'N/A'}</td>
+                  <td style={{ padding: '0.85rem 1rem', color: '#475569', whiteSpace: 'nowrap' }}>{student.phone || 'N/A'}</td>
                   <td style={{ padding: '0.85rem 1rem' }}>
-                    <span style={{ background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800 }}>
+                    <span style={{ 
+                      display: 'inline-block', 
+                      background: '#EFF6FF', 
+                      color: '#1D4ED8', 
+                      border: '1px solid #BFDBFE', 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '9999px', 
+                      fontSize: '0.78rem', 
+                      fontWeight: 800,
+                      lineHeight: 1.3,
+                      whiteSpace: 'nowrap'
+                    }}>
                       {student.courseTitle}
                     </span>
                   </td>
-                  <td style={{ padding: '0.85rem 1rem', textAlign: 'right', color: '#94A3B8', fontSize: '0.8rem' }}>
+                  <td style={{ padding: '0.85rem 1rem', textAlign: 'right', color: '#64748B', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
                     {new Date(student.createdAt).toLocaleDateString('en-NP', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </td>
                 </tr>

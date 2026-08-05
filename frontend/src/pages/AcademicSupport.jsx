@@ -33,14 +33,14 @@ const AcademicSupport = () => {
           </h1>
           <p style={{ color: '#475569', fontSize: '1.05rem', maxWidth: '650px', lineHeight: '1.7' }}>
             Need help with your studies or have questions about our courses? Our dedicated team led by 
-            <strong style={{ color: '#0F172A' }}> Gaurav Sir &amp; Team </strong> 
+            <strong style={{ color: '#0F172A' }}> Gaurav Sir, Pankaj Baduwal &amp; Team </strong> 
             is always ready to assist you in your learning journey.
           </p>
         </div>
       </motion.div>
 
       {/* Contact Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+      <div className="support-contact-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
 
         {/* Phone */}
         <motion.div
@@ -104,7 +104,7 @@ const AcademicSupport = () => {
       </div>
 
       {/* Support Hours & How We Help */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+      <div className="support-info-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
         
         {/* Support Hours */}
         <motion.div
@@ -177,7 +177,7 @@ const AcademicSupport = () => {
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Connect With Us</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+        <div className="support-social-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
           
           <a href="https://wa.me/9779876543210" target="_blank" rel="noopener noreferrer" style={{
             background: 'linear-gradient(135deg, #25D366, #128C7E)',
@@ -278,7 +278,7 @@ const AcademicSupport = () => {
             { q: 'What subjects are covered in PiyushDhara?', a: 'We cover SEE (Class 10), NEB Class 11-12 Science & Commerce, IOE Entrance Preparation, and Loksewa Tayari.' },
             { q: 'Is there a refund policy for paid courses?', a: 'Please contact our support team within 7 days of enrollment for any refund-related queries.' },
           ].map((faq, i) => (
-            <div key={i} className="card glass" style={{ padding: '1.25rem 1.5rem', border: '1px solid var(--border-color)' }}>
+            <div key={i} className="card glass support-faq-card" style={{ padding: '1.25rem 1.5rem', border: '1px solid var(--border-color)' }}>
               <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.4rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                 <span style={{ color: '#2563EB', fontWeight: 800, flexShrink: 0 }}>Q.</span>
                 {faq.q}
@@ -293,7 +293,7 @@ const AcademicSupport = () => {
 
       {/* Footer */}
       <div style={{ textAlign: 'center', marginTop: '2.5rem', padding: '1.5rem', borderTop: '1px solid var(--border-color)', color: '#94A3B8', fontSize: '0.85rem' }}>
-        PiyushDhara Academic Support · Gaurav Sir & Team · Bhaktapur, Nepal
+        PiyushDhara Academic Support · Gaurav Sir, Pankaj Baduwal &amp; Team · Bhaktapur, Nepal
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const ExamSecurityHUD = ({
   }
 
   return (
-    <div style={{
+    <div className="exam-security-hud" style={{
       display: 'flex',
       alignItems: 'center',
       gap: '1rem',

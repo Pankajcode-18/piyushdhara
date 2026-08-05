@@ -137,7 +137,7 @@ const Notes = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="page-banner-responsive"
+          className="page-banner-responsive notes-hero-banner"
           style={{ 
             borderRadius: '1.75rem', 
             padding: '3.5rem 3rem', 
@@ -151,24 +151,24 @@ const Notes = () => {
           }}
         >
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 500px' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#FEE2E2', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#DC2626', marginBottom: '1.25rem' }}>
+            <div className="notes-banner-content" style={{ flex: '1 1 500px' }}>
+              <div className="notes-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: '#FEE2E2', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 800, color: '#DC2626', marginBottom: '1.25rem' }}>
                 <Sparkles size={14} /> CDC CURRICULUM HANDOUTS
               </div>
 
-              <h1 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
+              <h1 className="notes-hero-title" style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', color: '#0F172A' }}>
                 Handwritten <span style={{ color: '#DC2626' }}>PDF Notes</span>
               </h1>
 
-              <p style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
+              <p className="notes-hero-desc" style={{ color: '#475569', fontSize: '1.05rem', margin: 0, maxWidth: '680px', lineHeight: '1.7' }}>
                 Download high-yield handwritten chapter handouts, formula cheat-sheets, and numerical problem step-by-step solutions compiled by Gaurav Sir & Team.
               </p>
             </div>
 
             {/* Quick Stat Counter */}
-            <div style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #FEE2E2', boxShadow: '0 10px 25px rgba(239,68,68,0.06)', textAlign: 'center' }}>
-              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#DC2626' }}>{filteredNotes.length}</div>
-              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="notes-stat-box" style={{ background: '#FFFFFF', padding: '1.25rem 2rem', borderRadius: '1.25rem', border: '1px solid #FEE2E2', boxShadow: '0 10px 25px rgba(239,68,68,0.06)', textAlign: 'center' }}>
+              <div className="notes-stat-num" style={{ fontSize: '2.2rem', fontWeight: 900, color: '#DC2626' }}>{filteredNotes.length}</div>
+              <div className="notes-stat-label" style={{ fontSize: '0.78rem', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 PDF Resources
               </div>
             </div>
@@ -274,9 +274,9 @@ const Notes = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3, delay: idx * 0.05 }}
-                    className="card"
+                    className="card notes-card"
                     style={{ 
-                      padding: '1.75rem',
+                      padding: '1.5rem',
                       display: 'flex',
                       flexDirection: 'column',
                       justify: 'space-between',
@@ -288,7 +288,7 @@ const Notes = () => {
                   >
                     <div>
                       {/* Course / Subject Tag */}
-                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                      <div className="notes-card-tags" style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
                         {courseTitle && (
                           <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '0.35rem', background: '#EFF6FF', color: '#2563EB' }}>
                             {courseTitle}
@@ -302,11 +302,11 @@ const Notes = () => {
                       </div>
 
                       {/* PDF Icon & Title Header */}
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.1rem', marginBottom: '1.25rem' }}>
-                        <div style={{ 
-                          width: '50px', 
-                          height: '50px', 
-                          borderRadius: '0.85rem', 
+                      <div className="notes-card-header" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem', marginBottom: '1rem' }}>
+                        <div className="notes-card-icon" style={{ 
+                          width: '42px', 
+                          height: '42px', 
+                          borderRadius: '0.75rem', 
                           background: 'linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(220,38,38,0.06) 100%)', 
                           color: '#DC2626', 
                           display: 'flex', 
@@ -316,14 +316,14 @@ const Notes = () => {
                           border: '1px solid rgba(239,68,68,0.2)',
                           boxShadow: '0 4px 10px rgba(239,68,68,0.1)'
                         }}>
-                          <FileText size={26} />
+                          <FileText size={22} />
                         </div>
                         <div>
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.3rem', lineHeight: '1.35' }}>
+                          <h3 className="notes-card-title" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.2rem', lineHeight: '1.3' }}>
                             {note.title}
                           </h3>
                           {chapterTitle && (
-                            <p style={{ fontSize: '0.82rem', color: '#64748B', margin: 0, fontWeight: 600 }}>
+                            <p style={{ fontSize: '0.8rem', color: '#64748B', margin: 0, fontWeight: 600 }}>
                               Chapter: {chapterTitle}
                             </p>
                           )}
@@ -348,7 +348,7 @@ const Notes = () => {
                     </div>
 
                     {/* Actions Footer */}
-                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: 'auto', borderTop: '1px solid #F1F5F9', paddingTop: '1.25rem' }}>
+                    <div className="notes-card-actions" style={{ display: 'flex', gap: '0.65rem', marginTop: 'auto', borderTop: '1px solid #F1F5F9', paddingTop: '1rem' }}>
                       <a
                         href={token ? fileUrl : '#'}
                         onClick={handlePdfAction}
@@ -357,16 +357,16 @@ const Notes = () => {
                         className="btn btn-primary"
                         style={{ 
                           flex: 1, 
-                          padding: '0.65rem 1rem', 
-                          fontSize: '0.85rem', 
-                          gap: '0.4rem', 
+                          padding: '0.55rem 0.85rem', 
+                          fontSize: '0.82rem', 
+                          gap: '0.35rem', 
                           justifyContent: 'center',
                           borderRadius: '0.65rem',
                           background: token ? '#2563EB' : '#DC2626',
                           boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}
                       >
-                        {token ? <><Eye size={15} /> View PDF</> : <><Lock size={15} /> Login to View</>}
+                        {token ? <><Eye size={14} /> View PDF</> : <><Lock size={14} /> Login to View</>}
                       </a>
                       
                       <a
@@ -377,15 +377,16 @@ const Notes = () => {
                         download={token ? true : undefined}
                         className="btn btn-outline"
                         style={{ 
-                          padding: '0.65rem 1rem', 
-                          fontSize: '0.85rem', 
-                          gap: '0.4rem', 
+                          flex: 1,
+                          padding: '0.55rem 0.85rem', 
+                          fontSize: '0.82rem', 
+                          gap: '0.35rem', 
                           justifyContent: 'center', 
                           color: '#475569',
                           borderRadius: '0.65rem'
                         }}
                       >
-                        <Download size={15} /> Download
+                        <Download size={14} /> Download
                       </a>
                     </div>
 

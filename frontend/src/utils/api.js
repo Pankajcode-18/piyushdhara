@@ -57,10 +57,19 @@ const handleAuthError = (res) => {
   }
 };
 
-// Public endpoints
+// Public endpoints — only published courses
 export const fetchCourses = async () => {
   const res = await fetch(`${API_BASE}/public/courses`);
   if (!res.ok) throw new Error('Failed to fetch courses');
+  return res.json();
+};
+
+// Admin endpoint — all courses (published + unpublished)
+export const fetchAllCoursesAdmin = async (token) => {
+  const res = await fetch(`${API_BASE}/courses`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error('Failed to fetch all courses');
   return res.json();
 };
 

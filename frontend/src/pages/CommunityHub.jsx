@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home, HelpCircle, MessageSquare, BarChart2, Bookmark, TrendingUp,
   Search, Plus, ThumbsUp, Heart, Award, Share2, CheckCircle2, Sparkles,
   Flame, Eye, Filter, Check, User, Zap, Tag, Star, FileText, Download,
-  AlertCircle, Bell, Trophy, Users, ChevronRight, Image, Code2,
+  AlertCircle, Bell, Trophy, Users, ChevronLeft, ChevronRight, Image, Code2,
   Smile, MoreHorizontal, Clock, BookOpen, Target, Layers, X,
   Image as ImageIcon, Paperclip, Hash, Globe, Lock, ChevronDown,
   ArrowUp, ArrowDown, Pin, Verified, Shield, Send, CornerDownRight
@@ -141,6 +142,7 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
 
   return (
     <div
+      className="post-card-container"
       onMouseEnter={()=>setHovered(true)}
       onMouseLeave={()=>setHovered(false)}
       style={{
@@ -161,7 +163,7 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
       )}
 
       {/* ─ Author Row ─ */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'1rem' }}>
+      <div className="post-card-author-row" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'1rem', gap: '0.5rem' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'0.75rem' }}>
           {/* Avatar */}
           <div style={{ width:48, height:48, borderRadius:'50%', background:`linear-gradient(135deg, ${C.navy}, ${C.navyLt})`, color:'#FFF', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:'1.1rem', border:`2.5px solid ${C.gold}`, flexShrink:0, overflow:'hidden', minWidth:48 }}>
@@ -187,7 +189,7 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
         </div>
 
         {/* Badges row */}
-        <div style={{ display:'flex', gap:'0.35rem', alignItems:'center', flexShrink:0 }}>
+        <div className="post-card-badges" style={{ display:'flex', gap:'0.35rem', alignItems:'center', flexShrink:0, flexWrap: 'wrap' }}>
           {difficultyConfig && (
             <span style={{ background:difficultyConfig.bg, color:difficultyConfig.color, fontSize:'0.62rem', fontWeight:800, padding:'2px 8px', borderRadius:99 }}>
               {post.difficulty}
@@ -279,7 +281,7 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
       )}
 
       {/* ─ Footer Actions ─ */}
-      <div style={{ display:'flex', alignItems:'center', gap:'0.35rem', paddingTop:'0.75rem', borderTop:`1px solid ${C.border}`, flexWrap:'wrap' }}>
+      <div className="post-card-actions" style={{ display:'flex', alignItems:'center', gap:'0.45rem', paddingTop:'0.75rem', borderTop:`1px solid ${C.border}`, flexWrap:'wrap' }}>
 
         {/* Reactions */}
         <div style={{ position:'relative', flexShrink:0 }} ref={reactionRef}>
@@ -307,9 +309,6 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
           )}
         </div>
 
-        {/* Divider */}
-        <div style={{ width:1, height:18, background:C.border, flexShrink:0 }} />
-
         {/* Comments */}
         <Link to={`/community/post/${post._id}`}
           style={{ display:'flex', alignItems:'center', gap:'0.35rem', textDecoration:'none', fontSize:'0.78rem', fontWeight:700, color:C.muted, padding:'6px 11px', borderRadius:99, border:`1px solid ${C.border}`, background:C.light, transition:'all 0.18s', whiteSpace:'nowrap', flexShrink:0 }}
@@ -320,12 +319,9 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
           <span>{post.answersCount || post.commentsCount || 0} Answers</span>
         </Link>
 
-        {/* Spacer pushes Share+Save to right */}
-        <div style={{ flex:1 }} />
-
         {/* Share */}
         <button
-          style={{ display:'flex', alignItems:'center', gap:'0.35rem', fontSize:'0.78rem', fontWeight:700, color:C.muted, background:'none', border:'none', cursor:'pointer', padding:'6px 10px', borderRadius:99, transition:'all 0.18s', whiteSpace:'nowrap', flexShrink:0 }}
+          style={{ display:'flex', alignItems:'center', gap:'0.35rem', fontSize:'0.78rem', fontWeight:700, color:C.muted, background:C.light, border:`1px solid ${C.border}`, cursor:'pointer', padding:'6px 11px', borderRadius:99, transition:'all 0.18s', whiteSpace:'nowrap', flexShrink:0 }}
           onMouseEnter={e=>e.currentTarget.style.color=C.navy}
           onMouseLeave={e=>e.currentTarget.style.color=C.muted}
         >
@@ -335,7 +331,7 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
         {/* Bookmark */}
         <button
           onClick={()=>onToggleSave(post._id)}
-          style={{ display:'flex', alignItems:'center', gap:'0.35rem', fontSize:'0.78rem', fontWeight:700, color: post.isSaved ? C.gold : C.muted, background: post.isSaved ? '#FFFBEB' : 'none', border: post.isSaved ? `1px solid ${C.goldLt}` : 'none', cursor:'pointer', padding:'6px 12px', borderRadius:99, transition:'all 0.18s', whiteSpace:'nowrap', flexShrink:0 }}
+          style={{ display:'flex', alignItems:'center', gap:'0.35rem', fontSize:'0.78rem', fontWeight:700, color: post.isSaved ? C.gold : C.muted, background: post.isSaved ? '#FFFBEB' : C.light, border: post.isSaved ? `1px solid ${C.goldLt}` : `1px solid ${C.border}`, cursor:'pointer', padding:'6px 12px', borderRadius:99, transition:'all 0.18s', whiteSpace:'nowrap', flexShrink:0 }}
           onMouseEnter={e=>{ if(!post.isSaved){ e.currentTarget.style.color=C.navy; } }}
           onMouseLeave={e=>{ if(!post.isSaved){ e.currentTarget.style.color=C.muted; } }}
         >
@@ -355,9 +351,57 @@ const PostCard = ({ post, onReact, onPollVote, onToggleSave }) => {
 const CreatePostComposer = ({ userProfile, onAskDoubt, onCreatePoll, onStartDiscussion }) => {
   const avatar = userProfile?.photo ? getFileUrl(userProfile.photo) : null;
   const initials = (userProfile?.name || 'S').charAt(0).toUpperCase();
+  const rowRef = useRef(null);
+  const [activeAction, setActiveAction] = useState(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (!rowRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = rowRef.current;
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
+
+  const handleScroll = () => {
+    checkScroll();
+  };
+
+  const scrollByAmount = (amount) => {
+    if (rowRef.current) {
+      rowRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
+
+  const actions = [
+    { icon: HelpCircle,    label: 'Ask Doubt',    color: '#2563EB', bg: '#EFF6FF', onClick: onAskDoubt },
+    { icon: MessageSquare, label: 'Discussion',   color: C.green,   bg: '#ECFDF5', onClick: onStartDiscussion },
+    { icon: BarChart2,     label: 'Create Poll',  color: C.purple,  bg: '#F3E8FF', onClick: onCreatePoll },
+    { icon: Code2,         label: 'Code Snippet', color: '#F59E0B', bg: '#FFFBEB', onClick: onAskDoubt },
+    { icon: ImageIcon,     label: 'Image',        color: C.muted,   bg: C.light,   onClick: onStartDiscussion },
+  ];
+
+  const handleActionClick = (btn, e) => {
+    setActiveAction(btn.label);
+    if (rowRef.current && e?.currentTarget) {
+      const container = rowRef.current;
+      const el = e.currentTarget;
+      container.scrollTo({
+        left: el.offsetLeft - container.clientWidth / 2 + el.offsetWidth / 2,
+        behavior: 'smooth'
+      });
+    }
+    btn.onClick();
+  };
 
   return (
-    <div style={{ background:C.card, borderRadius:18, border:`1px solid ${C.border}`, padding:'1.25rem 1.5rem', boxShadow:'0 2px 12px rgba(0,0,0,0.04)', marginBottom:'1rem' }}>
+    <div className="create-post-composer" style={{ background:C.card, borderRadius:18, border:`1px solid ${C.border}`, padding:'1.25rem 1.5rem', boxShadow:'0 2px 12px rgba(0,0,0,0.04)', marginBottom:'1rem' }}>
       {/* Input row */}
       <div style={{ display:'flex', alignItems:'center', gap:'0.85rem', marginBottom:'0.85rem' }}>
         <div style={{ width:46, height:46, borderRadius:'50%', background:`linear-gradient(135deg, ${C.navy}, ${C.navyLt})`, color:'#FFF', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:'1.05rem', flexShrink:0, overflow:'hidden', border:`2.5px solid ${C.gold}`, minWidth:46 }}>
@@ -372,23 +416,151 @@ const CreatePostComposer = ({ userProfile, onAskDoubt, onCreatePoll, onStartDisc
           Ask a doubt, share knowledge, or create a poll…
         </button>
       </div>
-      {/* Action Buttons */}
-      <div style={{ display:'flex', gap:'0.45rem', flexWrap:'wrap', alignItems:'center', paddingTop:'0.75rem', borderTop:`1px solid ${C.border}` }}>
-        {[
-          { icon:HelpCircle, label:'Ask Doubt',   color:'#2563EB', bg:'#EFF6FF', onClick:onAskDoubt       },
-          { icon:MessageSquare, label:'Discussion',color:C.green,  bg:'#ECFDF5', onClick:onStartDiscussion },
-          { icon:BarChart2, label:'Create Poll',   color:C.purple, bg:'#F3E8FF', onClick:onCreatePoll      },
-          { icon:Code2,     label:'Code Snippet',  color:'#F59E0B',bg:'#FFFBEB', onClick:onAskDoubt        },
-          { icon:ImageIcon, label:'Image',         color:C.muted,  bg:C.light,   onClick:onStartDiscussion },
-        ].map(({icon:Icon, label, color, bg, onClick}) => (
-          <button key={label} onClick={onClick}
-            style={{ display:'flex', alignItems:'center', gap:'0.35rem', padding:'7px 13px', borderRadius:99, background:bg, color, fontSize:'0.78rem', fontWeight:700, border:'none', cursor:'pointer', transition:'all 0.18s', flexShrink:0, whiteSpace:'nowrap' }}
-            onMouseEnter={e=>e.currentTarget.style.filter='brightness(0.93)'}
-            onMouseLeave={e=>e.currentTarget.style.filter='none'}
-          >
-            <Icon size={15} /> <span>{label}</span>
-          </button>
-        ))}
+
+      {/* Action Buttons Container with Arrow Controls */}
+      <div style={{ position: 'relative', borderTop: `1px solid ${C.border}`, paddingTop: '0.65rem' }}>
+        {/* Left Scroll Arrow */}
+        {canScrollLeft && (
+          <div style={{
+            position: 'absolute',
+            left: 0,
+            top: '0.65rem',
+            bottom: 0,
+            width: '45px',
+            background: 'linear-gradient(to right, #FFFFFF 70%, transparent)',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            pointerEvents: 'none'
+          }}>
+            <button
+              type="button"
+              onClick={() => scrollByAmount(-180)}
+              aria-label="Scroll Actions Left"
+              style={{
+                pointerEvents: 'auto',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '50%',
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.12)'
+              }}
+            >
+              <ChevronLeft size={16} color="#0F172A" />
+            </button>
+          </div>
+        )}
+
+        {/* Action Buttons Row */}
+        <div
+          ref={rowRef}
+          onScroll={handleScroll}
+          className="composer-actions-row"
+          style={{
+            display:'flex',
+            gap:'0.5rem',
+            overflowX:'auto',
+            alignItems:'center',
+            paddingRight:'2.5rem',
+            scrollPaddingRight:'2.5rem',
+            scrollbarWidth:'none',
+            WebkitOverflowScrolling:'touch',
+            position: 'relative'
+          }}
+        >
+          {actions.map((btn) => {
+            const Icon = btn.icon;
+            const isActive = activeAction === btn.label;
+            return (
+              <motion.button
+                key={btn.label}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => handleActionClick(btn, e)}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '8px 15px',
+                  borderRadius: 99,
+                  background: btn.bg,
+                  color: btn.color,
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  border: isActive ? `1.5px solid ${btn.color}` : '1.5px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease',
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                  boxShadow: isActive ? `0 3px 10px ${btn.color}30` : '0 1px 3px rgba(0,0,0,0.03)'
+                }}
+              >
+                <Icon size={15} />
+                <span>{btn.label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="composerActionActiveLine"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    style={{
+                      position: 'absolute',
+                      bottom: -3,
+                      left: 10,
+                      right: 10,
+                      height: 3,
+                      borderRadius: 99,
+                      background: btn.color
+                    }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Right Scroll Arrow */}
+        {canScrollRight && (
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: '0.65rem',
+            bottom: 0,
+            width: '45px',
+            background: 'linear-gradient(to left, #FFFFFF 70%, transparent)',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            pointerEvents: 'none'
+          }}>
+            <button
+              type="button"
+              onClick={() => scrollByAmount(180)}
+              aria-label="Scroll Actions Right"
+              style={{
+                pointerEvents: 'auto',
+                background: '#FFFFFF',
+                border: '1px solid #CBD5E1',
+                borderRadius: '50%',
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.12)'
+              }}
+            >
+              <ChevronRight size={16} color="#0F172A" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -407,14 +579,241 @@ const FilterChips = ({ active, onChange }) => {
     { id:'saved',       label:'❤️ Saved'       },
   ];
   return (
-    <div style={{ display:'flex', gap:'0.45rem', flexWrap:'wrap', alignItems:'center', marginBottom:'1rem' }}>
-      {chips.map(c => (
-        <button key={c.id} onClick={()=>onChange(c.id)}
-          style={{ padding:'7px 15px', borderRadius:99, border:'none', background: active===c.id ? C.navy : C.card, color: active===c.id ? '#FFF' : C.text, fontSize:'0.8rem', fontWeight: active===c.id ? 800 : 600, cursor:'pointer', transition:'all 0.18s', flexShrink:0, boxShadow: active===c.id ? `0 4px 12px rgba(13,43,92,0.22)` : `0 1px 4px rgba(0,0,0,0.05)`, border:`1px solid ${active===c.id ? C.navy : C.border}`, whiteSpace:'nowrap' }}
-        >
-          {c.label}
-        </button>
-      ))}
+    <div className="tab-strip-scroll" style={{ display:'flex', gap:'0.45rem', overflowX:'auto', alignItems:'center', marginBottom:'1rem', paddingBottom:'0.35rem', paddingRight:'1.5rem', scrollPaddingRight:'1.5rem', scrollbarWidth:'none', position:'relative' }}>
+      {chips.map(c => {
+        const isActive = active === c.id;
+        return (
+          <button
+            key={c.id}
+            onClick={() => onChange(c.id)}
+            style={{
+              position: 'relative',
+              padding: '7px 16px',
+              borderRadius: 99,
+              border: isActive ? `1px solid ${C.navy}` : `1px solid ${C.border}`,
+              background: isActive ? C.navy : C.card,
+              color: isActive ? '#FFF' : C.text,
+              fontSize: '0.8rem',
+              fontWeight: isActive ? 800 : 600,
+              cursor: 'pointer',
+              transition: 'all 0.18s',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+              zIndex: 1
+            }}
+          >
+            {c.label}
+            {isActive && (
+              <motion.div
+                layoutId="filterActiveBg"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 99,
+                  background: C.navy,
+                  zIndex: -1,
+                  boxShadow: '0 4px 12px rgba(13,43,92,0.22)'
+                }}
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/*  CATEGORY SLIDING STRIP WITH ANIMATED ACTIVE PILL & AUTO-CENTER           */
+/* ══════════════════════════════════════════════════════════════════════════ */
+const CategorySlidingStrip = ({ categories, selectedCategory, onSelectCategory }) => {
+  const containerRef = useRef(null);
+  const activeItemRef = useRef(null);
+
+  useEffect(() => {
+    if (activeItemRef.current && containerRef.current) {
+      const container = containerRef.current;
+      const el = activeItemRef.current;
+      const elLeft = el.offsetLeft;
+      const elWidth = el.offsetWidth;
+      const containerWidth = container.clientWidth;
+      container.scrollTo({
+        left: elLeft - containerWidth / 2 + elWidth / 2,
+        behavior: 'smooth'
+      });
+    }
+  }, [selectedCategory]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="community-categories-sliding-strip"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.45rem',
+        overflowX: 'auto',
+        padding: '0.2rem 1.5rem 0.5rem 0.2rem',
+        marginBottom: '0.85rem',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        WebkitOverflowScrolling: 'touch',
+        position: 'relative'
+      }}
+    >
+      {categories.map((cat) => {
+        const isActive = selectedCategory === cat;
+        return (
+          <button
+            key={cat}
+            type="button"
+            ref={isActive ? activeItemRef : null}
+            onClick={() => onSelectCategory(cat)}
+            style={{
+              position: 'relative',
+              padding: '7px 16px',
+              borderRadius: 99,
+              border: isActive ? `1.5px solid ${C.blue}` : `1px solid ${C.border}`,
+              background: isActive ? '#EFF6FF' : C.card,
+              color: isActive ? C.blue : '#475569',
+              fontSize: '0.78rem',
+              fontWeight: isActive ? 800 : 600,
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              cursor: 'pointer',
+              transition: 'color 0.18s ease',
+              zIndex: 1,
+              boxShadow: isActive ? '0 2px 10px rgba(37,99,235,0.15)' : '0 1px 3px rgba(0,0,0,0.03)'
+            }}
+          >
+            <span>{cat}</span>
+            {isActive && (
+              <motion.div
+                layoutId="categoryActivePill"
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 99,
+                  background: '#EFF6FF',
+                  border: `1.5px solid ${C.blue}`,
+                  zIndex: -1,
+                  boxShadow: '0 4px 12px rgba(37,99,235,0.18)'
+                }}
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+/* ══════════════════════════════════════════════════════════════════════════ */
+/*  SLIDING TAB NAV WITH ANIMATED ACTIVE UNDERLINE                            */
+/* ══════════════════════════════════════════════════════════════════════════ */
+const SlidingTabNav = ({ navItems, activeTab, onTabChange }) => {
+  const scrollRef = useRef(null);
+  const activeTabRef = useRef(null);
+
+  useEffect(() => {
+    if (activeTabRef.current && scrollRef.current) {
+      const container = scrollRef.current;
+      const el = activeTabRef.current;
+      const elLeft = el.offsetLeft;
+      const elWidth = el.offsetWidth;
+      const containerWidth = container.clientWidth;
+      container.scrollTo({
+        left: elLeft - containerWidth / 2 + elWidth / 2,
+        behavior: 'smooth'
+      });
+    }
+  }, [activeTab]);
+
+  return (
+    <div style={{ position: 'relative', width: '100%', marginBottom: '1.25rem' }}>
+      <div
+        ref={scrollRef}
+        className="tab-strip-scroll"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          overflowX: 'auto',
+          gap: '0.5rem',
+          padding: '0.4rem 1.5rem 0.65rem 0.4rem',
+          scrollBehavior: 'smooth',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+          borderBottom: '2px solid #E2E8F0'
+        }}
+      >
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.key;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              ref={isActive ? activeTabRef : null}
+              onClick={() => onTabChange(item.key)}
+              style={{
+                position: 'relative',
+                flexShrink: 0,
+                padding: '0.65rem 1.15rem',
+                border: 'none',
+                background: 'transparent',
+                color: isActive ? '#2563EB' : '#475569',
+                fontSize: '0.86rem',
+                fontWeight: isActive ? 800 : 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                whiteSpace: 'nowrap',
+                transition: 'color 0.2s ease'
+              }}
+            >
+              <Icon size={16} color={isActive ? '#2563EB' : '#64748B'} />
+              <span>{item.label}</span>
+              {item.badge && (
+                <span
+                  style={{
+                    background: item.badge === 'HOT' ? '#EF4444' : '#0F172A',
+                    color: '#FFF',
+                    fontSize: '0.6rem',
+                    fontWeight: 900,
+                    padding: '2px 6px',
+                    borderRadius: '9999px',
+                    lineHeight: 1
+                  }}
+                >
+                  {item.badge}
+                </span>
+              )}
+
+              {/* Animated Sliding Active Line */}
+              {isActive && (
+                <motion.div
+                  layoutId="communityTabActiveLine"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '-0.65rem',
+                    left: 0,
+                    right: 0,
+                    height: '3.5px',
+                    borderRadius: '9999px',
+                    background: 'linear-gradient(90deg, #2563EB, #3B82F6)',
+                    boxShadow: '0 2px 10px rgba(37,99,235,0.45)',
+                    zIndex: 2
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -442,6 +841,8 @@ const CommunityHub = () => {
   const [showDiscussionModal, setShowDiscussionModal] = useState(false);
   const [sidebarOpen,       setSidebarOpen]       = useState(false);
   const [activeChip,        setActiveChip]        = useState('latest');
+
+  const tabsRef = useRef(null);
 
   /* ── Load Posts ── */
   const loadPosts = async () => {
@@ -531,8 +932,8 @@ const CommunityHub = () => {
         .composer-label { display:inline; }
         .community-grid { display:grid; grid-template-columns:260px 1fr 300px; gap:1.5rem; }
         .right-sidebar  { display:flex; flex-direction:column; gap:1rem; }
-        @media(max-width:1200px) { .community-grid { grid-template-columns:220px 1fr; } .right-sidebar { display:none; } }
-        @media(max-width:860px)  { .community-grid { grid-template-columns:1fr; } .left-sidebar { display:none; } .composer-label { display:none; } }
+        @media(max-width:1100px) { .community-grid { grid-template-columns:230px 1fr; } .right-sidebar { display:none !important; } }
+        @media(max-width:1024px) { .community-grid { display:block !important; width:100% !important; } .left-sidebar, .right-sidebar, .community-left-sidebar, .community-right-sidebar { display:none !important; } .composer-label { display:none; } }
         @keyframes spin { to { transform:rotate(360deg); } }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         .post-appear { animation: fadeInUp 0.3s ease both; }
@@ -542,7 +943,7 @@ const CommunityHub = () => {
       `}</style>
 
       {/* ─── HERO BANNER ─────────────────────────────────────────────────── */}
-      <div style={{ background:`linear-gradient(135deg, ${C.navyDk} 0%, ${C.navy} 55%, #1a3a6e 100%)`, padding:'2.25rem 2rem 2rem', position:'relative', overflow:'hidden' }}>
+      <div className="community-hero-banner" style={{ background:`linear-gradient(135deg, ${C.navyDk} 0%, ${C.navy} 55%, #1a3a6e 100%)`, padding:'2.25rem 2rem 2rem', position:'relative', overflow:'hidden' }}>
         {/* Decorative circles */}
         <div style={{ position:'absolute', right:-80, top:-80, width:300, height:300, borderRadius:'50%', background:'rgba(200,154,43,0.08)', pointerEvents:'none' }} />
         <div style={{ position:'absolute', right:60,  top:40,  width:120, height:120, borderRadius:'50%', background:'rgba(200,154,43,0.05)', pointerEvents:'none' }} />
@@ -553,18 +954,18 @@ const CommunityHub = () => {
             <Sparkles size={13} /> PIYUSHDHARA COMMUNITY FORUM
           </div>
 
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'1.5rem' }}>
+          <div className="community-hero-top-row" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'1.5rem' }}>
             <div>
-              <h1 style={{ fontSize:'2rem', fontWeight:900, color:'#FFFFFF', margin:'0 0 0.4rem 0', fontFamily:'Poppins,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
+              <h1 className="community-hero-title" style={{ fontSize:'2rem', fontWeight:900, color:'#FFFFFF', margin:'0 0 0.4rem 0', fontFamily:'Poppins,sans-serif', letterSpacing:'-0.02em', lineHeight:1.15 }}>
                 Ask Doubts, Share Insights &<br/><span style={{ color:C.gold }}>Grow Together 🚀</span>
               </h1>
-              <p style={{ fontSize:'0.88rem', color:'rgba(255,255,255,0.65)', margin:0, maxWidth:520 }}>
+              <p className="community-hero-desc" style={{ fontSize:'0.88rem', color:'rgba(255,255,255,0.65)', margin:0, maxWidth:520 }}>
                 Connect with thousands of students. Get fast answers, join discussions, participate in live polls, and build your academic reputation.
               </p>
             </div>
 
             {/* Hero stats */}
-            <div style={{ display:'flex', gap:'1.5rem' }}>
+            <div className="community-hero-stats" style={{ display:'flex', gap:'1.5rem' }}>
               {[{ val:'2.4K', label:'Active Students' }, { val:'850+', label:'Discussions' }, { val:'95%', label:'Answered' }].map(({val,label}) => (
                 <div key={label} style={{ textAlign:'center' }}>
                   <div style={{ fontSize:'1.6rem', fontWeight:900, color:C.gold, lineHeight:1 }}>{val}</div>
@@ -575,7 +976,7 @@ const CommunityHub = () => {
           </div>
 
           {/* Quick Action Buttons */}
-          <div style={{ display:'flex', gap:'0.75rem', marginTop:'1.5rem', flexWrap:'wrap' }}>
+          <div className="community-hero-actions" style={{ display:'flex', gap:'0.75rem', marginTop:'1.5rem', flexWrap:'wrap' }}>
             {[
               { label:'❓ Ask a Doubt',      bg:`linear-gradient(135deg,${C.blue},#1D4ED8)`,  shadow:'rgba(37,99,235,0.4)',  onClick:()=>setShowAskModal(true)        },
               { label:'📊 Create Poll',      bg:`linear-gradient(135deg,${C.purple},#6D28D9)`, shadow:'rgba(124,58,237,0.4)', onClick:()=>setShowPollModal(true)       },
@@ -594,26 +995,14 @@ const CommunityHub = () => {
       </div>
 
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────── */}
-      <div style={{ maxWidth:1280, margin:'0 auto', padding:'1.5rem 1.5rem' }}>
+      <div className="community-main-container" style={{ maxWidth:1280, margin:'0 auto', padding:'1.5rem 1.5rem' }}>
 
-        {/* Mobile Tab Bar (visible ≤768px only) */}
-        <div className="community-mobile-tabs">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.key;
-            return (
-              <button
-                key={item.key}
-                className={`community-mobile-tab-btn${isActive ? ' active' : ''}`}
-                onClick={() => handleTabChange(item.key)}
-              >
-                <Icon size={14} />
-                {item.label}
-                {item.badge && <span style={{ background: item.badge === 'HOT' ? '#EF4444' : '#0D2B5C', color: '#FFF', fontSize: '0.52rem', fontWeight: 900, padding: '1px 5px', borderRadius: 99 }}>{item.badge}</span>}
-              </button>
-            );
-          })}
-        </div>
+        {/* Sliding Navigation Tabs Bar */}
+        <SlidingTabNav
+          navItems={NAV_ITEMS}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
 
         <div className="community-grid">
 
@@ -694,8 +1083,8 @@ const CommunityHub = () => {
           {/* ═══ CENTER FEED ══════════════════════════════════════════════ */}
           <div>
             {/* Search Bar */}
-            <div style={{ background:C.card, borderRadius:16, border:`1px solid ${C.border}`, padding:'0.85rem 1rem', marginBottom:'0.85rem', boxShadow:'0 2px 8px rgba(0,0,0,0.03)' }}>
-              <form onSubmit={handleSearchSubmit} style={{ display:'flex', gap:'0.65rem', alignItems:'center' }}>
+            <div className="community-search-card" style={{ background:C.card, borderRadius:16, border:`1px solid ${C.border}`, padding:'0.85rem 1rem', marginBottom:'0.85rem', boxShadow:'0 2px 8px rgba(0,0,0,0.03)' }}>
+              <form className="community-search-form" onSubmit={handleSearchSubmit} style={{ display:'flex', gap:'0.65rem', alignItems:'center' }}>
                 <div style={{ position:'relative', flex:1 }}>
                   <Search size={17} color={C.muted} style={{ position:'absolute', left:'0.9rem', top:'50%', transform:'translateY(-50%)', pointerEvents:'none' }} />
                   <input
@@ -715,6 +1104,13 @@ const CommunityHub = () => {
                 </button>
               </form>
             </div>
+
+            {/* Mobile/Desktop Category Pills Strip */}
+            <CategorySlidingStrip
+              categories={CATEGORIES}
+              selectedCategory={selectedCategory}
+              onSelectCategory={(cat) => { setSelectedCategory(cat); setPage(1); }}
+            />
 
             {/* Filter Chips */}
             <FilterChips active={activeChip} onChange={handleChipChange} />

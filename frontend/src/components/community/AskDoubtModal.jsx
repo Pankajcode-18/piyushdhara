@@ -88,13 +88,13 @@ const AskDoubtModal = ({ isOpen, onClose, onSuccess }) => {
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 9999, padding: '1rem', fontFamily: "'Inter', sans-serif"
+      zIndex: 99999, padding: '0.5rem', fontFamily: "'Inter', sans-serif"
     }}>
-      <div style={{
+      <div className="modal-card-container" style={{
         background: '#FFFFFF', width: '100%', maxWidth: '650px',
-        maxHeight: '90vh', overflowY: 'auto', borderRadius: '1.25rem',
+        maxHeight: '92vh', overflowY: 'auto', borderRadius: '1.25rem',
         border: '1px solid #CBD5E1', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        padding: '1.75rem', position: 'relative'
+        padding: '1.5rem', position: 'relative'
       }}>
 
         {/* Header */}
@@ -138,7 +138,7 @@ const AskDoubtModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           {/* Subject & Category Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+          <div className="modal-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
             <div>
               <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#1E293B', display: 'block', marginBottom: '0.35rem' }}>
                 Subject Domain
@@ -171,7 +171,7 @@ const AskDoubtModal = ({ isOpen, onClose, onSuccess }) => {
             <label style={{ fontSize: '0.8rem', fontWeight: 800, color: '#1E293B', display: 'block', marginBottom: '0.35rem' }}>
               Doubt Difficulty Rating
             </label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div className="modal-difficulty-row" style={{ display: 'flex', gap: '0.5rem' }}>
               {['Easy', 'Medium', 'Hard'].map((lvl) => {
                 const isSel = difficulty === lvl;
                 const colors = {
@@ -262,7 +262,7 @@ const AskDoubtModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           {/* Actions */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.65rem', marginTop: '0.5rem' }}>
+          <div className="modal-action-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.65rem', marginTop: '0.5rem' }}>
             <button 
               type="button" 
               onClick={onClose}

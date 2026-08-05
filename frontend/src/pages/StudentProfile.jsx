@@ -255,23 +255,24 @@ const StudentProfile = () => {
           </div>
         )}
 
-        {/* ── 1. HEADER PROFILE HERO CARD ──────────────────────────── */}
+        {/* ── 1. HEADER PROFILE HERO CARD (DARK THEME) ──────────────── */}
         <div 
-          className="card" 
+          className="card profile-hero-card" 
           style={{ 
             borderRadius: '2rem', 
             padding: '2.5rem', 
-            background: 'linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 50%, #F0F9FF 100%)', 
-            color: '#0F172A', 
+            background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #0B132B 100%)', 
+            color: '#FFFFFF', 
             marginBottom: '2.5rem',
-            border: '1px solid rgba(37, 99, 235, 0.16)',
-            boxShadow: '0 20px 40px -10px rgba(37, 99, 235, 0.12)',
+            border: '1.5px solid rgba(56, 189, 248, 0.25)',
+            boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.7)',
             position: 'relative',
             overflow: 'hidden'
           }}
         >
           {/* Ambient Glow decoration */}
-          <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
+          <div style={{ position: 'absolute', top: '-30%', right: '-10%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }}></div>
+          <div style={{ position: 'absolute', bottom: '-40%', left: '-10%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }}></div>
 
           <div className="profile-hero-grid" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             
@@ -284,11 +285,12 @@ const StudentProfile = () => {
                   borderRadius: '50%', 
                   background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', 
                   padding: '4px',
-                  boxShadow: '0 10px 30px rgba(37,99,235,0.4)',
+                  boxShadow: '0 0 25px rgba(56,189,248,0.4)',
                   display: 'flex',
                   alignItems: 'center',
                   justify: 'center',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  border: '3px solid #38BDF8'
                 }}
               >
                 {u.photo ? (
@@ -323,7 +325,7 @@ const StudentProfile = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justify: 'center',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
                   transition: 'all 0.15s ease'
                 }}
               >
@@ -340,23 +342,24 @@ const StudentProfile = () => {
             </div>
 
             {/* Main Student Info */}
-            <div style={{ flex: '1 1 320px' }}>
+            <div className="profile-hero-info" style={{ flex: '1 1 auto', minWidth: '280px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2.2rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{u.name || 'Student'}</h1>
+                <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2.2rem)', fontWeight: 900, margin: 0, letterSpacing: '-0.02em', color: '#FFFFFF' }}>{u.name || 'Student'}</h1>
                 
                 {/* Gamification Badge */}
                 <span 
                   style={{ 
-                    padding: '0.3rem 0.85rem', 
+                    padding: '0.35rem 0.9rem', 
                     borderRadius: '9999px', 
                     fontSize: '0.78rem', 
                     fontWeight: 800,
                     background: completion.badge === 'Dedicated Learner' ? 'linear-gradient(135deg, #10B981, #059669)' : (completion.badge === 'Active Learner' ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'rgba(255,255,255,0.15)'),
                     color: '#FFFFFF',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.3rem'
+                    gap: '0.3rem',
+                    border: '1px solid rgba(255,255,255,0.2)'
                   }}
                 >
                   <Sparkles size={13} /> {completion.badge}
@@ -364,35 +367,36 @@ const StudentProfile = () => {
               </div>
 
               <div style={{ display: 'flex', gap: '1.25rem', color: '#94A3B8', fontSize: '0.88rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><Mail size={14} /> {u.email}</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><ShieldCheck size={14} color="#38BDF8" /> ID: {u.studentId || 'PD-STUDENT-1001'}</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><Calendar size={14} /> Member since {memberSince}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#CBD5E1' }}><Mail size={14} color="#38BDF8" /> {u.email}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#38BDF8', fontWeight: 700 }}><ShieldCheck size={14} color="#38BDF8" /> ID: {u.studentId || 'PD-STUDENT-1001'}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#94A3B8' }}><Calendar size={14} /> Member since {memberSince}</span>
               </div>
 
               {/* Profile Completion Progress Bar */}
-              <div style={{ maxWidth: '520px', background: 'rgba(255,255,255,0.06)', padding: '1rem 1.25rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ maxWidth: '520px', background: 'rgba(15, 23, 42, 0.75)', padding: '1rem 1.25rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#F1F5F9' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.03em' }}>
                     PROFILE COMPLETION ({completion.percentage}%)
                   </span>
                   {completion.percentage < 100 && (
                     <button 
                       onClick={() => setShowChecklistModal(!showChecklistModal)}
-                      style={{ background: 'none', border: 'none', color: '#38BDF8', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}
+                      style={{ background: 'none', border: 'none', color: '#38BDF8', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer', padding: 0 }}
                     >
                       Complete Your Profile →
                     </button>
                   )}
                 </div>
 
-                <div style={{ height: '8px', background: 'rgba(255,255,255,0.15)', borderRadius: '9999px', overflow: 'hidden' }}>
+                <div style={{ height: '8px', background: 'rgba(255,255,255,0.12)', borderRadius: '9999px', overflow: 'hidden' }}>
                   <div 
                     style={{ 
                       height: '100%', 
                       width: `${completion.percentage}%`, 
                       background: 'linear-gradient(90deg, #38BDF8 0%, #2563EB 100%)',
                       borderRadius: '9999px',
-                      transition: 'width 0.6s ease'
+                      transition: 'width 0.6s ease',
+                      boxShadow: '0 0 10px rgba(56,189,248,0.5)'
                     }} 
                   />
                 </div>
@@ -414,7 +418,8 @@ const StudentProfile = () => {
                   fontWeight: 800,
                   textDecoration: 'none',
                   borderRadius: '0.85rem',
-                  boxShadow: '0 6px 18px rgba(200,154,43,0.3)'
+                  boxShadow: '0 6px 18px rgba(200,154,43,0.35)',
+                  border: '1px solid rgba(253, 230, 138, 0.3)'
                 }}
               >
                 <Award size={18} /> Official Report Card
@@ -422,21 +427,22 @@ const StudentProfile = () => {
               <button 
                 onClick={() => { setActiveTab('edit'); setEditSection('personal'); }} 
                 className="btn btn-primary" 
-                style={{ padding: '0.75rem 1.5rem', fontSize: '0.9rem', gap: '0.5rem' }}
+                style={{ padding: '0.75rem 1.5rem', fontSize: '0.9rem', gap: '0.5rem', background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', boxShadow: '0 6px 18px rgba(37,99,235,0.35)' }}
               >
                 <Edit3 size={16} /> Edit Profile
               </button>
               <button 
                 onClick={() => setActiveTab('settings')} 
                 style={{ 
-                  background: 'rgba(255,255,255,0.1)', 
+                  background: 'rgba(255,255,255,0.08)', 
                   color: '#FFFFFF', 
                   border: '1px solid rgba(255,255,255,0.2)', 
                   padding: '0.75rem 1.5rem', 
                   borderRadius: '0.85rem', 
                   fontSize: '0.88rem', 
                   fontWeight: 700,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
                 }}
               >
                 ⚙️ Account Settings
@@ -447,7 +453,7 @@ const StudentProfile = () => {
         </div>
 
         {/* ── 2. QUICK STATISTICS GRID ────────────────────────────── */}
-        <div className="grid-responsive-4 profile-stats-grid" style={{ gap: '1.25rem', marginBottom: '2.5rem' }}>
+        <div className="profile-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
           
           <div className="card" style={{ padding: '1.5rem', borderRadius: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '1.1rem' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -492,7 +498,7 @@ const StudentProfile = () => {
         </div>
 
         {/* ── 3. MAIN DASHBOARD TABS ───────────────────────────────── */}
-        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', borderBottom: '2px solid #E2E8F0', paddingBottom: '0.75rem' }}>
+        <div className="profile-tabs-strip" style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', borderBottom: '2px solid #E2E8F0', paddingBottom: '0.75rem', overflowX: 'auto' }}>
           <button
             onClick={() => setActiveTab('overview')}
             style={{
@@ -609,7 +615,7 @@ const StudentProfile = () => {
                 </Link>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+              <div className="profile-batches-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
                 {enrolledBatches.map((course) => {
                   let firstVideoId = null;
                   if (course.subjects && course.subjects.length > 0) {
@@ -664,7 +670,7 @@ const StudentProfile = () => {
                           </p>
                         </div>
 
-                        <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '1.25rem', display: 'flex', gap: '0.5rem' }}>
+                        <div className="profile-batch-actions" style={{ borderTop: '1px solid #F1F5F9', paddingTop: '1.25rem', display: 'flex', gap: '0.5rem' }}>
                           {firstVideoId ? (
                             <Link 
                               to={`/lecture/${firstVideoId}`} 
