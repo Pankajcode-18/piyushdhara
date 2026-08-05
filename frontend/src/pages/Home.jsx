@@ -342,11 +342,12 @@ const Home = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="hero-logo-centerpiece-responsive"
                 style={{
-                  flex: '1 1 420px',
+                  flex: '1 1 400px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: '460px'
+                  alignSelf: 'flex-start',
+                  marginTop: '-1.75rem'
                 }}
               >
                 <HeroAnimatedLogo />

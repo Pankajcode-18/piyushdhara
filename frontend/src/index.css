@@ -5385,6 +5385,11 @@ button, .btn, input, select, textarea {
   .hero-stats-responsive h4 {
     font-size: 1.25rem !important;
   }
+
+  .hero-logo-centerpiece-responsive {
+    margin-top: -0.5rem !important;
+    align-self: center !important;
+  }
 }
 
 /* ── Admin Sidebar Close Button: hide on desktop ─────── */
