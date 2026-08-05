@@ -5394,6 +5394,24 @@ button, .btn, input, select, textarea {
     margin-top: -0.5rem !important;
     align-self: center !important;
   }
+
+  .about-cta-responsive {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+
+  .about-cta-responsive a {
+    flex: 1 !important;
+    padding: 0.65rem 0.4rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    border-radius: 0.75rem !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
 }
 
 /* ── Admin Sidebar Close Button: hide on desktop ─────── */
