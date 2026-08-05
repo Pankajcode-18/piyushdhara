@@ -44,8 +44,8 @@ const Navbar = () => {
             <span className="brand-text" style={{ background: 'linear-gradient(to right, #0f172a, #2563eb)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 800 }}>PiyushDhara</span>
           </Link>
 
-          {/* Daily Study Streak Badge (Always Visible) */}
-          <div style={{
+          {/* Daily Study Streak Badge (Desktop Only) */}
+          <div className="desktop-only" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.35rem',

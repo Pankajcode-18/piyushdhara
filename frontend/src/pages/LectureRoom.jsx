@@ -500,30 +500,31 @@ const LectureRoom = () => {
               </div>
 
               {/* Main Title (H1) */}
-              <h1 style={{
+              <h1 className="lecture-title-responsive" style={{
                 fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)',
-                letterSpacing: '-0.02em', lineHeight: 1.25, marginBottom: '0.5rem',
+                letterSpacing: '-0.02em', lineHeight: 1.3, marginBottom: '0.5rem',
+                wordBreak: 'break-word', overflowWrap: 'break-word'
               }}>{video.title}</h1>
 
               {/* Expandable Description */}
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0, wordBreak: 'break-word' }}>
                 {video.description || 'In-depth explanation of syllabus concepts, numerical solutions, and board exam tricks with Gaurav Sir & Team.'}
               </p>
             </div>
 
             {/* ── 4. INSTRUCTOR CARD ── */}
-            <div className="instructor-card" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '0.85rem 1rem', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '1rem' }}>
+            <div className="instructor-card" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 0.85rem', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '1rem', flexWrap: 'wrap' }}>
               <img
                 src={teacherImg}
                 onError={(e) => { e.target.src = '/gaurov.jpeg'; }}
                 alt="Instructor"
-                style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)', flexShrink: 0 }}
+                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)', flexShrink: 0 }}
               />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)', margin: 0 }}>Gaurav Sir</p>
-                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0 }}>Lead Physics &amp; Math Instructor</p>
+              <div style={{ flex: '1 1 120px', minWidth: 0 }}>
+                <p style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Gaurav Sir</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Lead Physics &amp; Math Instructor</p>
               </div>
-              <span className="badge badge-blue" style={{ flexShrink: 0 }}>
+              <span className="badge badge-blue" style={{ flexShrink: 0, fontSize: '0.72rem', padding: '0.2rem 0.5rem' }}>
                 <BookOpen size={10} /> Verified ✓
               </span>
             </div>
