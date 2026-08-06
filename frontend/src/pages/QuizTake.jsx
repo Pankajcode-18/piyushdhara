@@ -330,10 +330,12 @@ const QuizTake = () => {
     <div style={{ minHeight: '100vh', background: '#F8FAFC', display: 'flex', flexDirection: 'column' }}>
 
       {/* ── TOP EXAMINATION HEADER ──────────────────────────────── */}
-      <header className="quiz-header" style={{ background: '#0F172A', color: 'white', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1E293B', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div className="quiz-header-title">
-          <span style={{ fontSize: '0.75rem', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase' }}>{quiz.type.toUpperCase()} EXAMINATION MODE</span>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0.1rem 0 0 0' }}>{quiz.title}</h2>
+      <header className="quiz-header" style={{ background: '#0F172A', color: 'white', padding: '0.85rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1E293B', position: 'sticky', top: 0, zIndex: 100 }}>
+        
+        {/* Title & Mode */}
+        <div className="quiz-header-title" style={{ flex: 1, minWidth: 0, paddingRight: '0.5rem' }}>
+          <span style={{ fontSize: '0.72rem', color: '#38BDF8', fontWeight: 800, textTransform: 'uppercase', display: 'block', letterSpacing: '0.03em' }}>{quiz.type.toUpperCase()} EXAMINATION MODE</span>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: '0.1rem 0 0 0', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{quiz.title}</h2>
         </div>
 
         {/* Real-Time Security HUD */}
@@ -350,11 +352,11 @@ const QuizTake = () => {
         )}
 
         {/* Live Animated Timer */}
-        <div className="quiz-header-timer" style={{ background: remainingSeconds < 180 ? '#7F1D1D' : '#1E293B', border: `1px solid ${remainingSeconds < 180 ? '#EF4444' : '#334155'}`, padding: '0.5rem 1.25rem', borderRadius: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.65rem', transition: 'all 0.3s ease' }}>
-          <Clock size={20} color={remainingSeconds < 180 ? '#FCA5A5' : '#38BDF8'} className={remainingSeconds < 180 ? 'animate-pulse' : ''} />
+        <div className="quiz-header-timer" style={{ background: remainingSeconds < 180 ? '#7F1D1D' : '#1E293B', border: `1px solid ${remainingSeconds < 180 ? '#EF4444' : '#334155'}`, padding: '0.45rem 1rem', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s ease', flexShrink: 0 }}>
+          <Clock size={18} color={remainingSeconds < 180 ? '#FCA5A5' : '#38BDF8'} className={remainingSeconds < 180 ? 'animate-pulse' : ''} />
           <div>
-            <span style={{ fontSize: '0.68rem', color: '#94A3B8', display: 'block', fontWeight: 700 }}>REMAINING TIME</span>
-            <span style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: 'monospace', color: remainingSeconds < 180 ? '#FCA5A5' : '#FFFFFF' }}>
+            <span style={{ fontSize: '0.62rem', color: '#94A3B8', display: 'block', fontWeight: 700, lineHeight: 1 }}>REMAINING TIME</span>
+            <span style={{ fontSize: '1.15rem', fontWeight: 900, fontFamily: 'monospace', color: remainingSeconds < 180 ? '#FCA5A5' : '#FFFFFF', lineHeight: 1.1 }}>
               {formatTime(remainingSeconds)}
             </span>
           </div>
