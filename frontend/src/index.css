@@ -5343,51 +5343,86 @@ button, .btn, input, select, textarea {
 /* ── Home Hero Mobile Layout Fixes ───────────────────── */
 @media (max-width: 767px) {
   .hero-responsive-card {
-    padding: 1.35rem 1.15rem !important;
-    border-radius: 1.35rem !important;
+    padding: 1rem 0.75rem !important;
+    border-radius: 1.25rem !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   .hero-badges-wrapper {
-    gap: 0.4rem !important;
+    gap: 0.35rem !important;
     margin-bottom: 0.5rem !important;
+    max-width: 100% !important;
+  }
+
+  .hero-badges-wrapper > div {
+    max-width: 100% !important;
+    font-size: 0.72rem !important;
+    padding: 0.3rem 0.6rem !important;
+    box-sizing: border-box !important;
+    line-height: 1.25 !important;
   }
 
   .hero-title-responsive {
-    font-size: 1.75rem !important;
-    line-height: 1.2 !important;
+    font-size: 1.55rem !important;
+    line-height: 1.22 !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   .hero-subtitle-responsive {
-    font-size: 0.88rem !important;
+    font-size: 0.84rem !important;
     line-height: 1.45 !important;
+    word-break: break-word !important;
   }
 
   .hero-cta-responsive {
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.4rem !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .hero-cta-responsive a {
-    flex: 1 !important;
-    padding: 0.65rem 0.4rem !important;
-    font-size: 0.8rem !important;
+    flex: 1 1 135px !important;
+    min-width: 0 !important;
+    padding: 0.65rem 0.35rem !important;
+    font-size: 0.78rem !important;
     font-weight: 800 !important;
     border-radius: 0.75rem !important;
     justify-content: center !important;
     white-space: nowrap !important;
+    box-sizing: border-box !important;
   }
 
   .hero-stats-responsive {
-    grid-template-columns: 1fr 1fr 1fr !important;
-    gap: 0.4rem !important;
-    padding-top: 0.85rem !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.25rem !important;
+    padding-top: 0.75rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero-stats-responsive > div {
+    min-width: 0 !important;
+    overflow: hidden !important;
   }
 
   .hero-stats-responsive h4 {
-    font-size: 1.25rem !important;
+    font-size: 1.12rem !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .hero-stats-responsive p {
+    font-size: 0.68rem !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   .hero-logo-centerpiece-responsive {
