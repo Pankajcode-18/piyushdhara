@@ -51,16 +51,16 @@ const VerifyEmailScreen = () => {
           textAlign: 'center'
         }}
       >
-        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#EFF6FF', color: '#2563EB', margin: '0 auto 1.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#EFF6FF', color: 'var(--primary-600)', margin: '0 auto 1.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Mail size={40} />
         </div>
 
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>
-          Verify Your <span style={{ color: '#2563EB' }}>Email</span>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+          Verify Your <span style={{ color: 'var(--primary-600)' }}>Email</span>
         </h2>
 
-        <p style={{ fontSize: '0.95rem', color: '#475569', lineHeight: 1.5, marginBottom: '1.75rem' }}>
-          We sent a verification link to <strong style={{ color: '#0F172A' }}>{currentUser?.email || 'your email'}</strong>.  
+        <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '1.75rem' }}>
+          We sent a verification link to <strong style={{ color: 'var(--text-primary)' }}>{currentUser?.email || 'your email'}</strong>.  
           Please verify your email before accessing course materials.
         </p>
 

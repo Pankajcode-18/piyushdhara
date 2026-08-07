@@ -236,12 +236,12 @@ const Home = () => {
                     fontFamily: 'var(--font-main)'
                   }}>
                     Education is the most <span style={{
-                      background: 'linear-gradient(135deg, #2563EB 0%, #4F46E5 50%, #7C3AED 100%)',
+                      background: 'linear-gradient(135deg, #174A84 0%, #2874C6 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: '0 0 30px rgba(37, 99, 235, 0.15)'
+                      textShadow: '0 0 30px rgba(40, 116, 198, 0.15)'
                     }}>powerful weapon</span> which you can use to <span style={{
-                      background: 'linear-gradient(135deg, #059669 0%, #0284C7 100%)',
+                      background: 'linear-gradient(135deg, #2874C6 0%, #60A5E8 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent'
                     }}>change the world.</span>
@@ -249,25 +249,25 @@ const Home = () => {
                 </motion.div>
 
                 {/* Subtitle */}
-                <p className="hero-subtitle-responsive" style={{ fontSize: '1rem', color: '#475569', margin: 0, maxWidth: '600px', lineHeight: '1.55', fontWeight: 500 }}>
-                  Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: '#0F172A', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
+                <p className="hero-subtitle-responsive" style={{ fontSize: '1rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '600px', lineHeight: '1.55', fontWeight: 500 }}>
+                  Nepal&apos;s most trusted digital learning portal. Stream chapter-wise HD video series, download handwritten PDF handouts, and master exam shortcuts with <strong style={{ color: 'var(--primary-700)', fontWeight: 700 }}>Gaurav Sir &amp; Team</strong>.
                 </p>
 
                 {/* CTA Buttons */}
                 <div className="hero-cta-responsive" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                   <Link
                     to="/courses"
-                    className="btn"
+                    className="btn btn-gradient"
                     style={{
                       padding: '0.8rem 1.75rem',
                       fontSize: '0.95rem',
                       fontWeight: 800,
                       borderRadius: '0.85rem',
                       gap: '0.55rem',
-                      background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                      background: 'linear-gradient(135deg, var(--primary-800), var(--primary-600))',
                       color: '#FFFFFF',
-                      border: '1px solid rgba(255,255,255,0.3)',
-                      boxShadow: '0 8px 22px rgba(37, 99, 235, 0.3)',
+                      border: 'none',
+                      boxShadow: 'var(--shadow-primary)',
                       transition: 'all 0.3s ease',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -285,17 +285,17 @@ const Home = () => {
                       fontSize: '0.95rem',
                       fontWeight: 700,
                       borderRadius: '0.85rem',
-                      color: '#0F172A',
-                      border: '1.5px solid #CBD5E1',
+                      color: 'var(--primary-600)',
+                      border: '1.5px solid var(--primary-300)',
                       gap: '0.55rem',
-                      background: '#FFFFFF',
-                      boxShadow: '0 3px 10px rgba(15, 23, 42, 0.04)',
+                      background: 'var(--surface)',
+                      boxShadow: 'var(--shadow-sm)',
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
                   >
-                    <FileText size={18} color="#2563EB" /> {t('freeNotesBtn')}
+                    <FileText size={18} color="var(--primary-600)" /> {t('freeNotesBtn')}
                   </Link>
                 </div>
 

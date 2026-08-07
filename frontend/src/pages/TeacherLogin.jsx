@@ -131,18 +131,18 @@ const TeacherLogin = () => {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.85rem' }}>
-            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'linear-gradient(135deg, #FEF2F2, #FEE2E2)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px rgba(220,38,38,0.2)' }}>
-              <ShieldCheck size={36} color="#DC2626" />
+            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px rgba(40,116,198,0.18)' }}>
+              <ShieldCheck size={36} color="var(--primary-600)" />
             </div>
-            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', background: '#DC2626', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+            <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', background: 'var(--primary-600)', color: 'white', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
               <Lock size={13} />
             </div>
           </div>
 
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 0.35rem 0' }}>
-            Teacher <span style={{ color: '#DC2626' }}>Portal</span>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: '0 0 0.35rem 0' }}>
+            Teacher <span style={{ color: 'var(--primary-600)' }}>Portal</span>
           </h1>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.85rem', background: '#FEF2F2', border: '1px solid #FEE2E2', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 700, color: '#991B1B' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.85rem', background: '#EFF6FF', border: '1px solid #DBEAFE', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary-800)' }}>
             🔒 Secure Email OTP Authentication
           </div>
         </div>
@@ -154,18 +154,18 @@ const TeacherLogin = () => {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                 <div style={{
                   width: '28px', height: '28px', borderRadius: '50%',
-                  background: step > i ? '#DC2626' : step === i + 1 ? '#DC2626' : '#E2E8F0',
+                  background: step > i ? 'var(--primary-600)' : step === i + 1 ? 'var(--primary-600)' : '#E2E8F0',
                   color: step >= i + 1 ? 'white' : '#94A3B8',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.75rem', fontWeight: 800,
-                  boxShadow: step === i + 1 ? '0 4px 12px rgba(220,38,38,0.3)' : 'none',
+                  boxShadow: step === i + 1 ? '0 4px 12px rgba(40,116,198,0.3)' : 'none',
                   transition: 'all 0.3s ease'
                 }}>
                   {step > i + 1 ? '✓' : i + 1}
                 </div>
-                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: step >= i + 1 ? '#DC2626' : '#94A3B8', marginTop: '0.25rem', whiteSpace: 'nowrap' }}>{label}</span>
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: step >= i + 1 ? 'var(--primary-600)' : '#94A3B8', marginTop: '0.25rem', whiteSpace: 'nowrap' }}>{label}</span>
               </div>
-              {i < 1 && <div style={{ height: '2px', flex: 1, background: step > 1 ? '#DC2626' : '#E2E8F0', transition: 'all 0.3s ease', marginBottom: '1.1rem' }} />}
+              {i < 1 && <div style={{ height: '2px', flex: 1, background: step > 1 ? 'var(--primary-600)' : '#E2E8F0', transition: 'all 0.3s ease', marginBottom: '1.1rem' }} />}
             </div>
           ))}
         </div>
@@ -222,8 +222,8 @@ const TeacherLogin = () => {
               className="btn btn-primary"
               style={{
                 height: '52px', fontSize: '1rem', borderRadius: '0.85rem',
-                background: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
-                boxShadow: '0 8px 25px rgba(220,38,38,0.3)', gap: '0.5rem', border: 'none',
+                background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
+                boxShadow: 'var(--shadow-primary)', gap: '0.5rem', border: 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}
             >
@@ -252,7 +252,7 @@ const TeacherLogin = () => {
                 <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
                   Enter 6-Digit Email OTP
                 </label>
-                <span style={{ fontSize: '0.78rem', color: expiryTimer > 60 ? '#2563EB' : '#DC2626', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.78rem', color: expiryTimer > 60 ? 'var(--primary-600)' : '#DC2626', fontWeight: 700 }}>
                   ⏳ {formatTime(expiryTimer)}
                 </span>
               </div>
@@ -274,11 +274,11 @@ const TeacherLogin = () => {
                     onKeyDown={(e) => handleDigitKeyDown(idx, e)}
                     style={{
                       width: '46px', height: '54px', borderRadius: '0.75rem',
-                      border: digit ? '2px solid #DC2626' : '1.5px solid #CBD5E1',
-                      background: digit ? '#FEF2F2' : '#FFFFFF',
+                      border: digit ? '2px solid var(--primary-600)' : '1.5px solid #CBD5E1',
+                      background: digit ? '#EFF6FF' : '#FFFFFF',
                       fontSize: '1.35rem', fontWeight: 800, textAlign: 'center',
                       color: '#0F172A', outline: 'none',
-                      boxShadow: digit ? '0 4px 12px rgba(220,38,38,0.15)' : 'none',
+                      boxShadow: digit ? '0 4px 12px rgba(40,116,198,0.15)' : 'none',
                       transition: 'all 0.15s ease'
                     }}
                   />
@@ -293,8 +293,8 @@ const TeacherLogin = () => {
               className="btn btn-primary"
               style={{
                 height: '52px', fontSize: '1rem', borderRadius: '0.85rem',
-                background: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
-                boxShadow: '0 8px 25px rgba(220,38,38,0.3)', gap: '0.5rem', border: 'none',
+                background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
+                boxShadow: 'var(--shadow-primary)', gap: '0.5rem', border: 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}
             >
@@ -316,7 +316,7 @@ const TeacherLogin = () => {
                 onClick={handleSendOtp}
                 style={{
                   background: 'none', border: 'none',
-                  color: resendTimer > 0 ? '#94A3B8' : '#DC2626',
+                  color: resendTimer > 0 ? '#94A3B8' : 'var(--primary-600)',
                   fontSize: '0.82rem', fontWeight: 700,
                   cursor: resendTimer > 0 ? 'not-allowed' : 'pointer',
                   display: 'flex', alignItems: 'center', gap: '0.35rem'
@@ -331,7 +331,7 @@ const TeacherLogin = () => {
 
         <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
           <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748B' }}>
-            Are you a student? <Link to="/login" style={{ color: '#2563EB', fontWeight: 700 }}>Student Login Here</Link>
+            Are you a student? <Link to="/login" style={{ color: 'var(--primary-600)', fontWeight: 700 }}>Student Login Here</Link>
           </p>
         </div>
       </div>

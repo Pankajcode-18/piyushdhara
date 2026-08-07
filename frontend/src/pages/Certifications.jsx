@@ -324,21 +324,23 @@ const Certifications = () => {
                   <div style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
                     <Link
                       to={`/certifications/${cert.slug}`}
-                      className="cert-card-action-btn"
+                      className="btn cert-card-action-btn"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '0.5rem',
                         width: '100%',
-                        padding: '0.75rem',
+                        padding: '0.8rem 1rem',
                         borderRadius: '0.85rem',
-                        background: isCompleted ? '#059669' : isEnrolled ? '#2563EB' : '#0F172A',
+                        background: isCompleted ? 'var(--success-600)' : isEnrolled ? 'var(--primary-600)' : 'linear-gradient(135deg, var(--primary-900), var(--primary-700))',
                         color: 'white',
-                        fontWeight: 700,
-                        fontSize: '0.88rem',
+                        fontWeight: 800,
+                        fontSize: '0.9rem',
                         textDecoration: 'none',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                        boxShadow: '0 6px 18px rgba(18, 59, 109, 0.25)',
+                        border: 'none',
+                        transition: 'all 0.25s ease'
                       }}
                     >
                       {isCompleted ? (

@@ -930,10 +930,80 @@ const CommunityHub = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap');
         .composer-label { display:inline; }
-        .community-grid { display:grid; grid-template-columns:260px 1fr 300px; gap:1.5rem; }
-        .right-sidebar  { display:flex; flex-direction:column; gap:1rem; }
-        @media(max-width:1100px) { .community-grid { grid-template-columns:230px 1fr; } .right-sidebar { display:none !important; } }
-        @media(max-width:1024px) { .community-grid { display:block !important; width:100% !important; } .left-sidebar, .right-sidebar, .community-left-sidebar, .community-right-sidebar { display:none !important; } .composer-label { display:none; } }
+        
+        .community-grid { 
+          display: grid; 
+          grid-template-columns: 240px 1fr 260px; 
+          gap: 1.25rem; 
+          align-items: start;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .left-sidebar { 
+          display: flex; 
+          flex-direction: column; 
+          gap: 1rem; 
+          position: sticky;
+          top: 90px;
+          max-height: calc(100vh - 110px);
+          overflow-y: auto;
+          padding-right: 2px;
+          box-sizing: border-box;
+        }
+
+        .right-sidebar { 
+          display: flex; 
+          flex-direction: column; 
+          gap: 1rem; 
+          position: sticky;
+          top: 90px;
+          max-height: calc(100vh - 110px);
+          overflow-y: auto;
+          padding-left: 2px;
+          box-sizing: border-box;
+          min-width: 0;
+        }
+
+        @media (min-width: 768px) {
+          .mobile-only-tab-nav {
+            display: none !important;
+          }
+          .community-categories-sliding-strip {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 1280px) and (min-width: 1024px) {
+          .community-grid { 
+            grid-template-columns: 220px 1fr 240px !important; 
+            gap: 1rem !important; 
+          }
+        }
+
+        @media (max-width: 1023px) and (min-width: 768px) {
+          .community-grid { 
+            grid-template-columns: 210px 1fr !important; 
+            gap: 1rem !important; 
+          }
+          .right-sidebar { 
+            display: none !important; 
+          }
+        }
+
+        @media (max-width: 767px) {
+          .community-grid { 
+            display: block !important; 
+            width: 100% !important; 
+          }
+          .left-sidebar, .right-sidebar { 
+            display: none !important; 
+          }
+          .composer-label { 
+            display: none; 
+          }
+        }
+
         @keyframes spin { to { transform:rotate(360deg); } }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         .post-appear { animation: fadeInUp 0.3s ease both; }
@@ -997,17 +1067,19 @@ const CommunityHub = () => {
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────── */}
       <div className="community-main-container" style={{ maxWidth:1280, margin:'0 auto', padding:'1.5rem 1.5rem' }}>
 
-        {/* Sliding Navigation Tabs Bar */}
-        <SlidingTabNav
-          navItems={NAV_ITEMS}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-        />
+        {/* Sliding Navigation Tabs Bar (Mobile Only) */}
+        <div className="mobile-only-tab-nav">
+          <SlidingTabNav
+            navItems={NAV_ITEMS}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+          />
+        </div>
 
         <div className="community-grid">
 
           {/* ═══ LEFT SIDEBAR ═════════════════════════════════════════════ */}
-          <div className="left-sidebar community-left-sidebar" style={{ position:'sticky', top:80, display:'flex', flexDirection:'column', gap:'1rem', alignSelf:'start', maxHeight:'calc(100vh - 100px)', overflowY:'auto' }}>
+          <div className="left-sidebar community-left-sidebar">
 
             {/* Profile Mini Card */}
             {userProfile && (
@@ -1182,13 +1254,13 @@ const CommunityHub = () => {
               </div>
               <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
                 {TOP_CONTRIBUTORS.map((c) => (
-                  <div key={c.name} style={{ display:'flex', alignItems:'center', gap:'0.75rem', padding:'8px 10px', borderRadius:12, background: c.rank===1 ? '#FFFBEB' : C.bg, border: c.rank===1 ? `1px solid #FDE68A` : `1px solid transparent` }}>
-                    <span style={{ fontSize:'1.1rem', minWidth:22, textAlign:'center' }}>{c.badge}</span>
+                  <div key={c.name} style={{ display:'flex', alignItems:'center', gap:'0.45rem', padding:'7px 9px', borderRadius:12, background: c.rank===1 ? '#FFFBEB' : C.bg, border: c.rank===1 ? `1px solid #FDE68A` : `1px solid transparent`, boxSizing:'border-box', overflow:'hidden' }}>
+                    <span style={{ fontSize:'1rem', minWidth:20, textAlign:'center', flexShrink:0 }}>{c.badge}</span>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:C.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
-                      <div style={{ fontSize:'0.68rem', color:C.muted }}>{c.dept}</div>
+                      <div style={{ fontSize:'0.8rem', fontWeight:700, color:C.text, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
+                      <div style={{ fontSize:'0.65rem', color:C.muted, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.dept}</div>
                     </div>
-                    <span style={{ fontSize:'0.75rem', fontWeight:800, color:C.gold, flexShrink:0 }}>{c.score} XP</span>
+                    <span style={{ fontSize:'0.72rem', fontWeight:800, color:C.gold, flexShrink:0, whiteSpace:'nowrap' }}>{c.score} XP</span>
                   </div>
                 ))}
               </div>
