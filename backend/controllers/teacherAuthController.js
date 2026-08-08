@@ -187,11 +187,12 @@ const sendTeacherOtp = async (req, res) => {
     const existingOtp = await TeacherOtp.findOne({ email: normalizedEmail });
     if (existingOtp && existingOtp.lastRequestedAt) {
       const timeElapsed = (Date.now() - new Date(existingOtp.lastRequestedAt).getTime()) / 1000;
-      const COOLDOWN_SECONDS = 30; // 30-second cooldown between OTP requests
+      const COOLDOWN_SECONDS = 30; // 30-second cooldown between new email dispatches
       if (timeElapsed < COOLDOWN_SECONDS) {
         const waitTime = Math.ceil(COOLDOWN_SECONDS - timeElapsed);
         return res.status(429).json({
-          message: `Please wait ${waitTime} seconds before requesting a new OTP.`,
+          message: `An OTP was already sent to ${normalizedEmail}. Code is active for 5 minutes.`,
+          hasActiveOtp: true,
           waitSeconds: waitTime
         });
       }

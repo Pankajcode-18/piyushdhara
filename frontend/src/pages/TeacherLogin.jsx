@@ -56,11 +56,17 @@ const TeacherLogin = () => {
       setDigits(['', '', '', '', '', '']);
       setTimeout(() => { if (inputRefs[0].current) inputRefs[0].current.focus(); }, 100);
     } catch (err) {
-      // If rate-limited (429), start a visible countdown timer so user knows when to retry
-      if (err.waitSeconds && err.waitSeconds > 0) {
-        setResendTimer(err.waitSeconds);
+      if (err.hasActiveOtp) {
+        setSuccessMsg(err.message);
+        setStep(2);
+        if (err.waitSeconds) setResendTimer(err.waitSeconds);
+        setTimeout(() => { if (inputRefs[0].current) inputRefs[0].current.focus(); }, 100);
+      } else {
+        if (err.waitSeconds && err.waitSeconds > 0) {
+          setResendTimer(err.waitSeconds);
+        }
+        setError(err.message || 'Teacher account not found. Contact the administrator.');
       }
-      setError(err.message || 'Teacher account not found. Contact the administrator.');
     } finally {
       setLoading(false);
     }

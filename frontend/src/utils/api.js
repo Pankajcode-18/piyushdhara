@@ -377,6 +377,7 @@ export const sendTeacherOtpApi = async (email) => {
     if (!res.ok) {
       const err = new Error(data.message || 'Failed to send OTP');
       err.waitSeconds = data.waitSeconds || 0;
+      err.hasActiveOtp = Boolean(data.hasActiveOtp);
       throw err;
     }
     return data;
