@@ -361,41 +361,55 @@ export const logoutAuthApi = async () => {
 
 // Teacher OTP Auth Endpoints
 export const sendTeacherOtpApi = async (email) => {
-  const res = await fetch(`${API_BASE}/teacher/send-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  });
-  const text = await res.text();
-  let data;
   try {
-    data = JSON.parse(text);
-  } catch (e) {
-    throw new Error('Server error or endpoint not found. Please ensure backend server is running.');
-  }
-  if (!res.ok) {
-    const err = new Error(data.message || 'Failed to send OTP');
-    err.waitSeconds = data.waitSeconds || 0; // pass cooldown time to caller
+    const res = await fetch(`${API_BASE}/teacher/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      throw new Error('Server returned invalid response. Please ensure backend server is running.');
+    }
+    if (!res.ok) {
+      const err = new Error(data.message || 'Failed to send OTP');
+      err.waitSeconds = data.waitSeconds || 0;
+      throw err;
+    }
+    return data;
+  } catch (err) {
+    if (err.name === 'TypeError' || err.message === 'Failed to fetch') {
+      throw new Error('Cannot connect to backend API server. Please ensure backend server is deployed & running, and VITE_API_URL is configured in environment variables.');
+    }
     throw err;
   }
-  return data;
 };
 
 export const verifyTeacherOtpApi = async (email, otp) => {
-  const res = await fetch(`${API_BASE}/teacher/verify-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, otp }),
-  });
-  const text = await res.text();
-  let data;
   try {
-    data = JSON.parse(text);
-  } catch (e) {
-    throw new Error('Server error or invalid response during verification.');
+    const res = await fetch(`${API_BASE}/teacher/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp }),
+    });
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      throw new Error('Server returned invalid response during verification.');
+    }
+    if (!res.ok) throw new Error(data.message || 'OTP verification failed');
+    return data;
+  } catch (err) {
+    if (err.name === 'TypeError' || err.message === 'Failed to fetch') {
+      throw new Error('Cannot connect to backend API server. Please ensure backend server is deployed & running, and VITE_API_URL is configured.');
+    }
+    throw err;
   }
-  if (!res.ok) throw new Error(data.message || 'OTP verification failed');
-  return data;
 };
 
 export const checkTeacherPhoneApi = async (phone) => {
