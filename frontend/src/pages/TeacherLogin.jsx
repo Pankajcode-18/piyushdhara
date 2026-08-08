@@ -51,11 +51,15 @@ const TeacherLogin = () => {
       const res = await sendTeacherOtpApi(cleanEmail);
       setSuccessMsg(res.message || 'OTP sent to your email.');
       setStep(2);
-      setResendTimer(60);
+      setResendTimer(30);
       setExpiryTimer(300);
       setDigits(['', '', '', '', '', '']);
       setTimeout(() => { if (inputRefs[0].current) inputRefs[0].current.focus(); }, 100);
     } catch (err) {
+      // If rate-limited (429), start a visible countdown timer so user knows when to retry
+      if (err.waitSeconds && err.waitSeconds > 0) {
+        setResendTimer(err.waitSeconds);
+      }
       setError(err.message || 'Teacher account not found. Contact the administrator.');
     } finally {
       setLoading(false);
@@ -218,16 +222,26 @@ const TeacherLogin = () => {
             <button
               id="send-otp-btn"
               type="submit"
-              disabled={loading}
+              disabled={loading || resendTimer > 0}
               className="btn btn-primary"
               style={{
                 height: '52px', fontSize: '1rem', borderRadius: '0.85rem',
-                background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
-                boxShadow: 'var(--shadow-primary)', gap: '0.5rem', border: 'none',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                background: resendTimer > 0
+                  ? '#94A3B8'
+                  : 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
+                boxShadow: resendTimer > 0 ? 'none' : 'var(--shadow-primary)',
+                gap: '0.5rem', border: 'none',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: resendTimer > 0 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease'
               }}
             >
-              {loading ? 'Sending OTP...' : <><Mail size={18} /> Send 6-Digit Email OTP <ArrowRight size={18} /></>}
+              {loading
+                ? 'Sending OTP...'
+                : resendTimer > 0
+                  ? <><RefreshCw size={18} /> Retry in {resendTimer}s...</>
+                  : <><Mail size={18} /> Send 6-Digit Email OTP <ArrowRight size={18} /></>
+              }
             </button>
 
             <button

@@ -1,4 +1,5 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -82,6 +83,7 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
 app.use('/api/certifications', require('./routes/certificationRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/quizzes', require('./routes/quizRoutes'));
 app.use('/api/community', require('./routes/communityRoutes'));
 app.use('/api', require('./routes/commentRoutes'));

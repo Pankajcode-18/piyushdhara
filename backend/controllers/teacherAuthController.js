@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const TeacherOtp = require('../models/TeacherOtp');
 const Teacher = require('../models/Teacher');
+const Student = require('../models/Student');
 const User = require('../models/User');
 const { sendTeacherOtpEmail } = require('../utils/mailer');
 const twilio = require('twilio');
@@ -186,9 +187,13 @@ const sendTeacherOtp = async (req, res) => {
     const existingOtp = await TeacherOtp.findOne({ email: normalizedEmail });
     if (existingOtp && existingOtp.lastRequestedAt) {
       const timeElapsed = (Date.now() - new Date(existingOtp.lastRequestedAt).getTime()) / 1000;
-      if (timeElapsed < 60) {
-        const waitTime = Math.ceil(60 - timeElapsed);
-        return res.status(429).json({ message: `Please wait ${waitTime} seconds before requesting a new OTP.` });
+      const COOLDOWN_SECONDS = 30; // 30-second cooldown between OTP requests
+      if (timeElapsed < COOLDOWN_SECONDS) {
+        const waitTime = Math.ceil(COOLDOWN_SECONDS - timeElapsed);
+        return res.status(429).json({
+          message: `Please wait ${waitTime} seconds before requesting a new OTP.`,
+          waitSeconds: waitTime
+        });
       }
     }
 
@@ -275,8 +280,6 @@ const verifyTeacherOtp = async (req, res) => {
       });
     }
 
-    await TeacherOtp.deleteOne({ _id: otpRecord._id });
-
     let teacherUser = await User.findOne({ email: normalizedEmail });
 
     if (!teacherUser) {
@@ -292,9 +295,13 @@ const verifyTeacherOtp = async (req, res) => {
       await teacherUser.save();
     }
 
+    // Also sync Student and Teacher models if registered there
+    await Student.updateOne({ email: normalizedEmail }, { role: 'admin' }).catch(() => {});
+    await Teacher.updateOne({ email: normalizedEmail }, { role: 'admin' }).catch(() => {});
+
     const token = jwt.sign(
       { id: teacherUser._id, role: 'admin' },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'super_secret_jwt_key_change_in_prod',
       { expiresIn: '8h' }
     );
 
@@ -304,6 +311,9 @@ const verifyTeacherOtp = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     });
+
+    // Delete OTP record after successful authentication
+    await TeacherOtp.deleteOne({ _id: otpRecord._id }).catch(() => {});
 
     return res.status(200).json({
       success: true,

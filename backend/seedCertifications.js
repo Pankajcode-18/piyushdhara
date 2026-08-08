@@ -32,6 +32,8 @@ async function seed() {
       banner: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80',
       category: 'Web Development',
       difficulty: 'Beginner',
+      price: 299,
+      isPaid: true,
       estimatedDuration: '24 Hours',
       language: 'English & Nepali',
       instructor: {

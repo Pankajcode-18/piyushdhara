@@ -250,11 +250,25 @@ const Certifications = () => {
                     </span>
                   </div>
 
-                  {isCompleted && (
-                    <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: '#059669', color: 'white', padding: '0.25rem 0.65rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
-                      <CheckCircle2 size={13} /> Certified
-                    </div>
-                  )}
+                  <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    {isCompleted ? (
+                      <div style={{ background: '#059669', color: 'white', padding: '0.25rem 0.65rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
+                        <CheckCircle2 size={13} /> Certified
+                      </div>
+                    ) : (
+                      <div style={{ 
+                        background: (cert.price || 0) > 0 ? 'var(--primary-800)' : '#059669', 
+                        color: 'white', 
+                        padding: '0.25rem 0.75rem', 
+                        borderRadius: '9999px', 
+                        fontSize: '0.78rem', 
+                        fontWeight: 900,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+                      }}>
+                        {(cert.price || 0) > 0 ? `Rs. ${cert.price.toLocaleString()}` : 'FREE'}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Content Details */}

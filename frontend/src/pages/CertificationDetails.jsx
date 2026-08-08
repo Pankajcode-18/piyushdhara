@@ -26,6 +26,7 @@ import {
   LogIn
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import PaymentModal from '../components/common/PaymentModal';
 
 const CertificationDetails = () => {
   const { id } = useParams();
@@ -38,6 +39,7 @@ const CertificationDetails = () => {
   const [enrolling, setEnrolling] = useState(false);
   const [showSampleCertModal, setShowSampleCertModal] = useState(false);
   const [showAllModules, setShowAllModules] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const studentEmail = userProfile?.email || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).email : '');
   const studentName = userProfile?.name || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).name : '');
@@ -120,12 +122,19 @@ const CertificationDetails = () => {
     }
 
     if (isEnrolled) {
-      // Already enrolled -> Continue Learning from saved/next module
+      // Already enrolled -> Continue Learning
       navigate(`/certifications/${_id}/learn`);
       return;
     }
 
-    // Enroll Student in Certification
+    // Check if course is paid -> Open Payment Gateway Modal
+    const price = certData.price || 0;
+    if (price > 0) {
+      setShowPaymentModal(true);
+      return;
+    }
+
+    // Enroll Free Course
     try {
       setEnrolling(true);
       await enrollCertificationApi(_id, studentEmail, studentName);
@@ -219,6 +228,14 @@ const CertificationDetails = () => {
         <div className="cert-details-cta-card" style={{ background: '#F8FAFC', borderRadius: '1.5rem', border: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <img src={thumbnail} alt={title} style={{ width: '100%', height: '170px', objectFit: 'cover', borderRadius: '1rem' }} />
 
+          {/* Price Header */}
+          <div style={{ background: '#FFFFFF', padding: '0.85rem 1rem', borderRadius: '0.85rem', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Tuition Fee</span>
+            <span style={{ fontSize: '1.3rem', fontWeight: 900, color: (certData.price || 0) > 0 ? 'var(--primary-700)' : '#16A34A' }}>
+              {(certData.price || 0) > 0 ? `Rs. ${certData.price.toLocaleString()}` : 'FREE ACCESS'}
+            </span>
+          </div>
+
           {isCompleted ? (
             <div style={{ textAlign: 'center', padding: '1rem', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '1rem' }}>
               <ShieldCheck size={36} color="#059669" style={{ margin: '0 auto 0.5rem auto' }} />
@@ -244,13 +261,13 @@ const CertificationDetails = () => {
                     width: '100%',
                     padding: '0.85rem',
                     borderRadius: '0.85rem',
-                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                    background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
                     color: 'white',
                     fontWeight: 800,
                     fontSize: '1rem',
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 8px 20px rgba(37,99,235,0.25)'
+                    boxShadow: 'var(--shadow-primary)'
                   }}
                 >
                   Log In to Enroll &amp; Start <LogIn size={18} />
@@ -289,16 +306,20 @@ const CertificationDetails = () => {
                     width: '100%',
                     padding: '0.85rem',
                     borderRadius: '0.85rem',
-                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                    background: 'linear-gradient(135deg, var(--primary-800) 0%, var(--primary-600) 100%)',
                     color: 'white',
                     fontWeight: 800,
                     fontSize: '1rem',
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 8px 20px rgba(37,99,235,0.25)'
+                    boxShadow: 'var(--shadow-primary)'
                   }}
                 >
-                  {enrolling ? 'Enrolling...' : <>Enroll in Certification Course <Award size={18} /></>}
+                  {enrolling ? 'Processing...' : (certData.price || 0) > 0 ? (
+                    <>Enroll &amp; Pay Rs. {certData.price.toLocaleString()} <Award size={18} /></>
+                  ) : (
+                    <>Enroll Free in Certification <Award size={18} /></>
+                  )}
                 </button>
               )}
             </div>
@@ -595,6 +616,20 @@ const CertificationDetails = () => {
         </div>
       )}
 
+      {/* Payment Gateway Modal Selector */}
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        item={certData}
+        itemType="certification"
+        onSuccess={() => {
+          setCertData(prev => ({
+            ...prev,
+            userProgress: { overallPercentage: 0, status: 'in_progress', isEnrolled: true }
+          }));
+          navigate(`/certifications/${_id}/learn`);
+        }}
+      />
     </div>
   );
 };

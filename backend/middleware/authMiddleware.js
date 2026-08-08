@@ -23,16 +23,28 @@ const protect = async (req, res, next) => {
       let user = null;
 
       if (targetId && mongoose.Types.ObjectId.isValid(targetId)) {
-        user = await Student.findById(targetId).select('-password') ||
-               await Teacher.findById(targetId).select('-password') ||
-               await User.findById(targetId).select('-password');
+        if (decoded.role === 'admin' || decoded.role === 'teacher') {
+          user = await User.findById(targetId).select('-password') ||
+                 await Teacher.findById(targetId).select('-password') ||
+                 await Student.findById(targetId).select('-password');
+        } else {
+          user = await Student.findById(targetId).select('-password') ||
+                 await Teacher.findById(targetId).select('-password') ||
+                 await User.findById(targetId).select('-password');
+        }
       }
 
       if (!user && decoded.email) {
         const cleanEmail = decoded.email.toLowerCase().trim();
-        user = await Student.findOne({ email: cleanEmail }).select('-password') ||
-               await User.findOne({ email: cleanEmail }).select('-password') ||
-               await Teacher.findOne({ email: cleanEmail }).select('-password');
+        if (decoded.role === 'admin' || decoded.role === 'teacher') {
+          user = await User.findOne({ email: cleanEmail }).select('-password') ||
+                 await Teacher.findOne({ email: cleanEmail }).select('-password') ||
+                 await Student.findOne({ email: cleanEmail }).select('-password');
+        } else {
+          user = await Student.findOne({ email: cleanEmail }).select('-password') ||
+                 await User.findOne({ email: cleanEmail }).select('-password') ||
+                 await Teacher.findOne({ email: cleanEmail }).select('-password');
+        }
       }
 
       if (!user && decoded.firebaseUID) {

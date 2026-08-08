@@ -18,8 +18,8 @@ const AdminLayout = () => {
   const user      = userStr ? JSON.parse(userStr) : null;
   const [open, setOpen] = useState(false);
 
-  if (!token || !user || user.role !== 'admin') {
-    return <Navigate to="/login" replace />;
+  if (!token || !user || (user.role !== 'admin' && user.role !== 'teacher')) {
+    return <Navigate to="/teacher-login" replace />;
   }
 
   const handleLogout = () => {

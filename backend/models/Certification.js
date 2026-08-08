@@ -9,6 +9,8 @@ const certificationSchema = new mongoose.Schema({
   banner: { type: String, default: '' },
   category: { type: String, default: 'Web Development' },
   difficulty: { type: String, enum: ['Beginner', 'Intermediate', 'Advanced'], default: 'Beginner' },
+  price: { type: Number, default: 0 },
+  isPaid: { type: Boolean, default: false },
   estimatedDuration: { type: String, default: '10 Hours' },
   language: { type: String, default: 'English & Nepali' },
   instructor: {

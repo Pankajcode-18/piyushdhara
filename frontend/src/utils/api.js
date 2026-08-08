@@ -48,12 +48,10 @@ export const getCourseThumbnail = (course) => {
   return 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80';
 };
 
-// Auto-handle expired token: clear localStorage and redirect to login
+// Handle auth error response silently without aggressive hard redirects
 const handleAuthError = (res) => {
   if (res.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    window.location.href = '/login';
+    console.warn('API authentication 401 notice: Session token may need refresh');
   }
 };
 
@@ -375,7 +373,11 @@ export const sendTeacherOtpApi = async (email) => {
   } catch (e) {
     throw new Error('Server error or endpoint not found. Please ensure backend server is running.');
   }
-  if (!res.ok) throw new Error(data.message || 'Failed to send OTP');
+  if (!res.ok) {
+    const err = new Error(data.message || 'Failed to send OTP');
+    err.waitSeconds = data.waitSeconds || 0; // pass cooldown time to caller
+    throw err;
+  }
   return data;
 };
 

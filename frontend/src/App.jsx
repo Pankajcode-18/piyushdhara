@@ -41,6 +41,8 @@ import Certifications from './pages/Certifications';
 import CertificationDetails from './pages/CertificationDetails';
 import CertificationLearn from './pages/CertificationLearn';
 import CertificateView from './pages/CertificateView';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
 import AdminManageCertifications from './pages/admin/AdminManageCertifications';
 
 // Quiz & Assessment System Pages
@@ -98,6 +100,11 @@ function App() {
                   } 
                 />
                 <Route path="certificates/:certificateId" element={<CertificateView />} />
+
+                {/* Payment Gateway Callback Routes */}
+                <Route path="payment/esewa/success" element={<PaymentSuccess />} />
+                <Route path="payment/khalti/callback" element={<PaymentSuccess />} />
+                <Route path="payment/failure" element={<PaymentFailure />} />
 
                 {/* Quiz & Assessment System Routes */}
                 <Route path="quizzes" element={<QuizzesList />} />
