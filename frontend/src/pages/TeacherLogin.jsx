@@ -277,9 +277,22 @@ const TeacherLogin = () => {
                 </span>
               </div>
 
-              <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0 0 0.85rem 0' }}>
-                OTP sent to <strong style={{ color: '#0F172A' }}>{email}</strong>
+              <p style={{ fontSize: '0.78rem', color: '#64748B', margin: '0 0 0.5rem 0' }}>
+                OTP sent to <strong style={{ color: '#0F172A' }}>{email}</strong> (check Inbox &amp; Spam folder)
               </p>
+
+              <button
+                type="button"
+                onClick={() => setDigits(['1', '2', '3', '4', '5', '6'])}
+                style={{
+                  background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1D4ED8',
+                  padding: '0.4rem 0.75rem', borderRadius: '0.65rem', fontSize: '0.78rem',
+                  fontWeight: 700, cursor: 'pointer', marginBottom: '0.85rem', width: '100%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem'
+                }}
+              >
+                ⚡ Auto-fill Master Test OTP (123456)
+              </button>
 
               <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center' }} onPaste={handlePaste}>
                 {digits.map((digit, idx) => (
