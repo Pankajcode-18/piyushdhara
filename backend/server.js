@@ -115,6 +115,11 @@ if (fs.existsSync(frontendDistPath)) {
 
 // Port configuration
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} with Socket.IO enabled`);
-});
+  });
+}
+
+module.exports = app;
